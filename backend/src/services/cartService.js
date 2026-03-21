@@ -6,14 +6,22 @@ class CartService {
     return user.cart;
   }
 
-  async addToCart(userId, productId) {
+  async addToCart(userId, productId, colorValor, storageValor) {
     const user = await User.findById(userId);
-    const productIndex = user.cart.findIndex(item => item.productId.toString() === productId);
+    const productIndex = user.cart.findIndex(
+      item =>
+        item.productId.toString() === productId &&
+        item.colorValor === (colorValor || undefined) &&
+        item.storageValor === (storageValor || undefined)
+    );
 
     if (productIndex > -1) {
       user.cart[productIndex].quantity += 1;
     } else {
-      user.cart.push({ productId, quantity: 1 });
+      const cartItem = { productId, quantity: 1 };
+      if (colorValor) cartItem.colorValor = colorValor;
+      if (storageValor) cartItem.storageValor = storageValor;
+      user.cart.push(cartItem);
     }
 
     await user.save();

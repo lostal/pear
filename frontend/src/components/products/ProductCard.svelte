@@ -1,90 +1,69 @@
 <script lang="ts">
   import type { Product } from '../../types/index.js';
-  import { auth } from '../../stores/auth.svelte.js';
+  import { getImagenesForProduct, getPrecioMinimo, getImageUrl } from '../../types/index.js';
   import { push } from 'svelte-spa-router';
 
   interface Props {
     product: Product;
-    onEdit?: (product: Product) => void;
-    onDelete?: (product: Product) => void;
-    onView?: (product: Product) => void;
   }
 
-  let { product, onEdit, onDelete, onView }: Props = $props();
+  let { product }: Props = $props();
 
   const initial = $derived(product.nombre.charAt(0).toUpperCase());
+  const imagenes = $derived(getImagenesForProduct(product));
+  const precio = $derived(getPrecioMinimo(product));
+  const colorGrupo = $derived(product.gruposOpciones.find(g => g.tipo === 'color'));
 
-  function formatPrice(price: number) {
-    return new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(price);
-  }
-
-  function handleClick() {
-    if (onView) {
-      onView(product);
-    } else {
-      push(`/products/${product._id}`);
-    }
+  function formatPrice(p: number) {
+    return new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(p);
   }
 </script>
 
+<!-- svelte-ignore a11y_click_events_have_key_events -->
+<!-- svelte-ignore a11y_no_static_element_interactions -->
 <article
-  class="group relative bg-card rounded-lg border border-border overflow-hidden cursor-pointer transition-all duration-200 hover:shadow-md"
-  style="opacity:0;"
+  class="group cursor-pointer"
+  onclick={() => push(`/products/${product._id}`)}
 >
-  <!-- Imagen o placeholder con inicial -->
-  <!-- svelte-ignore a11y_click_events_have_key_events -->
-  <!-- svelte-ignore a11y_no_static_element_interactions -->
+  <!-- Imagen -->
   <div
-    class="aspect-square flex items-center justify-center overflow-hidden"
+    class="aspect-square rounded-2xl overflow-hidden flex items-center justify-center mb-3 transition-transform duration-300 group-hover:scale-[1.02]"
     style="background: var(--color-secondary);"
-    onclick={handleClick}
   >
-    {#if product.imagen}
+    {#if imagenes.length > 0}
       <img
-        src="/api/uploads/{product.imagen}"
+        src={getImageUrl(imagenes[0])}
         alt={product.nombre}
         class="w-full h-full object-cover"
       />
     {:else}
-      <span
-        class="text-5xl font-black select-none"
-        style="color: var(--color-border); line-height: 1;"
-      >
+      <span class="text-5xl font-black select-none" style="color: var(--color-border);">
         {initial}
       </span>
     {/if}
   </div>
 
   <!-- Info -->
-  <div class="p-4">
-    <!-- svelte-ignore a11y_click_events_have_key_events -->
-    <!-- svelte-ignore a11y_no_static_element_interactions -->
-    <div onclick={handleClick}>
-      <h2 class="font-medium text-sm leading-snug mb-1" style="color: var(--color-foreground);">
-        {product.nombre}
-      </h2>
-      <p class="text-sm" style="color: var(--color-muted-foreground);">
-        {formatPrice(product.precio)}
-      </p>
-    </div>
+  <div class="px-1">
+    <h3 class="text-sm font-medium leading-snug mb-1" style="color: var(--color-foreground);">
+      {product.nombre}
+    </h3>
 
-    {#if auth.isAdmin}
-      <div class="mt-3 flex gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-        <button
-          onclick={(e) => { e.stopPropagation(); onEdit?.(product); }}
-          class="text-xs transition-colors cursor-pointer hover:opacity-100 opacity-70"
-          style="color: var(--color-foreground);"
-        >
-          Editar
-        </button>
-        <button
-          onclick={(e) => { e.stopPropagation(); onDelete?.(product); }}
-          class="text-xs transition-colors cursor-pointer"
-          style="color: var(--color-destructive);"
-        >
-          Eliminar
-        </button>
+    <!-- Swatches de color -->
+    {#if colorGrupo && colorGrupo.opciones.length > 0}
+      <div class="flex gap-1 mb-1">
+        {#each colorGrupo.opciones.slice(0, 8) as opcion}
+          <span
+            class="w-3 h-3 rounded-full border border-black/10"
+            style="background: {(opcion as any).codigoHex ?? '#ccc'};"
+            title={opcion.valor}
+          ></span>
+        {/each}
       </div>
     {/if}
+
+    <p class="text-xs" style="color: var(--color-muted-foreground);">
+      Desde {formatPrice(precio)}
+    </p>
   </div>
 </article>

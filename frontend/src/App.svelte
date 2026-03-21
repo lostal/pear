@@ -11,9 +11,11 @@
   import ProductDetailPage from './pages/ProductDetailPage.svelte';
   import ProfilePage from './pages/ProfilePage.svelte';
   import AdminUsersPage from './pages/AdminUsersPage.svelte';
+  import AdminProductsPage from './pages/AdminProductsPage.svelte';
+  import AdminProductEditPage from './pages/AdminProductEditPage.svelte';
   import NotFoundPage from './pages/NotFoundPage.svelte';
 
-  const protectedRoutes = ['/profile', '/admin/users'];
+  const protectedRoutes = ['/profile', '/admin/users', '/admin/products'];
 
   $effect(() => {
     if (!auth.isAuthenticated && protectedRoutes.some(r => router.location.startsWith(r))) {
@@ -28,6 +30,8 @@
     '/products/:id': ProductDetailPage,
     '/profile': wrap({ component: ProfilePage }),
     '/admin/users': wrap({ component: AdminUsersPage }),
+    '/admin/products': wrap({ component: AdminProductsPage }),
+    '/admin/products/:id': wrap({ component: AdminProductEditPage }),
     '*': NotFoundPage,
   };
 </script>

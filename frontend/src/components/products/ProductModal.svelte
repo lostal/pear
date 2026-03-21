@@ -21,7 +21,7 @@
       <div class="grid grid-cols-2 gap-4 text-sm">
         <div>
           <p class="text-[var(--color-muted-foreground)] mb-1">Precio</p>
-          <p class="font-bold text-xl">{formatPrice(product.precio)}</p>
+          <p class="font-bold text-xl">{formatPrice(product.precioBase)}</p>
         </div>
         <div>
           <p class="text-[var(--color-muted-foreground)] mb-1">ID</p>
@@ -29,8 +29,8 @@
         </div>
       </div>
 
-      {#if product.imagen}
-        <img src="/api/uploads/{product.imagen}" alt={product.nombre} class="rounded-md max-h-48 object-contain" />
+      {#if product.imagenesDefault?.length > 0}
+        <img src="/api/uploads/{product.imagenesDefault[0]}" alt={product.nombre} class="rounded-md max-h-48 object-contain" />
       {/if}
     </div>
   {/if}

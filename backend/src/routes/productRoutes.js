@@ -1,115 +1,106 @@
 const express = require('express');
 const router = express.Router();
+const path = require('path');
+const fs = require('fs');
+const multer = require('multer');
 const ProductController = require('../controllers/productController');
 const authJWT = require('../middleware/authMiddleware');
-const multer = require('multer');
-const path = require('path');
 
-// Multer config
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, path.join(__dirname, '../../uploads')); // Adjust path to root uploads
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + path.extname(file.originalname));
-  }
+// ── Multer: almacenamiento con subdirectorios por producto/variante ────────────
+
+function makeStorage(destFn) {
+  return multer.diskStorage({
+    destination(req, file, cb) {
+      const dir = destFn(req);
+      fs.mkdirSync(dir, { recursive: true });
+      cb(null, dir);
+    },
+    filename(req, file, cb) {
+      cb(null, `${Date.now()}${path.extname(file.originalname)}`);
+    }
+  });
+}
+
+// Para crear una opción con imágenes: usamos gId como directorio temporal (oId aún no existe)
+const uploadOpcionNewImages = multer({
+  storage: makeStorage(req =>
+    path.join('/uploads', 'productos', req.params.id, req.params.gId)
+  )
 });
-const upload = multer({ storage: storage });
 
-/**
- * @swagger
- * tags:
- *   name: Products
- *   description: Gestión de productos
- */
+// Para añadir imágenes a una opción existente: usamos oId como directorio
+const uploadOpcionImages = multer({
+  storage: makeStorage(req =>
+    path.join('/uploads', 'productos', req.params.id, req.params.oId)
+  )
+});
 
-/**
- * @swagger
- * /productos:
- *   get:
- *     summary: Obtener todos los productos
- *     tags: [Products]
- *     parameters:
- *       - in: query
- *         name: name
- *         schema:
- *           type: string
- *         description: Filtrar por nombre
- *     responses:
- *       200:
- *         description: Lista de productos
- *   post:
- *     summary: Crear un nuevo producto (Admin)
- *     tags: [Products]
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         multipart/form-data:
- *           schema:
- *             type: object
- *             properties:
- *               nombre:
- *                 type: string
- *               precio:
- *                 type: number
- *               imagen:
- *                 type: string
- *                 format: binary
- *     responses:
- *       201:
- *         description: Producto creado
- *       403:
- *         description: No autorizado
- */
-router.get('/', ProductController.getProducts);
-router.post('/', authJWT, upload.single('imagen'), ProductController.createProduct);
+const uploadDefaultImages = multer({
+  storage: makeStorage(req =>
+    path.join('/uploads', 'productos', req.params.id, 'default')
+  )
+});
 
-/**
- * @swagger
- * /productos/{id}:
- *   put:
- *     summary: Actualizar un producto (Admin)
- *     tags: [Products]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               nombre:
- *                 type: string
- *               precio:
- *                 type: number
- *     responses:
- *       200:
- *         description: Producto actualizado
- *   delete:
- *     summary: Eliminar un producto (Admin)
- *     tags: [Products]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Producto eliminado
- */
-router.put('/:id', authJWT, ProductController.updateProduct);
-router.delete('/:id', authJWT, ProductController.deleteProduct);
+// ── Rutas ─────────────────────────────────────────────────────────────────────
+
+// Lista y detalle
+router.get('/', ProductController.getProducts.bind(ProductController));
+router.get('/:id', ProductController.getProduct.bind(ProductController));
+
+// CRUD básico (admin)
+router.post('/', authJWT, ProductController.createProduct.bind(ProductController));
+router.put('/:id', authJWT, ProductController.updateProduct.bind(ProductController));
+router.delete('/:id', authJWT, ProductController.deleteProduct.bind(ProductController));
+
+// Grupos de opciones
+router.post('/:id/grupos', authJWT, ProductController.addGrupo.bind(ProductController));
+router.put('/:id/grupos/:gId', authJWT, ProductController.updateGrupo.bind(ProductController));
+router.delete('/:id/grupos/:gId', authJWT, ProductController.deleteGrupo.bind(ProductController));
+
+// Opciones dentro de grupos
+router.post(
+  '/:id/grupos/:gId/opciones',
+  authJWT,
+  uploadOpcionNewImages.array('imagenes', 10),
+  ProductController.addOpcion.bind(ProductController)
+);
+router.put(
+  '/:id/grupos/:gId/opciones/:oId',
+  authJWT,
+  ProductController.updateOpcion.bind(ProductController)
+);
+router.delete(
+  '/:id/grupos/:gId/opciones/:oId',
+  authJWT,
+  ProductController.deleteOpcion.bind(ProductController)
+);
+
+// Imágenes adicionales en opciones de color
+router.post(
+  '/:id/grupos/:gId/opciones/:oId/imagenes',
+  authJWT,
+  uploadOpcionImages.array('imagenes', 10),
+  ProductController.addImagenesOpcion.bind(ProductController)
+);
+// filename viene como query param ?f=... para evitar problemas con barras en la ruta
+router.delete(
+  '/:id/grupos/:gId/opciones/:oId/imagenes',
+  authJWT,
+  ProductController.deleteImagenOpcion.bind(ProductController)
+);
+
+// Imágenes default
+router.post(
+  '/:id/imagenes-default',
+  authJWT,
+  uploadDefaultImages.array('imagenes', 10),
+  ProductController.addImagenesDefault.bind(ProductController)
+);
+// filename viene como query param ?f=...
+router.delete(
+  '/:id/imagenes-default',
+  authJWT,
+  ProductController.deleteImagenDefault.bind(ProductController)
+);
 
 module.exports = router;

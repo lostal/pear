@@ -63,4 +63,12 @@ export const http = {
 
   delete: <T>(url: string, opts?: RequestOptions) =>
     request<T>(url, { method: 'DELETE', ...opts }),
+
+  // Para subidas de archivos (FormData) — no forzar Content-Type
+  postForm: <T>(url: string, body: FormData, opts?: RequestOptions) => {
+    const { skipAuth = false, ...rest } = opts ?? {};
+    const headers: Record<string, string> = {};
+    if (!skipAuth && auth.token) headers['Authorization'] = `Bearer ${auth.token}`;
+    return request<T>(url, { method: 'POST', body, headers, skipAuth: true, ...rest });
+  },
 };

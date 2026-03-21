@@ -10,7 +10,9 @@ cart: [
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Producto'
     },
-    quantity: { type: Number, default: 1 }
+    quantity: { type: Number, default: 1 },
+    colorValor: { type: String },
+    storageValor: { type: String }
   }
 ]
 });

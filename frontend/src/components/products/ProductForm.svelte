@@ -14,7 +14,7 @@
   // svelte-ignore state_referenced_locally
   let nombre = $state(product?.nombre ?? '');
   // svelte-ignore state_referenced_locally
-  let precio = $state<number | string>(product?.precio ?? '');
+  let precio = $state<number | string>(product?.precioBase ?? '');
   let saving = $state(false);
   let errors = $state<Record<string, string>>({});
 

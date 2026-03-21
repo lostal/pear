@@ -5,6 +5,7 @@ const authRoutes = require('./authRoutes');
 const productRoutes = require('./productRoutes');
 const cartRoutes = require('./cartRoutes');
 const userRoutes = require('./userRoutes');
+const categoriaRoutes = require('./categoriaRoutes');
 
 router.use('/', authRoutes); // /api/login, /api/register are at root of api in original
 // Wait, original was /api/login. So if I mount this at /api, it becomes /api/login.
@@ -12,6 +13,7 @@ router.use('/', authRoutes); // /api/login, /api/register are at root of api in 
 // In app.js I will likely mount this router at /api.
 // So authRoutes should be just /login and /register.
 
+router.use('/categorias', categoriaRoutes);
 router.use('/productos', productRoutes);
 router.use('/cart', cartRoutes);
 router.use('/users', userRoutes);

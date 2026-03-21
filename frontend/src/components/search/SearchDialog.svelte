@@ -142,7 +142,7 @@
                   {product.nombre}
                 </p>
                 <p class="text-xs sm:text-sm mt-0.5" style="color: var(--color-muted-foreground);">
-                  {fmt.format(product.precio)}
+                  {fmt.format(product.precioBase)}
                 </p>
               </button>
             {/each}
