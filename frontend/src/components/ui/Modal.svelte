@@ -25,18 +25,23 @@
     <!-- svelte-ignore a11y_click_events_have_key_events -->
     <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div
-      class="absolute inset-0 bg-black/40 backdrop-blur-sm"
+      class="absolute inset-0 backdrop-blur-sm"
+      style="background: rgba(0,0,0,0.35);"
       onclick={onclose}
     ></div>
 
     <!-- Panel -->
-    <div class="relative z-10 w-full max-w-lg bg-[var(--color-card)] rounded-2xl border border-[var(--color-border)] shadow-2xl">
+    <div
+      class="relative z-10 w-full max-w-lg bg-white rounded-3xl border overflow-hidden"
+      style="border-color: var(--color-border); box-shadow: 0 24px 60px rgba(0,0,0,0.15);"
+    >
       {#if title}
-        <div class="flex items-center justify-between px-6 py-4 border-b border-[var(--color-border)]">
-          <h2 class="text-lg font-black">{title}</h2>
+        <div class="flex items-center justify-between px-6 py-5 border-b" style="border-color: var(--color-border);">
+          <h2 class="text-lg font-semibold" style="letter-spacing: -0.02em;">{title}</h2>
           <button
             onclick={onclose}
-            class="text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)] transition-colors cursor-pointer"
+            class="transition-colors cursor-pointer rounded-full p-1 hover:bg-gray-100"
+            style="color: var(--color-muted-foreground);"
             aria-label="Cerrar"
           >
             <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -45,7 +50,7 @@
           </button>
         </div>
       {/if}
-      <div class="px-6 py-4">
+      <div class="px-6 py-5">
         {@render children?.()}
       </div>
     </div>

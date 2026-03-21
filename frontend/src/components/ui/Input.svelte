@@ -32,8 +32,8 @@
 
 <div class="flex flex-col gap-1 {klass}">
   {#if label}
-    <label for={id} class="{labelClass} text-[var(--color-foreground)]">
-      {label}{#if required}<span class="text-[var(--color-destructive)] ml-0.5">*</span>{/if}
+    <label for={id} class="{labelClass}" style="color: var(--color-foreground);">
+      {label}{#if required}<span style="color: var(--color-destructive);" class="ml-0.5">*</span>{/if}
     </label>
   {/if}
   <input
@@ -45,10 +45,22 @@
     {required}
     {oninput}
     {onchange}
-    class="w-full rounded-md border border-[var(--color-border)] bg-[var(--color-input)] px-3 py-2 text-sm text-[var(--color-foreground)] placeholder:text-[var(--color-muted-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-pear)] focus:border-transparent disabled:opacity-50 transition-shadow"
-    class:border-[var(--color-destructive)]={!!error}
+    class="w-full rounded-xl border px-3 py-2 text-sm disabled:opacity-50 transition-all"
+    style="border-color: {error ? 'var(--color-destructive)' : 'var(--color-border)'}; background: var(--color-input); color: var(--color-foreground); outline: none;"
+    onfocus={(e) => {
+      if (!error) {
+        (e.target as HTMLElement).style.borderColor = 'var(--color-apple-blue)';
+        (e.target as HTMLElement).style.boxShadow = '0 0 0 3px rgba(0,113,227,0.15)';
+      }
+    }}
+    onblur={(e) => {
+      if (!error) {
+        (e.target as HTMLElement).style.borderColor = 'var(--color-border)';
+        (e.target as HTMLElement).style.boxShadow = 'none';
+      }
+    }}
   />
   {#if error}
-    <p class="text-xs text-[var(--color-destructive)]">{error}</p>
+    <p class="text-xs" style="color: var(--color-destructive);">{error}</p>
   {/if}
 </div>

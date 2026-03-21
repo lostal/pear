@@ -10,7 +10,7 @@
   import PageLayout from '../components/layout/PageLayout.svelte';
 
   $effect(() => {
-    if (!auth.isAuthenticated) push('/login');
+    if (!auth.isAuthenticated) push('/');
     else if (!auth.isAdmin) push('/products');
   });
 
@@ -62,21 +62,21 @@
 </script>
 
 <PageLayout>
-  <div class="pb-6 mb-8 border-b border-[var(--color-border)]">
-    <h1 class="text-3xl sm:text-4xl font-black tracking-tight">Usuarios</h1>
-    <p class="text-xs font-bold uppercase tracking-widest text-[var(--color-muted-foreground)] mt-1.5">Gestión de cuentas</p>
+  <div class="mb-10">
+    <h1 class="text-4xl sm:text-5xl font-semibold tracking-tight" style="letter-spacing: -0.04em;">Usuarios</h1>
+    <p class="text-sm mt-1.5" style="color: var(--color-muted-foreground);">Gestión de cuentas</p>
   </div>
 
   {#if loading}
     <div class="flex justify-center py-20"><Spinner size="lg" /></div>
   {:else}
-    <div class="overflow-hidden">
+    <div class="bg-white rounded-2xl overflow-hidden" style="box-shadow: 0 2px 12px rgba(0,0,0,0.06);">
       <table class="w-full text-sm">
         <thead>
-          <tr class="border-t border-b border-[var(--color-border)]">
-            <th class="text-left py-3 px-4 text-xs font-bold uppercase tracking-widest text-[var(--color-muted-foreground)]">Usuario</th>
-            <th class="text-left py-3 px-4 text-xs font-bold uppercase tracking-widest text-[var(--color-muted-foreground)]">Rol</th>
-            <th class="text-left py-3 px-4 text-xs font-bold uppercase tracking-widest text-[var(--color-muted-foreground)]">Acciones</th>
+          <tr style="border-bottom: 1px solid var(--color-border);">
+            <th class="text-left py-3 px-5 text-xs font-medium uppercase tracking-widest" style="color: var(--color-muted-foreground);">Usuario</th>
+            <th class="text-left py-3 px-5 text-xs font-medium uppercase tracking-widest" style="color: var(--color-muted-foreground);">Rol</th>
+            <th class="text-left py-3 px-5 text-xs font-medium uppercase tracking-widest" style="color: var(--color-muted-foreground);">Acciones</th>
           </tr>
         </thead>
         <tbody>
@@ -91,7 +91,7 @@
       </table>
 
       {#if users.length === 0}
-        <div class="text-center py-10 text-[var(--color-muted-foreground)]">No hay usuarios.</div>
+        <div class="text-center py-10" style="color: var(--color-muted-foreground);">No hay usuarios.</div>
       {/if}
     </div>
   {/if}

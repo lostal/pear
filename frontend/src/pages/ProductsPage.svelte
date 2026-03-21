@@ -20,7 +20,7 @@
   import PageLayout from '../components/layout/PageLayout.svelte';
 
   $effect(() => {
-    if (!auth.isAuthenticated) push('/login');
+    if (!auth.isAuthenticated) push('/');
   });
 
   $effect(() => {
@@ -87,20 +87,20 @@
 </script>
 
 <PageLayout>
-  <!-- Section header -->
-  <div class="pb-6 mb-8 border-b border-[var(--color-border)] flex items-end justify-between gap-4">
+  <!-- Header -->
+  <div class="flex items-end justify-between gap-4 mb-8">
     <div>
-      <h1 class="text-3xl sm:text-4xl font-black tracking-tight">Productos</h1>
-      <p class="text-xs font-bold uppercase tracking-widest text-[var(--color-muted-foreground)] mt-1.5">
-        Catálogo iPear
-      </p>
+      <h1 class="text-4xl sm:text-5xl font-semibold tracking-tight" style="letter-spacing: -0.04em;">
+        Tienda
+      </h1>
+      <p class="text-sm mt-1.5" style="color: var(--color-muted-foreground);">Catálogo iPear</p>
     </div>
     {#if auth.isAdmin}
       <Button onclick={openCreate}>+ Nuevo producto</Button>
     {/if}
   </div>
 
-  <div class="mb-6">
+  <div class="mb-8">
     <ProductFilters />
   </div>
 

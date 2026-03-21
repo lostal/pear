@@ -9,8 +9,8 @@
 
   const variants: Record<string, string> = {
     default: 'bg-[var(--color-secondary)] text-[var(--color-secondary-foreground)]',
-    success: 'bg-[var(--color-pear-muted)] text-[var(--color-pear)]',
-    destructive: 'bg-red-100 text-[var(--color-destructive)] dark:bg-red-900/20',
+    success: 'bg-blue-50 text-[var(--color-apple-blue)]',
+    destructive: 'bg-red-100 text-[var(--color-destructive)]',
     muted: 'bg-[var(--color-muted)] text-[var(--color-muted-foreground)]',
   };
 </script>

@@ -10,7 +10,7 @@
 </script>
 
 <svg
-  class="animate-spin {sizes[size]} text-[var(--color-pear)] {klass}"
+  class="animate-spin {sizes[size]} text-[var(--color-apple-blue)] {klass}"
   viewBox="0 0 24 24"
   fill="none"
   aria-label="Cargando"

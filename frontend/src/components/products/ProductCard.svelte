@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { Product } from '../../types/index.js';
   import { auth } from '../../stores/auth.svelte.js';
+  import { push } from 'svelte-spa-router';
 
   interface Props {
     product: Product;
@@ -11,47 +12,85 @@
 
   let { product, onEdit, onDelete, onView }: Props = $props();
 
+  const GRADIENTS = [
+    'linear-gradient(135deg, #e8f4fd 0%, #bee3f8 100%)',
+    'linear-gradient(135deg, #f0e8fd 0%, #e9d8fd 100%)',
+    'linear-gradient(135deg, #e8fdf0 0%, #c6f6d5 100%)',
+    'linear-gradient(135deg, #fdf3e8 0%, #fde8c8 100%)',
+    'linear-gradient(135deg, #fde8f4 0%, #fed7e2 100%)',
+    'linear-gradient(135deg, #fdfbe8 0%, #fef9c3 100%)',
+  ];
+
+  const gradient = $derived(GRADIENTS[product.nombre.charCodeAt(0) % 6]);
+
   function formatPrice(price: number) {
     return new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(price);
   }
+
+  function handleClick() {
+    if (onView) {
+      onView(product);
+    } else {
+      push(`/products/${product._id}`);
+    }
+  }
 </script>
 
-<article class="group relative -mx-4 px-4 py-5 sm:py-6 rounded-2xl hover:bg-[var(--color-accent)] transition-all duration-300">
-  <!-- Clickable overlay -->
-  <!-- svelte-ignore a11y_interactive_supports_focus -->
+<article
+  class="group relative bg-white rounded-2xl overflow-hidden cursor-pointer"
+  style="opacity:0; box-shadow: 0 2px 8px rgba(0,0,0,0.06); transition: transform 0.2s ease, box-shadow 0.2s ease;"
+  onmouseenter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'translateY(-4px)'; (e.currentTarget as HTMLElement).style.boxShadow = '0 8px 24px rgba(0,0,0,0.12)'; }}
+  onmouseleave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; (e.currentTarget as HTMLElement).style.boxShadow = '0 2px 8px rgba(0,0,0,0.06)'; }}
+>
+  <!-- Image zone: aspect-square gradient or real image -->
   <!-- svelte-ignore a11y_click_events_have_key_events -->
+  <!-- svelte-ignore a11y_no_static_element_interactions -->
   <div
-    role="button"
-    onclick={() => onView?.(product)}
-    class="absolute inset-0 z-10 cursor-pointer rounded-2xl"
-  ></div>
+    class="aspect-square flex items-center justify-center text-5xl"
+    style="background: {gradient};"
+    onclick={handleClick}
+  >
+    {#if product.imagen}
+      <img
+        src="/api/uploads/{product.imagen}"
+        alt={product.nombre}
+        class="w-full h-full object-cover"
+      />
+    {:else}
+      🍐
+    {/if}
+  </div>
 
-  <div class="flex items-start justify-between gap-6">
-    <!-- Left: name + admin actions -->
-    <div class="flex-1 min-w-0">
-      <h2 class="text-xl sm:text-2xl font-black tracking-tight leading-tight text-[var(--color-foreground)] group-hover:text-[var(--color-primary)] transition-colors">
+  <!-- Info zone -->
+  <div class="p-4">
+    <!-- svelte-ignore a11y_click_events_have_key_events -->
+    <!-- svelte-ignore a11y_no_static_element_interactions -->
+    <div onclick={handleClick}>
+      <h2 class="font-medium text-sm leading-snug mb-1" style="color: var(--color-foreground);">
         {product.nombre}
       </h2>
-      {#if auth.isAdmin}
-        <div class="mt-2.5 flex items-center gap-5 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-          <button
-            onclick={(e) => { e.stopPropagation(); onEdit?.(product); }}
-            class="relative z-20 text-xs font-bold uppercase tracking-widest text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)] transition-colors cursor-pointer"
-          >
-            Editar
-          </button>
-          <button
-            onclick={(e) => { e.stopPropagation(); onDelete?.(product); }}
-            class="relative z-20 text-xs font-bold uppercase tracking-widest text-[var(--color-muted-foreground)] hover:text-[var(--color-destructive)] transition-colors cursor-pointer"
-          >
-            Eliminar
-          </button>
-        </div>
-      {/if}
+      <p class="text-sm font-medium" style="color: var(--color-muted-foreground);">
+        {formatPrice(product.precio)}
+      </p>
     </div>
-    <!-- Right: price in large serif -->
-    <span class="font-serif text-3xl sm:text-4xl text-[var(--color-foreground)] flex-shrink-0 tabular-nums">
-      {formatPrice(product.precio)}
-    </span>
+
+    {#if auth.isAdmin}
+      <div class="mt-3 flex gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+        <button
+          onclick={(e) => { e.stopPropagation(); onEdit?.(product); }}
+          class="text-xs transition-colors cursor-pointer"
+          style="color: var(--color-apple-blue);"
+        >
+          Editar
+        </button>
+        <button
+          onclick={(e) => { e.stopPropagation(); onDelete?.(product); }}
+          class="text-xs transition-colors cursor-pointer"
+          style="color: var(--color-destructive);"
+        >
+          Eliminar
+        </button>
+      </div>
+    {/if}
   </div>
 </article>

@@ -22,25 +22,40 @@
   }: Props = $props();
 
   const base =
-    'inline-flex items-center justify-center font-medium rounded-md transition-all duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 disabled:pointer-events-none disabled:opacity-50 cursor-pointer';
+    'inline-flex items-center justify-center font-medium transition-all duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 disabled:pointer-events-none disabled:opacity-50 cursor-pointer';
 
   const variantMap: Record<string, string> = {
-    primary: 'bg-[var(--color-primary)] text-[var(--color-primary-foreground)] hover:opacity-80',
-    secondary: 'bg-[var(--color-secondary)] text-[var(--color-secondary-foreground)] border border-[var(--color-border)] hover:bg-[var(--color-accent)] uppercase tracking-widest',
-    destructive: 'bg-[var(--color-destructive)] text-[var(--color-destructive-foreground)] hover:opacity-80',
-    ghost: 'bg-transparent text-[var(--color-foreground)] hover:bg-[var(--color-accent)] uppercase tracking-widest',
+    primary: 'text-white',
+    secondary: 'border hover:opacity-80',
+    destructive: 'text-white',
+    ghost: 'hover:opacity-80',
   };
 
   const sizeMap: Record<string, string> = {
-    sm: 'text-xs px-3 py-1.5 gap-1.5',
-    md: 'text-sm px-4 py-2 gap-2',
-    lg: 'text-base px-5 py-2.5 gap-2',
+    sm: 'text-xs px-3 py-1.5 gap-1.5 rounded-full',
+    md: 'text-sm px-5 py-2 gap-2 rounded-full',
+    lg: 'text-base px-6 py-2.5 gap-2 rounded-full',
+  };
+
+  const styleMap: Record<string, string> = {
+    primary: 'background-color: var(--color-apple-blue); color: white;',
+    secondary: 'background-color: white; color: var(--color-foreground); border-color: var(--color-border);',
+    destructive: 'background-color: var(--color-destructive); color: white;',
+    ghost: 'background-color: transparent; color: var(--color-foreground);',
   };
 
   const classes = $derived(`${base} ${variantMap[variant]} ${sizeMap[size]} ${klass}`);
 </script>
 
-<button {type} class={classes} disabled={disabled || loading} {onclick}>
+<button
+  {type}
+  class={classes}
+  style={styleMap[variant]}
+  disabled={disabled || loading}
+  {onclick}
+  onmouseenter={(e) => { if (variant === 'primary') (e.currentTarget as HTMLElement).style.backgroundColor = 'var(--color-apple-blue-hover)'; }}
+  onmouseleave={(e) => { if (variant === 'primary') (e.currentTarget as HTMLElement).style.backgroundColor = 'var(--color-apple-blue)'; }}
+>
   {#if loading}
     <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
       <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />

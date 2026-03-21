@@ -2,11 +2,13 @@
   import Skeleton from '../ui/Skeleton.svelte';
 </script>
 
-<div class="px-4 py-5 sm:py-6 rounded-2xl">
-  <div class="flex items-start justify-between gap-6">
-    <div class="flex-1">
-      <Skeleton class="h-7 w-2/3 mb-2" />
-    </div>
-    <Skeleton class="h-9 w-24 flex-shrink-0" />
+<div class="bg-white rounded-2xl overflow-hidden" style="box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
+  <!-- Aspect-square placeholder -->
+  <div class="aspect-square">
+    <Skeleton class="w-full h-full rounded-none" />
+  </div>
+  <div class="p-4">
+    <Skeleton class="h-4 w-3/4 mb-2" />
+    <Skeleton class="h-3 w-1/3" />
   </div>
 </div>

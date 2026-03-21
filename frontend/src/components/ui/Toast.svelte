@@ -16,29 +16,31 @@
   };
 
   const colors: Record<string, string> = {
-    success: 'border-l-[var(--color-pear)] bg-[var(--color-pear-muted)]',
-    error: 'border-l-[var(--color-destructive)] bg-red-50 dark:bg-red-900/10',
-    info: 'border-l-blue-500 bg-blue-50 dark:bg-blue-900/10',
-    warning: 'border-l-amber-500 bg-amber-50 dark:bg-amber-900/10',
+    success: 'border-l-[var(--color-apple-blue)] bg-blue-50',
+    error: 'border-l-[var(--color-destructive)] bg-red-50',
+    info: 'border-l-blue-500 bg-blue-50',
+    warning: 'border-l-amber-500 bg-amber-50',
   };
 
   const iconColors: Record<string, string> = {
-    success: 'text-[var(--color-pear)]',
-    error: 'text-[var(--color-destructive)]',
-    info: 'text-blue-600',
-    warning: 'text-amber-600',
+    success: 'color: var(--color-apple-blue);',
+    error: 'color: var(--color-destructive);',
+    info: 'color: #3b82f6;',
+    warning: 'color: #f59e0b;',
   };
 </script>
 
 <div
-  class="flex items-start gap-3 px-4 py-3 rounded-md border-l-4 shadow-md min-w-[280px] max-w-sm {colors[item.type]} bg-[var(--color-card)]"
+  class="flex items-start gap-3 px-4 py-3 rounded-2xl border-l-4 min-w-[280px] max-w-sm bg-white {colors[item.type]}"
+  style="box-shadow: 0 4px 16px rgba(0,0,0,0.1);"
   role="alert"
 >
-  <span class="font-bold text-sm mt-0.5 {iconColors[item.type]}">{icons[item.type]}</span>
-  <p class="flex-1 text-sm text-[var(--color-foreground)]">{item.message}</p>
+  <span class="font-semibold text-sm mt-0.5" style={iconColors[item.type]}>{icons[item.type]}</span>
+  <p class="flex-1 text-sm" style="color: var(--color-foreground);">{item.message}</p>
   <button
     onclick={() => toast.remove(item.id)}
-    class="text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)] transition-colors text-xs"
+    class="transition-colors text-xs cursor-pointer"
+    style="color: var(--color-muted-foreground);"
     aria-label="Cerrar"
   >✕</button>
 </div>
