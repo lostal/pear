@@ -31,18 +31,18 @@
 </script>
 
 <div
-  class="flex items-start gap-3 px-4 py-3 rounded-lg border-l-4 min-w-[280px] max-w-sm border"
+  class="flex items-start gap-3 px-4 py-3 rounded-lg border-l-4 min-w-70 max-w-sm border"
   style="background: var(--color-card); border-color: var(--color-border); border-left-color: {borderColors[item.type]}; box-shadow: 0 4px 16px rgba(0,0,0,0.08);"
   role="alert"
 >
   <span
-    class="font-black text-xs mt-0.5 w-4 h-4 flex items-center justify-center flex-shrink-0"
+    class="font-black text-xs mt-0.5 w-4 h-4 flex items-center justify-center shrink-0"
     style="color: {iconColors[item.type]};"
   >{icons[item.type]}</span>
   <p class="flex-1 text-sm" style="color: var(--color-foreground);">{item.message}</p>
   <button
     onclick={() => toast.remove(item.id)}
-    class="transition-opacity text-xs cursor-pointer hover:opacity-100 opacity-50 flex-shrink-0"
+    class="transition-opacity text-xs cursor-pointer hover:opacity-100 opacity-50 shrink-0"
     style="color: var(--color-foreground);"
     aria-label="Cerrar"
   >✕</button>

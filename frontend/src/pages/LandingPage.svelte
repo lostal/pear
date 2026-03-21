@@ -1,27 +1,25 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { push } from 'svelte-spa-router';
-  import { animate, inView, stagger } from 'motion';
+  import { animate, inView } from 'motion';
+  import { auth } from '../stores/auth.svelte.js';
 
-  let heroEyebrow: HTMLElement | undefined = $state();
-  let heroHeadline: HTMLElement | undefined = $state();
-  let heroSub: HTMLElement | undefined = $state();
-  let heroButtons: HTMLElement | undefined = $state();
-  let featuresSection: HTMLElement | undefined = $state();
+  let heroHeight = $state('100svh');
+  let heroContent: HTMLElement | undefined = $state();
   let showcaseA: HTMLElement | undefined = $state();
   let showcaseB: HTMLElement | undefined = $state();
   let ctaSection: HTMLElement | undefined = $state();
 
   onMount(() => {
-    if (heroEyebrow) animate(heroEyebrow, { opacity: [0, 1], y: [20, 0] }, { duration: 0.5 });
-    if (heroHeadline) animate(heroHeadline, { opacity: [0, 1], y: [30, 0] }, { duration: 0.6, delay: 0.1 });
-    if (heroSub) animate(heroSub, { opacity: [0, 1], y: [20, 0] }, { duration: 0.5, delay: 0.25 });
-    if (heroButtons) animate(heroButtons, { opacity: [0, 1], y: [20, 0] }, { duration: 0.5, delay: 0.4 });
+    const navbar = document.getElementById('site-header');
+    if (navbar) {
+      heroHeight = `calc(100svh - ${navbar.offsetHeight}px)`;
+    }
 
-    if (featuresSection) {
-      inView(featuresSection, () => {
-        const cols = featuresSection!.querySelectorAll('.feature-col');
-        animate(cols, { opacity: [0, 1], y: [30, 0] }, { delay: stagger(0.12), duration: 0.5 });
+    if (heroContent) {
+      const children = heroContent.querySelectorAll('.hero-child');
+      children.forEach((el, i) => {
+        animate(el, { opacity: [0, 1], y: [20, 0] }, { duration: 0.5, delay: i * 0.12 });
       });
     }
 
@@ -46,7 +44,7 @@
     if (ctaSection) {
       inView(ctaSection, () => {
         const children = ctaSection!.querySelectorAll('.cta-child');
-        animate(children, { opacity: [0, 1], y: [30, 0] }, { delay: stagger(0.1), duration: 0.5 });
+        animate(children, { opacity: [0, 1], y: [30, 0] }, { delay: 0.1, duration: 0.5 });
       });
     }
   });
@@ -54,83 +52,62 @@
 
 <!-- S1: Hero -->
 <section
-  class="min-h-screen flex flex-col items-center justify-center text-center px-6"
-  style="background-color: var(--color-background);"
+  class="flex flex-col items-center justify-center text-center px-6 relative overflow-hidden"
+  style="height: {heroHeight}; background-color: var(--color-background);"
 >
-  <p
-    bind:this={heroEyebrow}
-    class="text-xs font-medium mb-6 tracking-widest uppercase"
-    style="opacity:0; color: var(--color-muted-foreground);"
-  >
-    Nuevo · Primavera 2026
-  </p>
+  <!-- Collage de fondo -->
+  <img
+    src="/collage.png"
+    alt=""
+    aria-hidden="true"
+    class="absolute inset-0 w-full h-full object-cover object-center select-none pointer-events-none"
+    style="opacity: 0.4;"
+  />
+  <!-- Overlay gradiente para legibilidad del texto y transición perfecta al fondo -->
+  <div
+    class="absolute inset-0 pointer-events-none"
+    style="background: linear-gradient(to bottom, rgba(252,252,249,0.05) 0%, rgba(252,252,249,0.65) 45%, rgba(252,252,249,0.95) 80%, #fcfcf9 100%);"
+  ></div>
 
-  <h1
-    bind:this={heroHeadline}
-    class="font-black mb-6 max-w-4xl"
-    style="opacity:0; font-size: clamp(3rem, 8vw, 6rem); letter-spacing: -0.04em; line-height: 1.05; color: var(--color-foreground);"
-  >
-    El futuro de la pera.
-  </h1>
-
-  <p
-    bind:this={heroSub}
-    class="text-lg mb-10 max-w-md"
-    style="opacity:0; color: var(--color-muted-foreground); line-height: 1.6;"
-  >
-    Pear. Redefiniendo lo que significa morder una pera desde 2026.
-  </p>
-
-  <div bind:this={heroButtons} class="flex flex-wrap gap-3 justify-center" style="opacity:0;">
-    <button
-      class="inline-flex items-center justify-center font-medium text-sm px-6 py-2.5 rounded-md transition-opacity hover:opacity-90 cursor-pointer"
-      style="background: var(--color-primary); color: var(--color-primary-foreground);"
-      onclick={() => push('/products')}
+  <!-- Contenido -->
+  <div bind:this={heroContent} class="relative z-10 flex flex-col items-center">
+    <h1
+      class="hero-child mb-4 max-w-4xl"
+      style="opacity:0; font-family: var(--font-serif); font-style: italic; font-weight: 400; font-size: clamp(3rem, 8vw, 6rem); line-height: 1.05; letter-spacing: -0.01em; color: var(--color-foreground);"
     >
-      Descubrir
-    </button>
-    <button
-      class="inline-flex items-center justify-center font-medium text-sm px-6 py-2.5 rounded-md border transition-colors hover:bg-accent cursor-pointer"
-      style="background: transparent; color: var(--color-foreground); border-color: var(--color-border);"
-      onclick={() => push('/login')}
-    >
-      Iniciar sesión
-    </button>
-  </div>
-</section>
+      Pear.
+    </h1>
 
-<!-- S2: 3 Features -->
-<section
-  bind:this={featuresSection}
-  class="py-24 px-6 border-t"
-  style="background: var(--color-card); border-color: var(--color-border);"
->
-  <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
-    <div class="feature-col" style="opacity:0;">
-      <span class="block font-black mb-5 select-none" style="font-size: 2.5rem; line-height: 1; color: var(--color-border);">01</span>
-      <h3 class="text-lg font-black mb-3">Diseño puro</h3>
-      <p class="text-sm leading-relaxed" style="color: var(--color-muted-foreground);">
-        Cada curva, cada detalle, pensado para que tu mano lo reconozca antes que tu mente.
-      </p>
-    </div>
-    <div class="feature-col" style="opacity:0;">
-      <span class="block font-black mb-5 select-none" style="font-size: 2.5rem; line-height: 1; color: var(--color-border);">02</span>
-      <h3 class="text-lg font-black mb-3">Velocidad extrema</h3>
-      <p class="text-sm leading-relaxed" style="color: var(--color-muted-foreground);">
-        El chip Pear A1 procesa 47 mordiscos por segundo. Nunca habías comido tan rápido.
-      </p>
-    </div>
-    <div class="feature-col" style="opacity:0;">
-      <span class="block font-black mb-5 select-none" style="font-size: 2.5rem; line-height: 1; color: var(--color-border);">03</span>
-      <h3 class="text-lg font-black mb-3">Privacidad total</h3>
-      <p class="text-sm leading-relaxed" style="color: var(--color-muted-foreground);">
-        Tus datos de masticación son tuyos. Fin del comunicado.
-      </p>
+    <p
+      class="hero-child text-lg mb-10 max-w-md"
+      style="opacity:0; color: var(--color-muted-foreground); line-height: 1.6;"
+    >
+      Un futuro de la pera.
+    </p>
+
+    <div class="hero-child" style="opacity:0;">
+      {#if auth.isAuthenticated}
+        <button
+          class="inline-flex items-center justify-center font-medium text-sm px-6 py-2.5 rounded-md transition-opacity hover:opacity-90 cursor-pointer"
+          style="background: var(--color-primary); color: var(--color-primary-foreground);"
+          onclick={() => push('/products')}
+        >
+          Descubrir
+        </button>
+      {:else}
+        <button
+          class="inline-flex items-center justify-center font-medium text-sm px-6 py-2.5 rounded-md transition-opacity hover:opacity-90 cursor-pointer"
+          style="background: var(--color-primary); color: var(--color-primary-foreground);"
+          onclick={() => push('/login')}
+        >
+          Iniciar sesión
+        </button>
+      {/if}
     </div>
   </div>
 </section>
 
-<!-- S3: Showcase A — texto izquierda, forma derecha -->
+<!-- S3: iPear — texto izquierda, imagen derecha -->
 <section
   bind:this={showcaseA}
   class="py-24 px-6"
@@ -138,27 +115,24 @@
 >
   <div class="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
     <div class="showcase-text" style="opacity:0;">
-      <p class="text-xs font-medium mb-3 tracking-widest uppercase" style="color: var(--color-muted-foreground);">Diseño</p>
+      <p class="text-xs font-medium mb-3 tracking-widest uppercase" style="color: var(--color-muted-foreground);">iPear</p>
       <h2 class="text-3xl sm:text-4xl font-black mb-5" style="line-height: 1.1;">
-        Una forma que cambia todo.
+        El teléfono que muerde diferente.
       </h2>
       <p class="leading-relaxed" style="color: var(--color-muted-foreground);">
-        Inspirado en la naturaleza. Perfeccionado por ingenieros que claramente tenían demasiado tiempo libre.
+        Diseñado desde cero para que cada interacción se sienta como hincarle el diente a algo que de verdad vale la pena.
       </p>
     </div>
     <div
-      class="showcase-img aspect-square rounded-2xl flex items-center justify-center overflow-hidden"
+      class="showcase-img aspect-square rounded-2xl overflow-hidden"
       style="opacity:0; background: var(--color-secondary);"
     >
-      <span
-        class="font-black select-none"
-        style="font-size: clamp(6rem, 15vw, 10rem); line-height: 1; color: var(--color-border);"
-      >P</span>
+      <img src="/ipear.png" alt="iPear" class="w-full h-full object-contain" />
     </div>
   </div>
 </section>
 
-<!-- S4: Showcase B — forma izquierda, texto derecha -->
+<!-- S4: PearBook — imagen izquierda, texto derecha -->
 <section
   bind:this={showcaseB}
   class="py-24 px-6 border-t"
@@ -166,21 +140,18 @@
 >
   <div class="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
     <div
-      class="showcase-img aspect-square rounded-2xl flex items-center justify-center overflow-hidden order-2 lg:order-1"
-      style="opacity:0; background: var(--color-accent);"
+      class="showcase-img aspect-square rounded-2xl overflow-hidden order-2 lg:order-1"
+      style="opacity:0; background: var(--color-secondary);"
     >
-      <span
-        class="font-black select-none"
-        style="font-size: clamp(6rem, 15vw, 10rem); line-height: 1; color: var(--color-border);"
-      >∞</span>
+      <img src="/pearbook.png" alt="PearBook" class="w-full h-full object-contain" />
     </div>
     <div class="showcase-text order-1 lg:order-2" style="opacity:0;">
-      <p class="text-xs font-medium mb-3 tracking-widest uppercase" style="color: var(--color-muted-foreground);">Rendimiento</p>
+      <p class="text-xs font-medium mb-3 tracking-widest uppercase" style="color: var(--color-muted-foreground);">PearBook</p>
       <h2 class="text-3xl sm:text-4xl font-black mb-5" style="line-height: 1.1;">
-        Fluye. Sin fricciones.
+        Ultra ligero. Ultra pera.
       </h2>
       <p class="leading-relaxed" style="color: var(--color-muted-foreground);">
-        La experiencia Pear es tan suave que olvidarás que estás comiendo fruta. Hasta que recuerdes el precio.
+        Tan fino que lo perderás encima de la mesa. Tan rápido que encontrarás la excusa para comprarte otro.
       </p>
     </div>
   </div>

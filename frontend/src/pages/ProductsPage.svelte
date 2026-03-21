@@ -20,11 +20,7 @@
   import PageLayout from '../components/layout/PageLayout.svelte';
 
   $effect(() => {
-    if (!auth.isAuthenticated) push('/');
-  });
-
-  $effect(() => {
-    if (auth.isAuthenticated) loadProducts();
+    loadProducts();
   });
 
   async function loadProducts() {

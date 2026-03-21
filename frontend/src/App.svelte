@@ -4,6 +4,7 @@
   import { auth } from './stores/auth.svelte.js';
   import Navbar from './components/layout/Navbar.svelte';
   import ToastStack from './components/ToastStack.svelte';
+  import SearchDialog from './components/search/SearchDialog.svelte';
   import LandingPage from './pages/LandingPage.svelte';
   import LoginPage from './pages/LoginPage.svelte';
   import ProductsPage from './pages/ProductsPage.svelte';
@@ -12,10 +13,10 @@
   import AdminUsersPage from './pages/AdminUsersPage.svelte';
   import NotFoundPage from './pages/NotFoundPage.svelte';
 
-  const publicRoutes = ['/', '/login'];
+  const protectedRoutes = ['/profile', '/admin/users'];
 
   $effect(() => {
-    if (!auth.isAuthenticated && !publicRoutes.includes(router.location)) {
+    if (!auth.isAuthenticated && protectedRoutes.some(r => router.location.startsWith(r))) {
       push('/');
     }
   });
@@ -23,8 +24,8 @@
   const routes = {
     '/': LandingPage,
     '/login': LoginPage,
-    '/products': wrap({ component: ProductsPage }),
-    '/products/:id': wrap({ component: ProductDetailPage }),
+    '/products': ProductsPage,
+    '/products/:id': ProductDetailPage,
     '/profile': wrap({ component: ProfilePage }),
     '/admin/users': wrap({ component: AdminUsersPage }),
     '*': NotFoundPage,
@@ -38,3 +39,4 @@
 </main>
 
 <ToastStack />
+<SearchDialog />

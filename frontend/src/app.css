@@ -1,5 +1,21 @@
 @import 'tailwindcss';
 
+/* Typography: Instrument Serif */
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url('@fontsource/instrument-serif/files/instrument-serif-latin-400-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: italic;
+  font-display: swap;
+  font-weight: 400;
+  src: url('@fontsource/instrument-serif/files/instrument-serif-latin-400-italic.woff2') format('woff2');
+}
+
 /* Typography: IBM Plex Sans */
 @font-face {
   font-family: 'IBM Plex Sans';
@@ -47,6 +63,7 @@
   --color-ring: #2a2a2d;
 
   --font-sans: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-serif: 'Instrument Serif', ui-serif, Georgia, serif;
 
   --radius-lg: 0.75rem;
   --radius-md: calc(0.75rem - 2px);

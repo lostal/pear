@@ -18,7 +18,6 @@
   let error = $state('');
 
   $effect(() => {
-    if (!auth.isAuthenticated) { push('/'); return; }
     if (params.id) loadProduct(params.id);
   });
 
