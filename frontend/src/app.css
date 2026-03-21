@@ -1,0 +1,152 @@
+@import 'tailwindcss';
+@import '@fontsource/ibm-plex-sans/400.css';
+@import '@fontsource/ibm-plex-sans/700.css';
+
+@theme {
+  --font-sans: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
+
+  /* Light palette (del blog) */
+  --color-background: #fcfcf9;
+  --color-foreground: #1f2121;
+  --color-card: #ffffff;
+  --color-card-foreground: #1f2121;
+  --color-primary: #2a2a2d;
+  --color-primary-foreground: #fcfcf9;
+  --color-secondary: #f5f5f5;
+  --color-secondary-foreground: #2a2a2d;
+  --color-muted: #f5f5f5;
+  --color-muted-foreground: #626c71;
+  --color-accent: #e8e8e8;
+  --color-accent-foreground: #1f2121;
+  --color-border: #d8d8d8;
+  --color-input: #f0f0f0;
+  --color-ring: #2a2a2d;
+  --color-destructive: #c0392b;
+  --color-destructive-foreground: #ffffff;
+
+  /* Marca: verde pera */
+  --color-pear: #7a9e52;
+  --color-pear-foreground: #ffffff;
+  --color-pear-muted: #e8f0df;
+
+  --radius-lg: 0.75rem;
+  --radius-md: calc(0.75rem - 2px);
+  --radius-sm: calc(0.75rem - 4px);
+}
+
+@layer base {
+  .dark {
+    --color-background: #1a1a1a;
+    --color-foreground: #f5f5f5;
+    --color-card: #212121;
+    --color-card-foreground: #f5f5f5;
+    --color-primary: #e0e0e0;
+    --color-primary-foreground: #212121;
+    --color-secondary: #2a2a2a;
+    --color-secondary-foreground: #f5f5f5;
+    --color-muted: #2a2a2a;
+    --color-muted-foreground: rgba(167, 169, 169, 0.75);
+    --color-accent: #3a3a3a;
+    --color-accent-foreground: #f5f5f5;
+    --color-border: #404040;
+    --color-input: #2d2d2d;
+    --color-ring: #e0e0e0;
+    --color-destructive: #e74c3c;
+    --color-destructive-foreground: #ffffff;
+    --color-pear-muted: #2a3d1a;
+  }
+
+  html {
+    color-scheme: light;
+    font-size: clamp(15px, 0.5vw + 13px, 18px);
+  }
+
+  html.dark {
+    color-scheme: dark;
+  }
+
+  * {
+    border-color: var(--color-border);
+    box-sizing: border-box;
+  }
+
+  *::selection {
+    background-color: var(--color-pear) !important;
+    color: #fff !important;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    line-height: 1.2;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  a {
+    transition: color 0.2s ease;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  input, textarea, select {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    border-color: var(--color-border);
+  }
+
+  input::placeholder {
+    color: var(--color-muted-foreground);
+    opacity: 0.7;
+  }
+}
+
+@layer utilities {
+  .text-muted {
+    color: var(--color-muted-foreground);
+  }
+  .bg-main {
+    background-color: var(--color-background);
+  }
+  .border-main {
+    border-color: var(--color-border);
+  }
+}
+
+/* View Transitions */
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.25s;
+  animation-timing-function: ease;
+}
+
+::view-transition-old(root) {
+  animation-name: fade-out;
+}
+
+::view-transition-new(root) {
+  animation-name: fade-in;
+}
+
+@keyframes fade-out {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
