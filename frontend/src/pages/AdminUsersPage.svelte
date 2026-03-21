@@ -7,6 +7,7 @@
   import UserRow from '../components/users/UserRow.svelte';
   import ConfirmDialog from '../components/ui/ConfirmDialog.svelte';
   import Spinner from '../components/ui/Spinner.svelte';
+  import PageLayout from '../components/layout/PageLayout.svelte';
 
   $effect(() => {
     if (!auth.isAuthenticated) push('/login');
@@ -60,22 +61,22 @@
   }
 </script>
 
-<div class="max-w-4xl mx-auto px-4 sm:px-6 py-8">
-  <div class="mb-6">
-    <h1 class="text-2xl font-black tracking-tight">Usuarios</h1>
-    <p class="text-sm text-[var(--color-muted-foreground)] mt-0.5">Gestión de cuentas</p>
+<PageLayout>
+  <div class="pb-6 mb-8 border-b border-[var(--color-border)]">
+    <h1 class="text-3xl sm:text-4xl font-black tracking-tight">Usuarios</h1>
+    <p class="text-xs font-bold uppercase tracking-widest text-[var(--color-muted-foreground)] mt-1.5">Gestión de cuentas</p>
   </div>
 
   {#if loading}
     <div class="flex justify-center py-20"><Spinner size="lg" /></div>
   {:else}
-    <div class="bg-[var(--color-card)] border border-[var(--color-border)] rounded-lg overflow-hidden">
+    <div class="overflow-hidden">
       <table class="w-full text-sm">
         <thead>
-          <tr class="border-b border-[var(--color-border)] bg-[var(--color-secondary)]">
-            <th class="text-left py-3 px-4 font-semibold">Usuario</th>
-            <th class="text-left py-3 px-4 font-semibold">Rol</th>
-            <th class="text-left py-3 px-4 font-semibold">Acciones</th>
+          <tr class="border-t border-b border-[var(--color-border)]">
+            <th class="text-left py-3 px-4 text-xs font-bold uppercase tracking-widest text-[var(--color-muted-foreground)]">Usuario</th>
+            <th class="text-left py-3 px-4 text-xs font-bold uppercase tracking-widest text-[var(--color-muted-foreground)]">Rol</th>
+            <th class="text-left py-3 px-4 text-xs font-bold uppercase tracking-widest text-[var(--color-muted-foreground)]">Acciones</th>
           </tr>
         </thead>
         <tbody>
@@ -94,7 +95,7 @@
       {/if}
     </div>
   {/if}
-</div>
+</PageLayout>
 
 <ConfirmDialog
   open={!!deleteTarget}

@@ -2,8 +2,24 @@
 @import '@fontsource/ibm-plex-sans/400.css';
 @import '@fontsource/ibm-plex-sans/700.css';
 
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url('@fontsource/instrument-serif/files/instrument-serif-latin-400-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: italic;
+  font-display: swap;
+  font-weight: 400;
+  src: url('@fontsource/instrument-serif/files/instrument-serif-latin-400-italic.woff2') format('woff2');
+}
+
 @theme {
   --font-sans: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-serif: 'Instrument Serif', ui-serif, Georgia, serif;
 
   /* Light palette (del blog) */
   --color-background: #fcfcf9;
@@ -25,9 +41,9 @@
   --color-destructive-foreground: #ffffff;
 
   /* Marca: verde pera */
-  --color-pear: #7a9e52;
+  --color-pear: #003932;
   --color-pear-foreground: #ffffff;
-  --color-pear-muted: #e8f0df;
+  --color-pear-muted: #ddeee9;
 
   --radius-lg: 0.75rem;
   --radius-md: calc(0.75rem - 2px);
@@ -53,7 +69,8 @@
     --color-ring: #e0e0e0;
     --color-destructive: #e74c3c;
     --color-destructive-foreground: #ffffff;
-    --color-pear-muted: #2a3d1a;
+    --color-pear: #3ecfad;
+    --color-pear-muted: #062e27;
   }
 
   html {
@@ -87,13 +104,13 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    line-height: 1.2;
-    font-weight: 700;
+    line-height: 1.1;
+    font-weight: 900;
     letter-spacing: -0.02em;
   }
 
   a {
-    transition: color 0.2s ease;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     text-decoration: none;
     color: inherit;
   }
@@ -149,4 +166,17 @@
 @keyframes fade-in {
   from { opacity: 0; }
   to   { opacity: 1; }
+}
+
+/* Navbar scroll shrink */
+#ipear-header.scrolled {
+  background-color: color-mix(in srgb, var(--color-background) 95%, transparent);
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+#ipear-header.scrolled .header-inner {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+#ipear-header.scrolled .logo-btn {
+  font-size: 1.125rem;
 }

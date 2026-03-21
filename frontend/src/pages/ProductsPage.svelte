@@ -17,6 +17,7 @@
   import ConfirmDialog from '../components/ui/ConfirmDialog.svelte';
   import Modal from '../components/ui/Modal.svelte';
   import Button from '../components/ui/Button.svelte';
+  import PageLayout from '../components/layout/PageLayout.svelte';
 
   $effect(() => {
     if (!auth.isAuthenticated) push('/login');
@@ -85,19 +86,17 @@
   }
 </script>
 
-<div class="max-w-6xl mx-auto px-4 sm:px-6 py-8">
-  <div class="flex items-center justify-between mb-6">
+<PageLayout>
+  <!-- Section header -->
+  <div class="pb-6 mb-8 border-b border-[var(--color-border)] flex items-end justify-between gap-4">
     <div>
-      <h1 class="text-2xl font-black tracking-tight">Productos</h1>
-      <p class="text-sm text-[var(--color-muted-foreground)] mt-0.5">Catálogo iPear</p>
+      <h1 class="text-3xl sm:text-4xl font-black tracking-tight">Productos</h1>
+      <p class="text-xs font-bold uppercase tracking-widest text-[var(--color-muted-foreground)] mt-1.5">
+        Catálogo iPear
+      </p>
     </div>
     {#if auth.isAdmin}
-      <Button onclick={openCreate}>
-        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
-        </svg>
-        Nuevo producto
-      </Button>
+      <Button onclick={openCreate}>+ Nuevo producto</Button>
     {/if}
   </div>
 
@@ -112,7 +111,7 @@
     onDelete={openDelete}
     onView={openView}
   />
-</div>
+</PageLayout>
 
 <ProductModal open={showView} product={viewProduct} onclose={() => (showView = false)} />
 

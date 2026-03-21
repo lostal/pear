@@ -3,7 +3,7 @@
   import { auth } from '../stores/auth.svelte.js';
   import { theme } from '../lib/theme.svelte.js';
   import Button from '../components/ui/Button.svelte';
-  import Badge from '../components/ui/Badge.svelte';
+  import PageLayout from '../components/layout/PageLayout.svelte';
 
   $effect(() => {
     if (!auth.isAuthenticated) push('/login');
@@ -22,26 +22,24 @@
   ];
 </script>
 
-<div class="max-w-2xl mx-auto px-4 sm:px-6 py-8">
-  <h1 class="text-2xl font-black tracking-tight mb-6">Perfil</h1>
-
+<PageLayout>
   {#if auth.user}
-    <div class="bg-[var(--color-card)] border border-[var(--color-border)] rounded-lg p-6 mb-4">
-      <div class="flex items-center gap-4 mb-4">
-        <div class="h-14 w-14 rounded-full bg-[var(--color-pear-muted)] flex items-center justify-center text-2xl font-black text-[var(--color-pear)]">
-          {auth.user.username[0].toUpperCase()}
-        </div>
-        <div>
-          <p class="font-bold text-xl">{auth.user.username}</p>
-        </div>
-        <Badge variant={auth.isAdmin ? 'success' : 'muted'} class="ml-auto">
+    <!-- Sección: info de usuario -->
+    <div class="pb-8 mb-8 border-b border-[var(--color-border)] flex items-center gap-5">
+      <div class="h-16 w-16 rounded-full bg-[var(--color-pear-muted)] flex items-center justify-center text-2xl font-black text-[var(--color-pear)]">
+        {auth.user.username[0].toUpperCase()}
+      </div>
+      <div>
+        <h2 class="text-2xl font-black tracking-tight">{auth.user.username}</h2>
+        <p class="text-xs font-bold uppercase tracking-widest text-[var(--color-muted-foreground)] mt-0.5">
           {auth.user.role}
-        </Badge>
+        </p>
       </div>
     </div>
 
-    <div class="bg-[var(--color-card)] border border-[var(--color-border)] rounded-lg p-6 mb-4">
-      <h2 class="font-semibold mb-4">Apariencia</h2>
+    <!-- Sección: apariencia -->
+    <div class="pb-8 mb-8 border-b border-[var(--color-border)]">
+      <h3 class="text-xs font-bold uppercase tracking-widest text-[var(--color-muted-foreground)] mb-4">Apariencia</h3>
       <div class="flex gap-2">
         {#each themeOptions as opt}
           <button
@@ -57,8 +55,9 @@
       </div>
     </div>
 
-    <Button variant="destructive" onclick={handleLogout} class="w-full">
+    <!-- Acción: cerrar sesión -->
+    <Button variant="destructive" onclick={handleLogout} class="w-full sm:w-auto">
       Cerrar sesión
     </Button>
   {/if}
-</div>
+</PageLayout>

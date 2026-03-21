@@ -25,15 +25,15 @@
     <!-- svelte-ignore a11y_click_events_have_key_events -->
     <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div
-      class="absolute inset-0 bg-black/50 backdrop-blur-sm"
+      class="absolute inset-0 bg-black/40 backdrop-blur-sm"
       onclick={onclose}
     ></div>
 
     <!-- Panel -->
-    <div class="relative z-10 w-full max-w-lg bg-[var(--color-card)] rounded-lg border border-[var(--color-border)] shadow-xl">
+    <div class="relative z-10 w-full max-w-lg bg-[var(--color-card)] rounded-2xl border border-[var(--color-border)] shadow-2xl">
       {#if title}
         <div class="flex items-center justify-between px-6 py-4 border-b border-[var(--color-border)]">
-          <h2 class="text-lg font-semibold">{title}</h2>
+          <h2 class="text-lg font-black">{title}</h2>
           <button
             onclick={onclose}
             class="text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)] transition-colors cursor-pointer"

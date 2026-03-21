@@ -26,13 +26,13 @@
 
   const variantMap: Record<string, string> = {
     primary: 'bg-[var(--color-primary)] text-[var(--color-primary-foreground)] hover:opacity-80',
-    secondary: 'bg-[var(--color-secondary)] text-[var(--color-secondary-foreground)] border border-[var(--color-border)] hover:bg-[var(--color-accent)]',
+    secondary: 'bg-[var(--color-secondary)] text-[var(--color-secondary-foreground)] border border-[var(--color-border)] hover:bg-[var(--color-accent)] uppercase tracking-widest',
     destructive: 'bg-[var(--color-destructive)] text-[var(--color-destructive-foreground)] hover:opacity-80',
-    ghost: 'bg-transparent text-[var(--color-foreground)] hover:bg-[var(--color-accent)]',
+    ghost: 'bg-transparent text-[var(--color-foreground)] hover:bg-[var(--color-accent)] uppercase tracking-widest',
   };
 
   const sizeMap: Record<string, string> = {
-    sm: 'text-sm px-3 py-1.5 gap-1.5',
+    sm: 'text-xs px-3 py-1.5 gap-1.5',
     md: 'text-sm px-4 py-2 gap-2',
     lg: 'text-base px-5 py-2.5 gap-2',
   };

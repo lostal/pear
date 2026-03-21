@@ -31,49 +31,51 @@
   }
 </script>
 
-<div class="min-h-screen flex items-center justify-center bg-[var(--color-background)] px-4">
-  <div class="w-full max-w-sm">
-    <!-- Logo -->
-    <div class="text-center mb-8">
-      <h1 class="text-4xl font-black tracking-tight">
-        <span class="text-[var(--color-pear)]">i</span>Pear
-      </h1>
-      <p class="text-[var(--color-muted-foreground)] text-sm mt-1">Inicia sesión para continuar</p>
-    </div>
-
-    <!-- Card -->
-    <div class="bg-[var(--color-card)] border border-[var(--color-border)] rounded-lg p-6 shadow-sm">
-      <form onsubmit={handleSubmit} class="flex flex-col gap-4">
-        <Input
-          bind:value={username}
-          label="Usuario"
-          placeholder="tu_usuario"
-          required
-          disabled={loading}
-        />
-        <Input
-          bind:value={password}
-          type="password"
-          label="Contraseña"
-          placeholder="••••••••"
-          required
-          disabled={loading}
-        />
-
-        {#if error}
-          <p class="text-sm text-[var(--color-destructive)] bg-red-50 dark:bg-red-900/10 px-3 py-2 rounded-md">
-            {error}
-          </p>
-        {/if}
-
-        <Button type="submit" {loading} disabled={loading} class="w-full mt-1">
-          Iniciar sesión
-        </Button>
-      </form>
-    </div>
-
-    <p class="text-center text-xs text-[var(--color-muted-foreground)] mt-6">
-      iPear · Parodia Conceptual
+<div class="min-h-screen flex flex-col items-center justify-center px-4">
+  <!-- Logo grande -->
+  <div class="mb-10 text-center">
+    <p class="text-6xl sm:text-7xl font-black tracking-tight">
+      <span class="font-serif italic text-[var(--color-pear)]">i</span>Pear
+    </p>
+    <p class="text-xs font-bold uppercase tracking-widest text-[var(--color-muted-foreground)] mt-3">
+      Inicia sesión para continuar
     </p>
   </div>
+
+  <!-- Card -->
+  <div class="w-full max-w-sm rounded-2xl border border-[var(--color-border)] bg-[var(--color-card)]/50 p-8 shadow-sm">
+    <form onsubmit={handleSubmit} class="flex flex-col gap-4">
+      <Input
+        bind:value={username}
+        label="Usuario"
+        placeholder="tu_usuario"
+        required
+        disabled={loading}
+        labelClass="text-xs font-bold uppercase tracking-widest"
+      />
+      <Input
+        bind:value={password}
+        type="password"
+        label="Contraseña"
+        placeholder="••••••••"
+        required
+        disabled={loading}
+        labelClass="text-xs font-bold uppercase tracking-widest"
+      />
+
+      {#if error}
+        <p class="text-sm text-[var(--color-destructive)] bg-red-50 dark:bg-red-900/10 px-3 py-2 rounded-md">
+          {error}
+        </p>
+      {/if}
+
+      <Button type="submit" {loading} disabled={loading} class="w-full mt-2">
+        Iniciar sesión
+      </Button>
+    </form>
+  </div>
+
+  <p class="text-xs font-bold uppercase tracking-widest text-[var(--color-muted-foreground)] opacity-50 mt-8">
+    iPear · Parodia Conceptual
+  </p>
 </div>

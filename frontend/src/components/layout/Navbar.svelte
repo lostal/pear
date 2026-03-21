@@ -4,6 +4,8 @@
   import { theme } from '../../lib/theme.svelte.js';
   import { withTransition } from '../../lib/transitions.js';
 
+  let container: HTMLElement | undefined = $state();
+
   function navigate(path: string) {
     withTransition(() => push(path));
   }
@@ -28,50 +30,63 @@
     if (path === '/products' && (loc === '/' || loc.startsWith('/products'))) return true;
     return loc.startsWith(path);
   }
+
+  $effect(() => {
+    function onScroll() {
+      container?.classList.toggle('scrolled', window.scrollY > 50);
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener('scroll', onScroll);
+  });
 </script>
 
-<nav class="sticky top-0 z-40 border-b border-[var(--color-border)] bg-[var(--color-background)]/95 backdrop-blur-sm">
-  <div class="max-w-6xl mx-auto px-4 sm:px-6 flex h-14 items-center gap-6">
+<header
+  id="ipear-header"
+  bind:this={container}
+  class="sticky top-0 z-40 backdrop-blur-md bg-[var(--color-background)]/80 border-b border-[var(--color-border)] transition-all duration-300"
+>
+  <div class="header-inner max-w-5xl mx-auto px-4 sm:px-6 flex items-center gap-6 py-4 sm:py-5 transition-all duration-300">
     <!-- Logo -->
     <button
       onclick={() => navigate('/products')}
-      class="flex items-center gap-1.5 font-black text-lg tracking-tight hover:opacity-70 transition-opacity cursor-pointer"
+      class="logo-btn flex items-center font-black text-xl sm:text-2xl tracking-normal hover:opacity-70 transition-opacity cursor-pointer"
     >
-      <span class="text-[var(--color-pear)]">i</span>Pear
+      <span class="font-serif italic text-[var(--color-pear)]">i</span>Pear
     </button>
 
     <!-- Nav links -->
-    <div class="flex items-center gap-1 flex-1">
+    <nav class="flex items-center gap-1 flex-1">
       {#each navLinks as link}
         {@const active = isActive(link.path)}
         <button
           onclick={() => navigate(link.path)}
-          class="px-3 py-1 text-sm rounded-md transition-colors cursor-pointer relative
+          class="px-3 py-1.5 text-xs font-bold uppercase tracking-widest rounded-md transition-colors cursor-pointer relative
             {active
-              ? 'text-[var(--color-foreground)] font-semibold'
-              : 'text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)]'}"
+              ? 'text-[var(--color-foreground)]'
+              : 'text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-accent)]'}"
         >
           {link.label}
           {#if active}
-            <span class="absolute bottom-0 left-0 right-0 h-0.5 bg-[var(--color-pear)] rounded-full"></span>
+            <span class="absolute bottom-0 left-2 right-2 h-[2px] bg-[var(--color-pear)] rounded-full"></span>
           {/if}
         </button>
       {/each}
-    </div>
+    </nav>
 
     <!-- Right side -->
-    <div class="flex items-center gap-3">
-      <span class="text-sm text-[var(--color-muted-foreground)] hidden sm:block">
+    <div class="flex items-center gap-2">
+      <span class="text-xs text-[var(--color-muted-foreground)] hidden sm:block">
         {auth.displayName}
         {#if auth.isAdmin}
-          <span class="ml-1 text-xs text-[var(--color-pear)] font-medium">(admin)</span>
+          <span class="ml-1 text-[var(--color-pear)] font-bold">(admin)</span>
         {/if}
       </span>
 
       <!-- Theme toggle -->
       <button
         onclick={toggleTheme}
-        class="p-1.5 rounded-md hover:bg-[var(--color-accent)] transition-colors text-[var(--color-muted-foreground)] cursor-pointer"
+        class="p-2 rounded-md hover:bg-[var(--color-accent)] transition-colors text-[var(--color-muted-foreground)] cursor-pointer"
         aria-label="Cambiar tema"
       >
         {#if theme.current === 'dark'}
@@ -87,10 +102,10 @@
 
       <button
         onclick={handleLogout}
-        class="text-sm text-[var(--color-muted-foreground)] hover:text-[var(--color-destructive)] transition-colors cursor-pointer"
+        class="text-xs font-bold uppercase tracking-widest text-[var(--color-muted-foreground)] hover:text-[var(--color-destructive)] transition-colors cursor-pointer px-2 py-1"
       >
         Salir
       </button>
     </div>
   </div>
-</nav>
+</header>

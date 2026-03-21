@@ -5,7 +5,7 @@
   import { fetchProduct } from '../services/products.service.js';
   import type { Product } from '../types/index.js';
   import Spinner from '../components/ui/Spinner.svelte';
-  import Button from '../components/ui/Button.svelte';
+  import PageLayout from '../components/layout/PageLayout.svelte';
 
   interface Props {
     params?: { id?: string };
@@ -40,10 +40,14 @@
   }
 </script>
 
-<div class="max-w-2xl mx-auto px-4 sm:px-6 py-8">
-  <Button variant="ghost" size="sm" onclick={() => push('/products')} class="mb-6">
+<PageLayout>
+  <!-- Volver -->
+  <button
+    onclick={() => push('/products')}
+    class="text-xs font-bold uppercase tracking-widest text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)] mb-12 flex items-center gap-2 transition-colors cursor-pointer"
+  >
     ← Volver
-  </Button>
+  </button>
 
   {#if loading}
     <div class="flex justify-center py-20"><Spinner size="lg" /></div>
@@ -52,17 +56,23 @@
       <p class="text-[var(--color-destructive)]">{error}</p>
     </div>
   {:else if product}
-    <div class="bg-[var(--color-card)] border border-[var(--color-border)] rounded-lg p-8">
-      <h1 class="text-3xl font-black tracking-tight mb-6">{product.nombre}</h1>
+    <!-- Nombre del producto: ENORME -->
+    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-tight mb-8">
+      {product.nombre}
+    </h1>
 
-      {#if product.imagen}
-        <img src="/api/uploads/{product.imagen}" alt={product.nombre} class="rounded-md max-h-64 object-contain mb-6" />
-      {/if}
+    {#if product.imagen}
+      <img
+        src="/api/uploads/{product.imagen}"
+        alt={product.nombre}
+        class="rounded-2xl w-full max-h-80 object-cover mb-12"
+      />
+    {/if}
 
-      <div class="py-6 border-t border-[var(--color-border)]">
-        <p class="text-sm text-[var(--color-muted-foreground)] mb-1">Precio</p>
-        <p class="text-4xl font-black">{formatPrice(product.precio)}</p>
-      </div>
+    <!-- Precio: serif gigante -->
+    <div class="border-t border-[var(--color-border)] pt-8">
+      <p class="text-xs font-bold uppercase tracking-widest text-[var(--color-muted-foreground)] mb-3">Precio</p>
+      <p class="font-serif text-5xl sm:text-6xl tabular-nums">{formatPrice(product.precio)}</p>
     </div>
   {/if}
-</div>
+</PageLayout>

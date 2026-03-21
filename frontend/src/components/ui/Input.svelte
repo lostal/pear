@@ -4,6 +4,7 @@
     type?: string;
     placeholder?: string;
     label?: string;
+    labelClass?: string;
     error?: string;
     disabled?: boolean;
     required?: boolean;
@@ -18,6 +19,7 @@
     type = 'text',
     placeholder = '',
     label = '',
+    labelClass = 'text-sm font-medium',
     error = '',
     disabled = false,
     required = false,
@@ -30,7 +32,7 @@
 
 <div class="flex flex-col gap-1 {klass}">
   {#if label}
-    <label for={id} class="text-sm font-medium text-[var(--color-foreground)]">
+    <label for={id} class="{labelClass} text-[var(--color-foreground)]">
       {label}{#if required}<span class="text-[var(--color-destructive)] ml-0.5">*</span>{/if}
     </label>
   {/if}

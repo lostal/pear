@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@fontsource/ibm-plex-sans": "^5.2.8",
+    "@fontsource/instrument-serif": "^5.2.8",
     "svelte-spa-router": "^5.0.0"
   }
 }

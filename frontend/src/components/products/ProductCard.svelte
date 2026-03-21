@@ -1,7 +1,6 @@
 <script lang="ts">
   import type { Product } from '../../types/index.js';
   import { auth } from '../../stores/auth.svelte.js';
-  import Button from '../ui/Button.svelte';
 
   interface Props {
     product: Product;
@@ -17,22 +16,42 @@
   }
 </script>
 
-<div class="flex flex-col bg-[var(--color-card)] border border-[var(--color-border)] rounded-lg p-4 gap-3 hover:shadow-md transition-shadow">
-  <button
+<article class="group relative -mx-4 px-4 py-5 sm:py-6 rounded-2xl hover:bg-[var(--color-accent)] transition-all duration-300">
+  <!-- Clickable overlay -->
+  <!-- svelte-ignore a11y_interactive_supports_focus -->
+  <!-- svelte-ignore a11y_click_events_have_key_events -->
+  <div
+    role="button"
     onclick={() => onView?.(product)}
-    class="text-left font-semibold leading-tight hover:text-[var(--color-pear)] transition-colors cursor-pointer"
-  >
-    {product.nombre}
-  </button>
+    class="absolute inset-0 z-10 cursor-pointer rounded-2xl"
+  ></div>
 
-  <div class="flex items-center justify-between mt-auto pt-2 border-t border-[var(--color-border)]">
-    <span class="font-bold text-lg">{formatPrice(product.precio)}</span>
-
-    {#if auth.isAdmin}
-      <div class="flex gap-2">
-        <Button size="sm" variant="secondary" onclick={() => onEdit?.(product)}>Editar</Button>
-        <Button size="sm" variant="destructive" onclick={() => onDelete?.(product)}>Borrar</Button>
-      </div>
-    {/if}
+  <div class="flex items-start justify-between gap-6">
+    <!-- Left: name + admin actions -->
+    <div class="flex-1 min-w-0">
+      <h2 class="text-xl sm:text-2xl font-black tracking-tight leading-tight text-[var(--color-foreground)] group-hover:text-[var(--color-primary)] transition-colors">
+        {product.nombre}
+      </h2>
+      {#if auth.isAdmin}
+        <div class="mt-2.5 flex items-center gap-5 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+          <button
+            onclick={(e) => { e.stopPropagation(); onEdit?.(product); }}
+            class="relative z-20 text-xs font-bold uppercase tracking-widest text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)] transition-colors cursor-pointer"
+          >
+            Editar
+          </button>
+          <button
+            onclick={(e) => { e.stopPropagation(); onDelete?.(product); }}
+            class="relative z-20 text-xs font-bold uppercase tracking-widest text-[var(--color-muted-foreground)] hover:text-[var(--color-destructive)] transition-colors cursor-pointer"
+          >
+            Eliminar
+          </button>
+        </div>
+      {/if}
+    </div>
+    <!-- Right: price in large serif -->
+    <span class="font-serif text-3xl sm:text-4xl text-[var(--color-foreground)] flex-shrink-0 tabular-nums">
+      {formatPrice(product.precio)}
+    </span>
   </div>
-</div>
+</article>
