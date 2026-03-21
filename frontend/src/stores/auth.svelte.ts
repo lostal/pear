@@ -17,7 +17,7 @@ function userFromToken(token: string): User | null {
 }
 
 function createAuth() {
-  const savedToken = localStorage.getItem('ipear_token');
+  const savedToken = localStorage.getItem('pear_token');
   // Intentar restaurar usuario desde el token guardado
   const restoredUser = savedToken ? userFromToken(savedToken) : null;
   // Si el token ha expirado, descartarlo
@@ -33,9 +33,9 @@ function createAuth() {
   function setToken(t: string | null) {
     token = t;
     if (t) {
-      localStorage.setItem('ipear_token', t);
+      localStorage.setItem('pear_token', t);
     } else {
-      localStorage.removeItem('ipear_token');
+      localStorage.removeItem('pear_token');
     }
   }
 
@@ -46,7 +46,7 @@ function createAuth() {
   function logout() {
     token = null;
     user = null;
-    localStorage.removeItem('ipear_token');
+    localStorage.removeItem('pear_token');
   }
 
   return {

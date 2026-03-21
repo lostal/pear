@@ -41,7 +41,7 @@
 </script>
 
 <header
-  id="ipear-header"
+  id="pear-header"
   bind:this={container}
   class="glass-nav sticky top-0 z-40 transition-all duration-300"
 >

@@ -87,6 +87,6 @@
   </div>
 
   <p class="text-xs mt-8" style="color: var(--color-muted-foreground); opacity: 0.5;">
-    iPear · Parodia Conceptual
+    Pear · Parodia Conceptual
   </p>
 </div>

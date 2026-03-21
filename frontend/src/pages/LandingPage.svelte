@@ -83,7 +83,7 @@
     class="text-xl mb-10 max-w-xl"
     style="opacity:0; color: var(--color-muted-foreground); line-height: 1.5;"
   >
-    iPear. Redefiniendo lo que significa morder una pera desde 2026.
+    Pear. Redefiniendo lo que significa morder una pera desde 2026.
   </p>
 
   <div bind:this={heroButtons} class="flex flex-wrap gap-3 justify-center" style="opacity:0;">
@@ -114,7 +114,7 @@
       <div class="text-4xl mb-5">⚡</div>
       <h3 class="text-xl font-semibold mb-3" style="letter-spacing: -0.02em;">Velocidad extrema</h3>
       <p class="text-sm leading-relaxed" style="color: var(--color-muted-foreground);">
-        El chip iPear A1 procesa 47 mordiscos por segundo. Nunca habías comido tan rápido.
+        El chip Pear A1 procesa 47 mordiscos por segundo. Nunca habías comido tan rápido.
       </p>
     </div>
     <div class="feature-col" style="opacity:0;">
@@ -171,7 +171,7 @@
         Fluye. Sin fricciones.
       </h2>
       <p class="leading-relaxed" style="color: var(--color-muted-foreground);">
-        La experiencia iPear es tan suave que olvidarás que estás comiendo fruta. Hasta que recuerdes el precio.
+        La experiencia Pear es tan suave que olvidarás que estás comiendo fruta. Hasta que recuerdes el precio.
       </p>
     </div>
   </div>
@@ -184,7 +184,7 @@
   style="background-color: #1d1d1f;"
 >
   <p class="cta-child text-sm font-medium mb-4" style="opacity:0; color: rgba(255,255,255,0.5);">
-    iPear Store
+    Pear Store
   </p>
   <h2
     class="cta-child text-3xl sm:text-5xl font-semibold mb-6 text-white"
@@ -203,6 +203,6 @@
     Empezar ahora
   </button>
   <p class="cta-child text-xs mt-12" style="opacity:0; color: rgba(255,255,255,0.3);">
-    iPear · Parodia Conceptual · PW2 2025–26
+    Pear · Parodia Conceptual · PW2 2025–26
   </p>
 </section>
