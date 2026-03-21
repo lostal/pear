@@ -32,15 +32,15 @@
 
     <!-- Panel -->
     <div
-      class="relative z-10 w-full max-w-lg bg-white rounded-3xl border overflow-hidden"
-      style="border-color: var(--color-border); box-shadow: 0 24px 60px rgba(0,0,0,0.15);"
+      class="relative z-10 w-full max-w-lg rounded-lg border overflow-hidden"
+      style="background: var(--color-card); border-color: var(--color-border); box-shadow: 0 24px 60px rgba(0,0,0,0.15);"
     >
       {#if title}
         <div class="flex items-center justify-between px-6 py-5 border-b" style="border-color: var(--color-border);">
-          <h2 class="text-lg font-semibold" style="letter-spacing: -0.02em;">{title}</h2>
+          <h2 class="text-lg font-black">{title}</h2>
           <button
             onclick={onclose}
-            class="transition-colors cursor-pointer rounded-full p-1 hover:bg-gray-100"
+            class="transition-colors cursor-pointer rounded-md p-1 hover:bg-accent"
             style="color: var(--color-muted-foreground);"
             aria-label="Cerrar"
           >

@@ -35,10 +35,13 @@
     {/each}
   </div>
 {:else if products.length === 0}
-  <div class="text-center py-20" style="color: var(--color-muted-foreground);">
-    <p class="text-4xl mb-3">🍐</p>
-    <p class="text-lg font-medium">No hay productos</p>
-    <p class="text-sm mt-1">Prueba a cambiar los filtros o crea uno nuevo.</p>
+  <div class="text-center py-20">
+    <p class="text-lg font-medium" style="color: var(--color-muted-foreground);">
+      No hay productos
+    </p>
+    <p class="text-sm mt-1" style="color: var(--color-muted-foreground); opacity: 0.6;">
+      Prueba a cambiar los filtros o crea uno nuevo.
+    </p>
   </div>
 {:else}
   <div

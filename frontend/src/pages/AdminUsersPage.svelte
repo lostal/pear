@@ -63,14 +63,14 @@
 
 <PageLayout>
   <div class="mb-10">
-    <h1 class="text-4xl sm:text-5xl font-semibold tracking-tight" style="letter-spacing: -0.04em;">Usuarios</h1>
+    <h1 class="text-4xl sm:text-5xl font-black">Usuarios</h1>
     <p class="text-sm mt-1.5" style="color: var(--color-muted-foreground);">Gestión de cuentas</p>
   </div>
 
   {#if loading}
     <div class="flex justify-center py-20"><Spinner size="lg" /></div>
   {:else}
-    <div class="bg-white rounded-2xl overflow-hidden" style="box-shadow: 0 2px 12px rgba(0,0,0,0.06);">
+    <div class="rounded-lg border overflow-hidden" style="background: var(--color-card); border-color: var(--color-border);">
       <table class="w-full text-sm">
         <thead>
           <tr style="border-bottom: 1px solid var(--color-border);">

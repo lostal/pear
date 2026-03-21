@@ -45,12 +45,12 @@
     {required}
     {oninput}
     {onchange}
-    class="w-full rounded-xl border px-3 py-2 text-sm disabled:opacity-50 transition-all"
+    class="w-full rounded-md border px-3 py-2 text-sm disabled:opacity-50 transition-all"
     style="border-color: {error ? 'var(--color-destructive)' : 'var(--color-border)'}; background: var(--color-input); color: var(--color-foreground); outline: none;"
     onfocus={(e) => {
       if (!error) {
-        (e.target as HTMLElement).style.borderColor = 'var(--color-apple-blue)';
-        (e.target as HTMLElement).style.boxShadow = '0 0 0 3px rgba(0,113,227,0.15)';
+        (e.target as HTMLElement).style.borderColor = 'var(--color-ring)';
+        (e.target as HTMLElement).style.boxShadow = '0 0 0 2px color-mix(in srgb, var(--color-ring) 20%, transparent)';
       }
     }}
     onblur={(e) => {

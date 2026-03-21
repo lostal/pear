@@ -25,22 +25,25 @@
     'inline-flex items-center justify-center font-medium transition-all duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 disabled:pointer-events-none disabled:opacity-50 cursor-pointer';
 
   const variantMap: Record<string, string> = {
-    primary: 'text-white',
-    secondary: 'border hover:opacity-80',
-    destructive: 'text-white',
-    ghost: 'hover:opacity-80',
+    primary: 'hover:opacity-90',
+    secondary: 'border hover:bg-accent',
+    destructive: 'hover:opacity-90',
+    ghost: 'hover:bg-accent',
   };
 
   const sizeMap: Record<string, string> = {
-    sm: 'text-xs px-3 py-1.5 gap-1.5 rounded-full',
-    md: 'text-sm px-5 py-2 gap-2 rounded-full',
-    lg: 'text-base px-6 py-2.5 gap-2 rounded-full',
+    sm: 'text-xs px-3 py-1.5 gap-1.5 rounded-md',
+    md: 'text-sm px-4 py-2 gap-2 rounded-md',
+    lg: 'text-sm px-5 py-2.5 gap-2 rounded-md',
   };
 
   const styleMap: Record<string, string> = {
-    primary: 'background-color: var(--color-apple-blue); color: white;',
-    secondary: 'background-color: white; color: var(--color-foreground); border-color: var(--color-border);',
-    destructive: 'background-color: var(--color-destructive); color: white;',
+    primary:
+      'background-color: var(--color-primary); color: var(--color-primary-foreground);',
+    secondary:
+      'background-color: var(--color-secondary); color: var(--color-secondary-foreground); border-color: var(--color-border);',
+    destructive:
+      'background-color: var(--color-destructive); color: var(--color-destructive-foreground);',
     ghost: 'background-color: transparent; color: var(--color-foreground);',
   };
 
@@ -53,8 +56,6 @@
   style={styleMap[variant]}
   disabled={disabled || loading}
   {onclick}
-  onmouseenter={(e) => { if (variant === 'primary') (e.currentTarget as HTMLElement).style.backgroundColor = 'var(--color-apple-blue-hover)'; }}
-  onmouseleave={(e) => { if (variant === 'primary') (e.currentTarget as HTMLElement).style.backgroundColor = 'var(--color-apple-blue)'; }}
 >
   {#if loading}
     <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">

@@ -20,7 +20,7 @@
 
   onMount(() => {
     if (card) {
-      animate(card, { opacity: [0, 1], y: [24, 0] }, { duration: 0.5, easing: [0.25, 0.1, 0.25, 1] });
+      animate(card, { opacity: [0, 1], y: [24, 0] }, { duration: 0.45, easing: [0.25, 0.1, 0.25, 1] });
     }
   });
 
@@ -30,7 +30,7 @@
     loading = true;
     try {
       await login({ username, password });
-      toast.success(`Bienvenido, ${auth.displayName}!`);
+      toast.success(`Bienvenido, ${auth.displayName}.`);
       push('/products');
     } catch (err) {
       error = err instanceof Error ? err.message : 'Error al iniciar sesión.';
@@ -40,12 +40,13 @@
   }
 </script>
 
-<div class="min-h-[calc(100vh-48px)] flex flex-col items-center justify-center px-4 py-12" style="background-color: #f5f5f7;">
+<div
+  class="min-h-[calc(100vh-64px)] flex flex-col items-center justify-center px-4 py-12"
+  style="background-color: var(--color-background);"
+>
   <!-- Logo -->
   <div class="mb-8 text-center">
-    <p class="text-5xl font-semibold tracking-tight" style="letter-spacing: -0.04em;">
-      <span style="color: var(--color-apple-blue)">i</span>Pear
-    </p>
+    <p class="text-4xl font-black tracking-tight">Pear</p>
     <p class="text-sm mt-2" style="color: var(--color-muted-foreground);">
       Inicia sesión para continuar
     </p>
@@ -54,8 +55,8 @@
   <!-- Card -->
   <div
     bind:this={card}
-    class="w-full max-w-sm rounded-2xl bg-white p-8"
-    style="opacity:0; box-shadow: 0 4px 24px rgba(0,0,0,0.08);"
+    class="w-full max-w-sm rounded-lg border p-8"
+    style="opacity:0; background: var(--color-card); border-color: var(--color-border);"
   >
     <form onsubmit={handleSubmit} class="flex flex-col gap-5">
       <Input
@@ -75,7 +76,10 @@
       />
 
       {#if error}
-        <p class="text-sm px-3 py-2 rounded-lg" style="color: var(--color-destructive); background: #fff1f0;">
+        <p
+          class="text-xs px-3 py-2 rounded-md border"
+          style="color: var(--color-destructive); border-color: var(--color-destructive); background: color-mix(in srgb, var(--color-destructive) 8%, transparent);"
+        >
           {error}
         </p>
       {/if}
@@ -86,7 +90,7 @@
     </form>
   </div>
 
-  <p class="text-xs mt-8" style="color: var(--color-muted-foreground); opacity: 0.5;">
-    Pear · Parodia Conceptual
+  <p class="text-xs mt-8" style="color: var(--color-muted-foreground); opacity: 0.4;">
+    Pear · PW2 2025–26
   </p>
 </div>

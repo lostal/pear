@@ -90,9 +90,7 @@
   <!-- Header -->
   <div class="flex items-end justify-between gap-4 mb-8">
     <div>
-      <h1 class="text-4xl sm:text-5xl font-semibold tracking-tight" style="letter-spacing: -0.04em;">
-        Tienda
-      </h1>
+      <h1 class="text-4xl sm:text-5xl font-black">Tienda</h1>
       <p class="text-sm mt-1.5" style="color: var(--color-muted-foreground);">Catálogo Pear</p>
     </div>
     {#if auth.isAdmin}

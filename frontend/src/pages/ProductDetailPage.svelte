@@ -39,26 +39,15 @@
     return new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(price);
   }
 
-  const GRADIENTS = [
-    'linear-gradient(135deg, #e8f4fd 0%, #bee3f8 100%)',
-    'linear-gradient(135deg, #f0e8fd 0%, #e9d8fd 100%)',
-    'linear-gradient(135deg, #e8fdf0 0%, #c6f6d5 100%)',
-    'linear-gradient(135deg, #fdf3e8 0%, #fde8c8 100%)',
-    'linear-gradient(135deg, #fde8f4 0%, #fed7e2 100%)',
-    'linear-gradient(135deg, #fdfbe8 0%, #fef9c3 100%)',
-  ];
-
-  const gradient = $derived(
-    product ? GRADIENTS[product.nombre.charCodeAt(0) % 6] : GRADIENTS[0]
-  );
+  const initial = $derived(product ? product.nombre.charAt(0).toUpperCase() : '');
 </script>
 
 <PageLayout>
   <!-- Back -->
   <button
     onclick={() => push('/products')}
-    class="text-sm mb-10 flex items-center gap-1.5 transition-colors cursor-pointer"
-    style="color: var(--color-apple-blue);"
+    class="text-sm mb-10 flex items-center gap-1.5 transition-opacity hover:opacity-70 cursor-pointer"
+    style="color: var(--color-muted-foreground);"
   >
     ← Volver a la tienda
   </button>
@@ -70,45 +59,45 @@
       <p style="color: var(--color-destructive);">{error}</p>
     </div>
   {:else if product}
-    <!-- 2-column hero layout -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-      <!-- Left: info -->
+      <!-- Info -->
       <div>
-        <h1
-          class="text-4xl sm:text-5xl font-semibold leading-tight mb-6"
-          style="letter-spacing: -0.04em;"
-        >
+        <h1 class="text-4xl sm:text-5xl font-black leading-tight mb-6">
           {product.nombre}
         </h1>
 
         <div class="mb-8">
           <p class="text-xs uppercase tracking-widest mb-2" style="color: var(--color-muted-foreground);">Precio</p>
-          <p class="text-4xl font-semibold tabular-nums" style="color: var(--color-apple-blue); letter-spacing: -0.02em;">
+          <p class="text-4xl font-black tabular-nums">
             {formatPrice(product.precio)}
           </p>
         </div>
 
         <button
           onclick={() => push('/products')}
-          class="btn-apple"
+          class="inline-flex items-center justify-center font-medium text-sm px-5 py-2.5 rounded-md border transition-colors hover:bg-accent cursor-pointer"
+          style="border-color: var(--color-border); color: var(--color-foreground);"
         >
           Ver más productos
         </button>
       </div>
 
-      <!-- Right: image or gradient placeholder -->
+      <!-- Imagen o placeholder -->
       <div
-        class="rounded-3xl aspect-square flex items-center justify-center text-8xl"
-        style="background: {gradient};"
+        class="rounded-2xl aspect-square flex items-center justify-center overflow-hidden"
+        style="background: var(--color-secondary);"
       >
         {#if product.imagen}
           <img
             src="/api/uploads/{product.imagen}"
             alt={product.nombre}
-            class="w-full h-full object-cover rounded-3xl"
+            class="w-full h-full object-cover rounded-2xl"
           />
         {:else}
-          🍐
+          <span
+            class="font-black select-none"
+            style="font-size: clamp(5rem, 15vw, 9rem); line-height: 1; color: var(--color-border);"
+          >{initial}</span>
         {/if}
       </div>
     </div>

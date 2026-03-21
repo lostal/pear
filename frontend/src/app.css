@@ -1,37 +1,64 @@
 @import 'tailwindcss';
 
+/* Typography: IBM Plex Sans */
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url('@fontsource/ibm-plex-sans/files/ibm-plex-sans-latin-400-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+  src: url('@fontsource/ibm-plex-sans/files/ibm-plex-sans-latin-700-normal.woff2') format('woff2');
+}
+
 @theme {
-  --font-sans: -apple-system, "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+  /* Paleta monocromática — modo claro */
+  --color-background: #fcfcf9;
+  --color-foreground: #1f2121;
 
-  --color-background:       #f5f5f7;
-  --color-foreground:       #1d1d1f;
-  --color-card:             #ffffff;
-  --color-card-foreground:  #1d1d1f;
-  --color-primary:          #0071e3;
-  --color-primary-foreground: #ffffff;
-  --color-secondary:        #f5f5f7;
-  --color-secondary-foreground: #1d1d1f;
-  --color-muted:            #f5f5f7;
-  --color-muted-foreground: #6e6e73;
-  --color-accent:           #e8e8ed;
-  --color-accent-foreground: #1d1d1f;
-  --color-border:           #d2d2d7;
-  --color-input:            #ffffff;
-  --color-ring:             #0071e3;
-  --color-apple-blue:       #0071e3;
-  --color-apple-blue-hover: #0077ed;
-  --color-destructive:      #ff3b30;
-  --color-destructive-foreground: #ffffff;
+  --color-card: #ffffff;
+  --color-card-foreground: #1f2121;
 
-  --radius-lg: 1rem;
-  --radius-md: 0.75rem;
-  --radius-sm: 0.5rem;
+  --color-popover: #ffffff;
+  --color-popover-foreground: #1f2121;
+
+  --color-primary: #2a2a2d;
+  --color-primary-foreground: #fcfcf9;
+
+  --color-secondary: #f5f5f5;
+  --color-secondary-foreground: #2a2a2d;
+
+  --color-muted: #f5f5f5;
+  --color-muted-foreground: #626c71;
+
+  --color-accent: #e8e8e8;
+  --color-accent-foreground: #1f2121;
+
+  --color-destructive: #dc2626;
+  --color-destructive-foreground: #fcfcf9;
+
+  --color-border: #d8d8d8;
+  --color-input: #f0f0f0;
+  --color-ring: #2a2a2d;
+
+  --font-sans: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
+
+  --radius-lg: 0.75rem;
+  --radius-md: calc(0.75rem - 2px);
+  --radius-sm: calc(0.75rem - 4px);
+
+  --breakpoint-3xl: 1920px;
 }
 
 @layer base {
   html {
     color-scheme: light;
-    font-size: clamp(15px, 0.5vw + 13px, 18px);
+    font-size: clamp(16px, 0.5vw + 14px, 20px);
   }
 
   * {
@@ -40,8 +67,8 @@
   }
 
   *::selection {
-    background-color: var(--color-apple-blue) !important;
-    color: #fff !important;
+    background-color: var(--color-primary) !important;
+    color: var(--color-primary-foreground) !important;
   }
 
   body {
@@ -57,7 +84,7 @@
 
   h1, h2, h3, h4, h5, h6 {
     line-height: 1.1;
-    font-weight: 700;
+    font-weight: 900;
     letter-spacing: -0.02em;
   }
 
@@ -65,6 +92,10 @@
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     text-decoration: none;
     color: inherit;
+  }
+
+  a:hover {
+    color: var(--color-primary);
   }
 
   input, textarea, select {
@@ -75,7 +106,7 @@
 
   input::placeholder {
     color: var(--color-muted-foreground);
-    opacity: 0.7;
+    opacity: 0.5;
   }
 }
 
@@ -89,51 +120,8 @@
   .border-main {
     border-color: var(--color-border);
   }
-
-  /* Glassmorphism navbar */
-  .glass-nav {
-    background-color: rgba(255, 255, 255, 0.72);
-    backdrop-filter: saturate(180%) blur(20px);
-    -webkit-backdrop-filter: saturate(180%) blur(20px);
-  }
-
-  /* Apple button styles */
-  .btn-apple {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background-color: var(--color-apple-blue);
-    color: #fff;
-    border-radius: 980px;
-    font-size: 0.875rem;
-    font-weight: 400;
-    padding: 0.5rem 1.25rem;
-    transition: background-color 0.2s ease;
-    cursor: pointer;
-    border: none;
-    white-space: nowrap;
-  }
-  .btn-apple:hover {
-    background-color: var(--color-apple-blue-hover);
-  }
-  .btn-apple-outline {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background-color: transparent;
-    color: var(--color-apple-blue);
-    border: 1px solid var(--color-apple-blue);
-    border-radius: 980px;
-    font-size: 0.875rem;
-    font-weight: 400;
-    padding: 0.5rem 1.25rem;
-    transition: all 0.2s ease;
-    cursor: pointer;
-    white-space: nowrap;
-  }
-  .btn-apple-outline:hover {
-    background-color: var(--color-apple-blue);
-    color: #fff;
+  .container-padding {
+    @apply px-4 sm:px-6 lg:px-8 xl:px-12;
   }
 }
 
@@ -164,9 +152,4 @@
 @keyframes fade-in {
   from { opacity: 0; }
   to   { opacity: 1; }
-}
-
-/* Navbar scroll border */
-#pear-header.scrolled {
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }

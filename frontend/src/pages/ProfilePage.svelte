@@ -19,13 +19,13 @@
     <!-- Avatar + info -->
     <div class="pb-8 mb-8 border-b flex items-center gap-5" style="border-color: var(--color-border);">
       <div
-        class="h-16 w-16 rounded-full flex items-center justify-center text-2xl font-semibold text-white"
-        style="background-color: var(--color-apple-blue);"
+        class="h-16 w-16 rounded-full flex items-center justify-center text-2xl font-black border"
+        style="background-color: var(--color-secondary); color: var(--color-foreground); border-color: var(--color-border);"
       >
         {auth.user.username[0].toUpperCase()}
       </div>
       <div>
-        <h2 class="text-2xl font-semibold tracking-tight" style="letter-spacing: -0.02em;">{auth.user.username}</h2>
+        <h2 class="text-2xl font-black">{auth.user.username}</h2>
         <p class="text-sm mt-0.5" style="color: var(--color-muted-foreground); text-transform: capitalize;">
           {auth.user.role}
         </p>

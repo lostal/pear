@@ -32,7 +32,8 @@
 
   $effect(() => {
     function onScroll() {
-      container?.classList.toggle('scrolled', window.scrollY > 10);
+      if (!container) return;
+      container.classList.toggle('scrolled', window.scrollY > 50);
     }
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
@@ -41,53 +42,59 @@
 </script>
 
 <header
-  id="pear-header"
+  id="site-header"
   bind:this={container}
-  class="glass-nav sticky top-0 z-40 transition-all duration-300"
+  class="sticky top-0 z-50 border-b transition-all duration-300"
+  style="background-color: color-mix(in srgb, var(--color-background) 80%, transparent);
+         backdrop-filter: saturate(180%) blur(20px);
+         -webkit-backdrop-filter: saturate(180%) blur(20px);
+         border-color: var(--color-border);"
 >
-  <div class="max-w-6xl mx-auto px-4 sm:px-6 h-12 flex items-center">
-    <!-- Logo zone -->
-    <div class="flex-none w-28 sm:w-36">
-      <button
-        onclick={() => navigate('/')}
-        class="font-semibold text-lg tracking-tight hover:opacity-70 transition-opacity cursor-pointer"
-      >
-        <span style="color: var(--color-apple-blue)">i</span>Pear
-      </button>
-    </div>
+  <div class="max-w-5xl mx-auto container-padding flex items-center justify-between py-4 sm:py-5 transition-all duration-300">
+    <!-- Logo -->
+    <button
+      onclick={() => navigate('/')}
+      class="transition-opacity hover:opacity-70 cursor-pointer flex items-center"
+    >
+      <img src="/logo.svg" alt="Pear" class="h-7 w-auto" />
+    </button>
 
-    <!-- Center nav links -->
-    <nav class="flex-1 flex justify-center items-center gap-1">
-      {#each navLinks as link}
-        {@const active = isActive(link.path)}
-        <button
-          onclick={() => navigate(link.path)}
-          class="px-3 py-1 text-sm rounded-full transition-all cursor-pointer
-            {active
-              ? 'text-[var(--color-foreground)] font-medium'
-              : 'text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)]'}"
-        >
-          {link.label}
-        </button>
-      {/each}
-    </nav>
+    <!-- Nav links -->
+    {#if navLinks.length > 0}
+      <nav class="flex items-center gap-1">
+        {#each navLinks as link}
+          {@const active = isActive(link.path)}
+          <button
+            onclick={() => navigate(link.path)}
+            class="px-3 py-1.5 text-sm rounded-md transition-colors cursor-pointer
+              {active
+                ? 'font-black'
+                : 'hover:bg-accent'}"
+            style="color: {active ? 'var(--color-foreground)' : 'var(--color-muted-foreground)'};"
+          >
+            {link.label}
+          </button>
+        {/each}
+      </nav>
+    {/if}
 
-    <!-- Right actions -->
-    <div class="flex-none w-28 sm:w-36 flex justify-end items-center gap-2">
+    <!-- Derecha: usuario + salir -->
+    <div class="flex items-center gap-3">
       {#if auth.isAuthenticated}
-        <span class="text-xs text-[var(--color-muted-foreground)] hidden sm:block truncate max-w-[80px]">
+        <span class="text-xs hidden sm:block" style="color: var(--color-muted-foreground);">
           {auth.displayName}
         </span>
         <button
           onclick={handleLogout}
-          class="text-xs text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)] transition-colors cursor-pointer"
+          class="text-xs transition-colors cursor-pointer hover:opacity-100 opacity-60"
+          style="color: var(--color-foreground);"
         >
           Salir
         </button>
       {:else}
         <button
           onclick={() => navigate('/login')}
-          class="btn-apple text-xs py-1.5 px-4"
+          class="text-sm font-medium transition-opacity hover:opacity-70 cursor-pointer"
         >
           Iniciar sesión
         </button>
@@ -95,3 +102,21 @@
     </div>
   </div>
 </header>
+
+<style>
+  :global(#site-header.scrolled) {
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  }
+
+  :global(#site-header.scrolled > div) {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+
+  @media (min-width: 640px) {
+    :global(#site-header.scrolled > div) {
+      padding-top: 0.75rem;
+      padding-bottom: 0.75rem;
+    }
+  }
+</style>
