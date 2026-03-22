@@ -3,6 +3,7 @@
   import { getImagenesForProduct, getPrecioMinimo, getImageUrl } from '../../types/index.js';
   import { push } from '../../lib/router.svelte.js';
   import { withTransition } from '../../lib/transitions.js';
+  import { saveScroll } from '../../lib/scrollMemory.js';
 
   interface Props {
     product: Product;
@@ -24,7 +25,7 @@
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <article
   class="group cursor-pointer"
-  onclick={() => withTransition(() => push(`/products/${product._id}`))}
+  onclick={() => { saveScroll('/products'); withTransition(() => push(`/products/${product._id}`)); }}
 >
   <!-- Imagen -->
   <div
