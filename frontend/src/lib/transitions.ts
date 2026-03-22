@@ -7,5 +7,6 @@ export function withTransition(fn: () => void) {
   }
   document.startViewTransition(() => {
     flushSync(fn);
+    window.scrollTo({ top: 0, behavior: 'instant' });
   });
 }

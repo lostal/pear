@@ -79,8 +79,6 @@
       addingToCart = false;
     }
   }
-
-
 </script>
 
 <PageLayout>

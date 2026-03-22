@@ -10,8 +10,6 @@
   }
 
   let { grupo, selected, precioBase, onselect }: Props = $props();
-
-
 </script>
 
 <div class="flex flex-wrap gap-2">

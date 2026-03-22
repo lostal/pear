@@ -19,7 +19,7 @@
     </h2>
     {#if group.productos.length > 3}
       <button
-        onclick={() => withTransition(() => push(`/products?categoria=${group.categoria.slug}`))}
+        onclick={() => withTransition(() => push('/products'))}
         class="text-sm flex items-center gap-1 transition-opacity hover:opacity-70 group cursor-pointer"
         style="color: var(--color-muted-foreground);"
       >

@@ -3,7 +3,6 @@
   import { getImagenesForProduct, getPrecioMinimo, getImageUrl } from '../../types/index.js';
   import { push } from '../../lib/router.svelte.js';
   import { withTransition } from '../../lib/transitions.js';
-  import { saveScroll } from '../../lib/scrollMemory.js';
   import { formatPrice } from '../../lib/utils.js';
 
   interface Props {
@@ -16,15 +15,13 @@
   const imagenes = $derived(getImagenesForProduct(product));
   const precio = $derived(getPrecioMinimo(product));
   const colorGrupo = $derived(product.gruposOpciones.find((g) => g.tipo === 'color'));
-
-
 </script>
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <article
   class="group cursor-pointer"
-  onclick={() => { saveScroll('/products'); withTransition(() => push(`/products/${product._id}`)); }}
+  onclick={() => withTransition(() => push(`/products/${product._id}`))}
 >
   <!-- Imagen -->
   <div

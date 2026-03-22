@@ -5,15 +5,7 @@
   import Navbar from './components/layout/Navbar.svelte';
   import { Toaster } from 'svelte-sonner';
   import SearchDialog from './components/search/SearchDialog.svelte';
-  import LandingPage from './pages/LandingPage.svelte';
-  import LoginPage from './pages/LoginPage.svelte';
-  import ProductsPage from './pages/ProductsPage.svelte';
-  import ProductDetailPage from './pages/ProductDetailPage.svelte';
-  import ProfilePage from './pages/ProfilePage.svelte';
-  import AdminUsersPage from './pages/AdminUsersPage.svelte';
-  import AdminProductsPage from './pages/AdminProductsPage.svelte';
-  import AdminProductEditPage from './pages/AdminProductEditPage.svelte';
-  import NotFoundPage from './pages/NotFoundPage.svelte';
+  import { preloadRoutes } from './lib/routeCache.js';
 
   const protectedRoutes = ['/profile', '/admin/users', '/admin/products'];
 
@@ -24,16 +16,21 @@
   });
 
   const routes = {
-    '/': LandingPage,
-    '/login': LoginPage,
-    '/products': ProductsPage,
-    '/products/:id': ProductDetailPage,
-    '/profile': ProfilePage,
-    '/admin/users': AdminUsersPage,
-    '/admin/products': AdminProductsPage,
-    '/admin/products/:id': AdminProductEditPage,
-    '*': NotFoundPage,
+    '/': () => import('./pages/LandingPage.svelte'),
+    '/login': () => import('./pages/LoginPage.svelte'),
+    '/products': () => import('./pages/ProductsPage.svelte'),
+    '/products/:id': () => import('./pages/ProductDetailPage.svelte'),
+    '/profile': () => import('./pages/ProfilePage.svelte'),
+    '/admin/users': () => import('./pages/AdminUsersPage.svelte'),
+    '/admin/products': () => import('./pages/AdminProductsPage.svelte'),
+    '/admin/products/:id': () => import('./pages/AdminProductEditPage.svelte'),
+    '*': () => import('./pages/NotFoundPage.svelte'),
   };
+
+  // Precarga en la caché compartida para que las view transitions sean síncronas
+  $effect(() => {
+    preloadRoutes(Object.values(routes));
+  });
 </script>
 
 <Navbar />

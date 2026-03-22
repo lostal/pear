@@ -1,7 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { push } from '../lib/router.svelte.js';
-  import { restoreScroll } from '../lib/scrollMemory.js';
   import { auth } from '../stores/auth.svelte.js';
   import { products } from '../stores/products.svelte.js';
   import { toast } from '../stores/toast.svelte.js';
@@ -12,8 +11,6 @@
   import PageLayout from '../components/layout/PageLayout.svelte';
 
   onMount(() => {
-    const y = restoreScroll('/products');
-    if (y > 0) window.scrollTo({ top: y, behavior: 'instant' });
     loadProducts();
   });
 

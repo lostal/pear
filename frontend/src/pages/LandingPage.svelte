@@ -57,13 +57,17 @@
   style="height: {heroHeight}; background-color: var(--color-background);"
 >
   <!-- Collage de fondo -->
-  <img
-    src="/collage.png"
-    alt=""
-    aria-hidden="true"
-    class="absolute inset-0 w-full h-full object-cover object-center select-none pointer-events-none"
-    style="opacity: 0.4;"
-  />
+  <picture>
+    <source srcset="/collage.avif" type="image/avif" />
+    <img
+      src="/collage.png"
+      alt=""
+      aria-hidden="true"
+      fetchpriority="high"
+      class="absolute inset-0 w-full h-full object-cover object-center select-none pointer-events-none"
+      style="opacity: 0.4;"
+    />
+  </picture>
   <!-- Overlay gradiente para legibilidad del texto y transición perfecta al fondo -->
   <div
     class="absolute inset-0 pointer-events-none"
@@ -123,7 +127,7 @@
         iPear
       </p>
       <h2 class="text-3xl sm:text-4xl font-black mb-5" style="line-height: 1.1;">
-        El teléfono que muerde diferente.
+        Rendimiento profesional en la palma de tu mano.
       </h2>
       <p class="leading-relaxed" style="color: var(--color-muted-foreground);">
         Diseñado desde cero para que cada interacción se sienta como hincarle el diente a algo que
@@ -134,7 +138,10 @@
       class="showcase-img aspect-square rounded-2xl overflow-hidden"
       style="opacity:0; background: var(--color-secondary);"
     >
-      <img src="/ipear.png" alt="iPear" class="w-full h-full object-contain" />
+      <picture>
+        <source srcset="/ipear.avif" type="image/avif" />
+        <img src="/ipear.png" alt="iPear" loading="lazy" class="w-full h-full object-contain" />
+      </picture>
     </div>
   </div>
 </section>
@@ -150,7 +157,15 @@
       class="showcase-img aspect-square rounded-2xl overflow-hidden order-2 lg:order-1"
       style="opacity:0; background: var(--color-secondary);"
     >
-      <img src="/pearbook.png" alt="PearBook" class="w-full h-full object-contain" />
+      <picture>
+        <source srcset="/pearbook.avif" type="image/avif" />
+        <img
+          src="/pearbook.png"
+          alt="PearBook"
+          loading="lazy"
+          class="w-full h-full object-contain"
+        />
+      </picture>
     </div>
     <div class="showcase-text order-1 lg:order-2" style="opacity:0;">
       <p
@@ -160,7 +175,7 @@
         PearBook
       </p>
       <h2 class="text-3xl sm:text-4xl font-black mb-5" style="line-height: 1.1;">
-        Ultra ligero. Ultra pera.
+        Pídele peras al olmo.
       </h2>
       <p class="leading-relaxed" style="color: var(--color-muted-foreground);">
         Tan fino que lo perderás encima de la mesa. Tan rápido que encontrarás la excusa para
@@ -182,13 +197,13 @@
     class="cta-child font-black mb-6 text-white"
     style="opacity:0; font-size: clamp(2rem, 6vw, 4rem); letter-spacing: -0.04em; line-height: 1.1;"
   >
-    ¿Listo para tu próxima pera?
+    ¿Listo para la próxima (p)era?
   </h2>
   <p
     class="cta-child text-base mb-10"
     style="opacity:0; color: rgba(255,255,255,0.5); line-height: 1.6;"
   >
-    Únete a los millones que ya han cambiado cómo comen fruta.<br />O al menos cómo la compran.
+    Diseñado para redefinirlo todo.
   </p>
   <button
     class="cta-child inline-flex items-center justify-center font-medium text-sm px-7 py-3 rounded-md transition-opacity hover:opacity-90 cursor-pointer"

@@ -3,7 +3,6 @@
   import { auth } from '../../stores/auth.svelte.js';
   import { withTransition } from '../../lib/transitions.js';
   import SearchButton from '../search/SearchButton.svelte';
-  import ThemeToggle from '../ui/ThemeToggle.svelte';
 
   let container: HTMLElement | undefined = $state();
 
@@ -31,13 +30,20 @@
   }
 
   $effect(() => {
-    function onScroll() {
-      if (!container) return;
-      container.classList.toggle('scrolled', window.scrollY > 50);
-    }
-    window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
-    return () => window.removeEventListener('scroll', onScroll);
+    const sentinel = document.createElement('div');
+    sentinel.style.cssText =
+      'position:absolute;top:50px;left:0;height:1px;width:1px;pointer-events:none;';
+    document.body.prepend(sentinel);
+
+    const observer = new IntersectionObserver(([entry]) => {
+      container?.classList.toggle('scrolled', !entry.isIntersecting);
+    });
+    observer.observe(sentinel);
+
+    return () => {
+      observer.disconnect();
+      sentinel.remove();
+    };
   });
 </script>
 
@@ -77,9 +83,8 @@
       {/each}
     </nav>
 
-    <!-- Derecha: búsqueda + tema -->
-    <div class="flex items-center gap-1 justify-self-end">
-      <ThemeToggle />
+    <!-- Derecha: búsqueda -->
+    <div class="flex items-center justify-self-end">
       <SearchButton />
     </div>
   </div>
