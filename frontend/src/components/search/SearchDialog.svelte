@@ -8,6 +8,7 @@
   import { fetchProducts } from '../../services/products.service.js';
   import type { Product } from '../../types/index.js';
   import { getImagenesForProduct, getImageUrl } from '../../types/index.js';
+  import { formatPrice } from '../../lib/utils.js';
   import { Search } from 'lucide-svelte';
 
   function dialogFly(
@@ -87,8 +88,6 @@
     window.addEventListener('keydown', handleKeydown);
     return () => window.removeEventListener('keydown', handleKeydown);
   });
-
-  const fmt = new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' });
 </script>
 
 {#if uiState.isSearchOpen && !navigating}
@@ -166,7 +165,7 @@
                     class="text-xs sm:text-sm mt-0.5"
                     style="color: var(--color-muted-foreground);"
                   >
-                    {fmt.format(product.precioBase)}
+                    {formatPrice(product.precioBase)}
                   </p>
                 </div>
                 <div

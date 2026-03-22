@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { push } from '../lib/router.svelte.js';
+  import { withTransition } from '../lib/transitions.js';
   import { auth } from '../stores/auth.svelte.js';
   import { products } from '../stores/products.svelte.js';
   import { toast } from '../stores/toast.svelte.js';
@@ -35,7 +36,7 @@
       <p class="text-sm mt-1.5" style="color: var(--color-muted-foreground);">Catálogo Pear</p>
     </div>
     {#if auth.isAdmin}
-      <Button onclick={() => push('/admin/products')}>Panel admin</Button>
+      <Button onclick={() => withTransition(() => push('/admin/products'))}>Panel admin</Button>
     {/if}
   </div>
 

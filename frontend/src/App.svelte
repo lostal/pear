@@ -9,6 +9,19 @@
 
   const protectedRoutes = ['/profile', '/admin/users', '/admin/products'];
 
+  const pageTitles: Record<string, string> = {
+    '/': 'Pear',
+    '/login': 'Iniciar sesión — Pear',
+    '/products': 'Tienda — Pear',
+    '/profile': 'Perfil — Pear',
+    '/admin/products': 'Admin · Productos — Pear',
+    '/admin/users': 'Admin · Usuarios — Pear',
+  };
+
+  $effect(() => {
+    document.title = pageTitles[router.location] ?? 'Pear';
+  });
+
   $effect(() => {
     if (!auth.isAuthenticated && protectedRoutes.some((r) => router.location.startsWith(r))) {
       push('/');

@@ -1,8 +1,9 @@
 import type { Component } from 'svelte';
 
-type RouteLoader = () => Promise<{ default: Component<any> }>;
+type PageComponent = Component<{ params?: Record<string, string> }>;
+type RouteLoader = () => Promise<{ default: PageComponent }>;
 
-export const routeCache = new Map<RouteLoader, Component<any>>();
+export const routeCache = new Map<RouteLoader, PageComponent>();
 
 export async function preloadRoutes(loaders: RouteLoader[]) {
   await Promise.all(

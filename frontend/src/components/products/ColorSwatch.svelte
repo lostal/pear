@@ -12,8 +12,6 @@
 
 <div class="flex flex-wrap gap-2">
   {#each opciones as opcion}
-    <!-- svelte-ignore a11y_click_events_have_key_events -->
-    <!-- svelte-ignore a11y_no_static_element_interactions -->
     <button
       title={opcion.valor}
       onclick={() => onselect(opcion)}
@@ -24,8 +22,7 @@
     >
       {#if selected === opcion.valor}
         <span
-          class="absolute inset-0 rounded-full ring-2 ring-offset-1 pointer-events-none"
-          style="ring-color: var(--color-foreground);"
+          class="absolute inset-0 rounded-full ring-2 ring-offset-1 pointer-events-none ring-[var(--color-foreground)]"
         ></span>
       {/if}
     </button>

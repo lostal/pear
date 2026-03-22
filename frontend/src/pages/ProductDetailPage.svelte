@@ -53,7 +53,7 @@
     if (!product) loading = true;
     try {
       product = await fetchProduct(id);
-    } catch (err) {
+    } catch {
       toast.error('Error al cargar el producto.');
     } finally {
       loading = false;

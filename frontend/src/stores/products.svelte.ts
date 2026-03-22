@@ -39,16 +39,6 @@ function createProducts() {
     setLoading(l: boolean) {
       loading = l;
     },
-
-    addProduct(p: Product) {
-      list = [...list, p];
-    },
-    updateProduct(updated: Product) {
-      list = list.map((p) => (p._id === updated._id ? updated : p));
-    },
-    removeProduct(id: string) {
-      list = list.filter((p) => p._id !== id);
-    },
   };
 }
 

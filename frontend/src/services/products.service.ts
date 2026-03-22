@@ -15,13 +15,6 @@ export async function createCategory(data: {
   return http.post<Categoria>('/api/categorias', data);
 }
 
-export async function updateCategory(
-  id: string,
-  data: Partial<{ nombre: string; slug: string; orden: number }>
-): Promise<Categoria> {
-  return http.put<Categoria>(`/api/categorias/${id}`, data);
-}
-
 export async function deleteCategory(id: string): Promise<void> {
   return http.delete<void>(`/api/categorias/${id}`);
 }
@@ -74,14 +67,6 @@ export async function addGrupo(
   return http.post<Product>(`/api/productos/${productId}/grupos`, data);
 }
 
-export async function updateGrupo(
-  productId: string,
-  gId: string,
-  data: { nombre?: string; tipo?: string }
-): Promise<Product> {
-  return http.put<Product>(`/api/productos/${productId}/grupos/${gId}`, data);
-}
-
 export async function deleteGrupo(productId: string, gId: string): Promise<void> {
   return http.delete<void>(`/api/productos/${productId}/grupos/${gId}`);
 }
@@ -109,15 +94,6 @@ export async function addOpcionStorage(
   data: { valor: string; modificadorPrecio: number }
 ): Promise<Product> {
   return http.post<Product>(`/api/productos/${productId}/grupos/${gId}/opciones`, data);
-}
-
-export async function updateOpcion(
-  productId: string,
-  gId: string,
-  oId: string,
-  data: Partial<{ valor: string; codigoHex: string; modificadorPrecio: number }>
-): Promise<Product> {
-  return http.put<Product>(`/api/productos/${productId}/grupos/${gId}/opciones/${oId}`, data);
 }
 
 export async function deleteOpcion(productId: string, gId: string, oId: string): Promise<void> {

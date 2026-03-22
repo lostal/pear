@@ -49,7 +49,7 @@
   let prodPrecio = $state('');
   let prodLoading = $state(false);
 
-  // ── Drag: categorías
+  // ── Confirm delete
   let deleteTarget = $state<Product | null>(null);
   let deleting = $state(false);
 
@@ -157,8 +157,8 @@
       buildGroups();
       toast.success('Producto eliminado');
       deleteTarget = null;
-    } catch {
-      toast.error('Error al eliminar');
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Error al eliminar');
     } finally {
       deleting = false;
     }
@@ -444,7 +444,7 @@
                       </div>
                       <div class="flex gap-1 shrink-0">
                         <button
-                          onclick={() => push(`/admin/products/${prod._id}`)}
+                          onclick={() => withTransition(() => push(`/admin/products/${prod._id}`))}
                           class="flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-md cursor-pointer transition-colors hover:opacity-80"
                           style="color: var(--color-foreground); background: var(--color-secondary); border: 1px solid var(--color-border);"
                         >

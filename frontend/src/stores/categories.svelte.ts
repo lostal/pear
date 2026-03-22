@@ -17,15 +17,6 @@ function createCategories() {
     setLoading(l: boolean) {
       loading = l;
     },
-    addCategory(c: Categoria) {
-      list = [...list, c];
-    },
-    updateCategory(updated: Categoria) {
-      list = list.map((c) => (c._id === updated._id ? updated : c));
-    },
-    removeCategory(id: string) {
-      list = list.filter((c) => c._id !== id);
-    },
   };
 }
 

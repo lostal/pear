@@ -53,11 +53,15 @@
       CurrentComponent = cached;
       currentParams = matched.params;
     } else {
-      matched.loader().then((module) => {
-        routeCache.set(matched.loader, module.default);
-        CurrentComponent = module.default;
-        currentParams = matched.params;
-      });
+      matched.loader()
+        .then((module) => {
+          routeCache.set(matched.loader, module.default);
+          CurrentComponent = module.default;
+          currentParams = matched.params;
+        })
+        .catch(() => {
+          window.location.reload();
+        });
     }
   });
 </script>
