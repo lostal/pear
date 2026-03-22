@@ -28,6 +28,14 @@ class CategoriaService {
     return categoria;
   }
 
+  async reorder(ids) {
+    const ops = ids.map((id, i) => ({
+      updateOne: { filter: { _id: id }, update: { $set: { orden: i } } }
+    }));
+    await Categoria.bulkWrite(ops);
+    await client.del(CACHE_KEY);
+  }
+
   async delete(id) {
     const enUso = await Producto.exists({ categoria: id });
     if (enUso) throw new Error('CATEGORIA_EN_USO');

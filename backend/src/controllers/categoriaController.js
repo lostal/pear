@@ -32,6 +32,18 @@ class CategoriaController {
     }
   }
 
+  async reorder(req, res) {
+    try {
+      if (req.user.role !== 'admin') return res.status(403).json({ error: 'Solo admin' });
+      const { ids } = req.body;
+      if (!Array.isArray(ids)) return res.status(400).json({ error: 'ids debe ser array' });
+      await CategoriaService.reorder(ids);
+      res.json({ ok: true });
+    } catch (err) {
+      res.status(500).json({ error: 'Error al reordenar categorías' });
+    }
+  }
+
   async delete(req, res) {
     try {
       if (req.user.role !== 'admin') return res.status(403).json({ error: 'Solo admin' });

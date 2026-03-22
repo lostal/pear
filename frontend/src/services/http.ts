@@ -8,9 +8,11 @@ interface RequestOptions extends RequestInit {
 async function request<T>(url: string, options: RequestOptions = {}): Promise<T> {
   const { skipAuth = false, headers: extraHeaders, ...init } = options;
 
-  const headers: Record<string, string> = {
-    'Content-Type': 'application/json',
-  };
+  const headers: Record<string, string> = {};
+  // Don't set Content-Type for FormData — the browser sets it automatically with the boundary
+  if (!(init.body instanceof FormData)) {
+    headers['Content-Type'] = 'application/json';
+  }
 
   // Merge any extra headers passed by the caller
   if (extraHeaders && !(extraHeaders instanceof Headers)) {

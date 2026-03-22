@@ -142,6 +142,31 @@ export async function uploadImagenesDefault(productId: string, files: FileList |
   return http.postForm<Product>(`/api/productos/${productId}/imagenes-default`, form);
 }
 
+export async function reorderCategories(ids: string[]): Promise<void> {
+  return http.put<void>('/api/categorias/reorder', { ids });
+}
+
+export async function reorderProductsBatch(ids: string[]): Promise<void> {
+  return http.put<void>('/api/productos/reorder', { ids });
+}
+
+export async function reorderOpciones(productId: string, gId: string, opcionIds: string[]): Promise<Product> {
+  return http.put<Product>(`/api/productos/${productId}/grupos/${gId}/opciones`, { opcionIds });
+}
+
+export async function reorderImagenesDefault(productId: string, imagenes: string[]): Promise<Product> {
+  return http.put<Product>(`/api/productos/${productId}/imagenes-default`, { imagenes });
+}
+
+export async function reorderImagenesOpcion(
+  productId: string,
+  gId: string,
+  oId: string,
+  imagenes: string[]
+): Promise<Product> {
+  return http.put<Product>(`/api/productos/${productId}/grupos/${gId}/opciones/${oId}/imagenes`, { imagenes });
+}
+
 export async function deleteImagenDefault(productId: string, filename: string): Promise<void> {
   return http.delete<void>(
     `/api/productos/${productId}/imagenes-default?f=${encodeURIComponent(filename)}`

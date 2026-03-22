@@ -6,6 +6,8 @@ const path = require('path');
 const TTL_LIST = 120;
 const TTL_SINGLE = 300;
 
+const UPLOADS_ROOT = path.join(__dirname, '..', '..', 'uploads');
+
 async function invalidateProductLists(categoriaSlug) {
   await client.del('productos:todos');
   if (categoriaSlug) await client.del(`productos:cat:${categoriaSlug}`);
@@ -17,7 +19,7 @@ async function invalidateProduct(id) {
 
 function deleteFile(relPath) {
   if (!relPath) return;
-  try { fs.unlinkSync(path.join('/uploads', relPath)); } catch (_) {}
+  try { fs.unlinkSync(path.join(UPLOADS_ROOT, relPath)); } catch (_) {}
 }
 
 class ProductService {
@@ -76,10 +78,21 @@ class ProductService {
   }
 
   async deleteProduct(id) {
-    const producto = await Producto.findById(id);
+    const producto = await Producto.findById(id).populate('categoria');
     if (!producto) return;
-    // Soft delete
-    await Producto.findByIdAndUpdate(id, { activo: false });
+
+    // Eliminar archivos de imágenes asociadas
+    producto.imagenesDefault.forEach(img => deleteFile(img));
+    producto.gruposOpciones.forEach(grupo => {
+      grupo.opciones.forEach(op => op.imagenes.forEach(img => deleteFile(img)));
+    });
+
+    // Eliminar carpeta del producto en uploads
+    try {
+      fs.rmSync(path.join(UPLOADS_ROOT, 'productos', id), { recursive: true, force: true });
+    } catch (_) {}
+
+    await Producto.findByIdAndDelete(id);
     await invalidateProduct(id);
     await invalidateProductLists(producto.categoria?.slug);
   }
@@ -195,6 +208,49 @@ class ProductService {
       { new: true }
     ).populate('categoria');
     deleteFile(filename);
+    await this._invalidateAll(producto);
+    return producto;
+  }
+
+  // ── Reordenar imágenes ─────────────────────────────────────────
+
+  async reorderBatch(ids) {
+    const ops = ids.map((id, i) => ({
+      updateOne: { filter: { _id: id }, update: { $set: { orden: i } } }
+    }));
+    await Producto.bulkWrite(ops);
+    await client.del('productos:todos');
+    for (const id of ids) await client.del(`producto:${id}`);
+  }
+
+  async reorderOpciones(id, gId, opcionIds) {
+    const producto = await Producto.findById(id).populate('categoria');
+    const grupo = producto.gruposOpciones.id(gId);
+    if (!grupo) return null;
+    const ordered = opcionIds.map(oId => grupo.opciones.id(oId)).filter(Boolean);
+    grupo.opciones = ordered;
+    await producto.save();
+    await this._invalidateAll(producto);
+    return producto;
+  }
+
+  async reorderImagenesDefault(id, imagenes) {
+    const producto = await Producto.findByIdAndUpdate(
+      id,
+      { $set: { imagenesDefault: imagenes } },
+      { new: true }
+    ).populate('categoria');
+    await this._invalidateAll(producto);
+    return producto;
+  }
+
+  async reorderImagenesOpcion(id, gId, oId, imagenes) {
+    const producto = await Producto.findById(id).populate('categoria');
+    const grupo = producto.gruposOpciones.id(gId);
+    const opcion = grupo?.opciones.id(oId);
+    if (!opcion) return null;
+    opcion.imagenes = imagenes;
+    await producto.save();
     await this._invalidateAll(producto);
     return producto;
   }

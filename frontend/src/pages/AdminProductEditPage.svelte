@@ -7,9 +7,11 @@
     addGrupo, deleteGrupo,
     addOpcionColor, addOpcionStorage, deleteOpcion,
     uploadImagenesOpcion, deleteImagenOpcion,
-    uploadImagenesDefault, deleteImagenDefault
+    uploadImagenesDefault, deleteImagenDefault,
+    reorderImagenesDefault, reorderImagenesOpcion,
+    reorderOpciones,
   } from '../services/products.service.js';
-  import type { Product, Categoria, OpcionColor, GrupoOpciones } from '../types/index.js';
+  import type { Product, Categoria } from '../types/index.js';
   import { getImageUrl } from '../types/index.js';
   import Spinner from '../components/ui/Spinner.svelte';
   import Button from '../components/ui/Button.svelte';
@@ -50,13 +52,20 @@
   let addingStorage: Record<string, boolean> = $state({});
 
   // ── Subida extra de imágenes
-  let extraFiles: FileList | null = $state(null);
-  let extraOpcionTarget = $state<{ gId: string; oId: string } | null>(null);
-  let uploadingExtra = $state(false);
+  let extraFiles: Record<string, FileList | null> = $state({});
+  let uploadingExtra: Record<string, boolean> = $state({});
 
   // ── Imágenes default
   let defaultFiles: FileList | null = $state(null);
   let uploadingDefault = $state(false);
+
+  // ── Drag & drop imágenes default
+  let draggingDefaultIdx = $state<number | null>(null);
+  let dragOverDefaultIdx = $state<number | null>(null);
+
+  // ── Drag & drop imágenes por opción (key = oId)
+  let draggingOpcionIdx: Record<string, number | null> = $state({});
+  let dragOverOpcionIdx: Record<string, number | null> = $state({});
 
   $effect(() => {
     if (params.id) loadAll(params.id);
@@ -169,16 +178,16 @@
   }
 
   async function handleUploadExtra(gId: string, oId: string) {
-    if (!product || !extraFiles?.length) return;
-    uploadingExtra = true;
+    if (!product || !extraFiles[oId]?.length) return;
+    uploadingExtra[oId] = true;
     try {
-      product = await uploadImagenesOpcion(product._id, gId, oId, extraFiles);
-      extraFiles = null; extraOpcionTarget = null;
-      toast.success('Imágenes subidas');
+      product = await uploadImagenesOpcion(product._id, gId, oId, extraFiles[oId]!);
+      extraFiles[oId] = null;
+      toast.success('Fotos subidas');
     } catch {
       toast.error('Error al subir');
     } finally {
-      uploadingExtra = false;
+      uploadingExtra[oId] = false;
     }
   }
 
@@ -188,7 +197,7 @@
       await deleteImagenOpcion(product._id, gId, oId, filename);
       product = await fetchProduct(product._id);
     } catch {
-      toast.error('Error al eliminar imagen');
+      toast.error('Error al eliminar');
     }
   }
 
@@ -198,7 +207,7 @@
     try {
       product = await uploadImagenesDefault(product._id, defaultFiles);
       defaultFiles = null;
-      toast.success('Imágenes subidas');
+      toast.success('Fotos subidas');
     } catch {
       toast.error('Error al subir');
     } finally {
@@ -212,27 +221,115 @@
       await deleteImagenDefault(product._id, filename);
       product = await fetchProduct(product._id);
     } catch {
-      toast.error('Error al eliminar imagen');
+      toast.error('Error al eliminar');
     }
   }
+
+  // ── Drag & drop: imágenes default ─────────────────────────────
+  function onDragStartDefault(e: DragEvent, i: number) {
+    draggingDefaultIdx = i;
+    if (e.dataTransfer) e.dataTransfer.effectAllowed = 'move';
+  }
+  function onDragOverDefault(e: DragEvent, i: number) {
+    e.preventDefault();
+    dragOverDefaultIdx = i;
+  }
+  async function onDropDefault(e: DragEvent, i: number) {
+    e.preventDefault();
+    if (!product || draggingDefaultIdx === null || draggingDefaultIdx === i) {
+      draggingDefaultIdx = null; dragOverDefaultIdx = null; return;
+    }
+    const arr = [...product.imagenesDefault];
+    const [item] = arr.splice(draggingDefaultIdx, 1);
+    arr.splice(i, 0, item);
+    product.imagenesDefault = arr;
+    draggingDefaultIdx = null; dragOverDefaultIdx = null;
+    try {
+      await reorderImagenesDefault(product._id, arr);
+    } catch {
+      toast.error('Error al guardar orden');
+      product = await fetchProduct(product._id);
+    }
+  }
+  function onDragEndDefault() { draggingDefaultIdx = null; dragOverDefaultIdx = null; }
+
+  // ── Drag & drop: opciones dentro de un grupo ──────────────────
+  let draggingOpcionesGrupoIdx: Record<string, number | null> = $state({});
+  let dragOverOpcionesGrupoIdx: Record<string, number | null> = $state({});
+
+  function onDragStartOpcionesGrupo(e: DragEvent, gId: string, i: number) {
+    draggingOpcionesGrupoIdx[gId] = i;
+    if (e.dataTransfer) e.dataTransfer.effectAllowed = 'move';
+  }
+  function onDragOverOpcionesGrupo(e: DragEvent, gId: string, i: number) {
+    e.preventDefault();
+    dragOverOpcionesGrupoIdx[gId] = i;
+  }
+  async function onDropOpcionesGrupo(e: DragEvent, gId: string, opciones: any[], i: number) {
+    e.preventDefault();
+    const from = draggingOpcionesGrupoIdx[gId];
+    if (!product || from === null || from === undefined || from === i) {
+      draggingOpcionesGrupoIdx[gId] = null; dragOverOpcionesGrupoIdx[gId] = null; return;
+    }
+    const arr = [...opciones];
+    const [item] = arr.splice(from, 1);
+    arr.splice(i, 0, item);
+    const grupo = (product.gruposOpciones as any[]).find((g: any) => g._id === gId);
+    if (grupo) grupo.opciones = arr;
+    draggingOpcionesGrupoIdx[gId] = null; dragOverOpcionesGrupoIdx[gId] = null;
+    try {
+      await reorderOpciones(product._id, gId, arr.map((o: any) => o._id));
+    } catch {
+      toast.error('Error al guardar orden');
+      product = await fetchProduct(product._id);
+    }
+  }
+  function onDragEndOpcionesGrupo(gId: string) {
+    draggingOpcionesGrupoIdx[gId] = null; dragOverOpcionesGrupoIdx[gId] = null;
+  }
+
+  // ── Drag & drop: imágenes de opción ───────────────────────────
+  function onDragStartOpcion(e: DragEvent, oId: string, i: number) {
+    draggingOpcionIdx[oId] = i;
+    if (e.dataTransfer) e.dataTransfer.effectAllowed = 'move';
+  }
+  function onDragOverOpcion(e: DragEvent, oId: string, i: number) {
+    e.preventDefault();
+    dragOverOpcionIdx[oId] = i;
+  }
+  async function onDropOpcion(e: DragEvent, gId: string, oId: string, imagenes: string[], i: number) {
+    e.preventDefault();
+    const from = draggingOpcionIdx[oId];
+    if (!product || from === null || from === undefined || from === i) {
+      draggingOpcionIdx[oId] = null; dragOverOpcionIdx[oId] = null; return;
+    }
+    const arr = [...imagenes];
+    const [item] = arr.splice(from, 1);
+    arr.splice(i, 0, item);
+    // update local state
+    const grupo = (product.gruposOpciones as any[]).find((g: any) => g._id === gId);
+    const opcion = grupo?.opciones.find((o: any) => o._id === oId);
+    if (opcion) opcion.imagenes = arr;
+    draggingOpcionIdx[oId] = null; dragOverOpcionIdx[oId] = null;
+    try {
+      await reorderImagenesOpcion(product._id, gId, oId, arr);
+    } catch {
+      toast.error('Error al guardar orden');
+      product = await fetchProduct(product._id);
+    }
+  }
+  function onDragEndOpcion(oId: string) { draggingOpcionIdx[oId] = null; dragOverOpcionIdx[oId] = null; }
 
   const hasColorGroup = $derived(
     product?.gruposOpciones.some(g => g.tipo === 'color') ?? false
   );
-
-  function inputCls() {
-    return 'w-full px-3 py-2 text-sm rounded-lg border outline-none focus:ring-1';
-  }
-  function inputStyle() {
-    return 'border-color: var(--color-border); background: var(--color-card); color: var(--color-foreground);';
-  }
 </script>
 
 <style>
   .field label {
     display: block;
     font-size: 0.75rem;
-    font-weight: 500;
+    font-weight: 600;
     letter-spacing: 0.04em;
     text-transform: uppercase;
     color: var(--color-muted-foreground);
@@ -290,6 +387,8 @@
     color: var(--color-foreground);
   }
   .tipo-btn .icon { font-size: 1.25rem; }
+
+  /* Upload zone */
   .upload-zone {
     border: 1.5px dashed var(--color-border);
     border-radius: 0.75rem;
@@ -310,15 +409,8 @@
     cursor: pointer;
     width: 100%;
   }
-  .option-row {
-    display: flex;
-    align-items: center;
-    gap: 0.625rem;
-    padding: 0.625rem 0.75rem;
-    border-radius: 0.625rem;
-    background: var(--color-secondary);
-    border: 1px solid var(--color-border);
-  }
+
+  /* Grupos */
   .grupo-card {
     border: 1px solid var(--color-border);
     border-radius: 0.875rem;
@@ -337,10 +429,134 @@
     background: var(--color-background);
     border-top: 1px solid var(--color-border);
   }
-  .divider {
-    height: 1px;
-    background: var(--color-border);
-    margin: 0.25rem 0;
+
+  /* Imagen grid con drag-and-drop */
+  .img-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    gap: 0.625rem;
+    margin-bottom: 1rem;
+  }
+  .img-item {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    cursor: grab;
+    border: 2px solid transparent;
+    transition: transform 0.1s, border-color 0.15s, opacity 0.15s;
+    user-select: none;
+  }
+  .img-item:active { cursor: grabbing; }
+  .img-item.is-dragging { opacity: 0.35; }
+  .img-item.is-over {
+    border-color: var(--color-foreground);
+    transform: scale(1.04);
+  }
+  .img-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+  }
+  .img-portada {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-align: center;
+    padding: 0.2rem 0;
+    background: rgba(0, 0, 0, 0.55);
+    color: #fff;
+    backdrop-filter: blur(2px);
+  }
+  .img-num {
+    position: absolute;
+    top: 0.3rem;
+    left: 0.3rem;
+    font-size: 0.6rem;
+    font-weight: 700;
+    background: rgba(0,0,0,0.4);
+    color: #fff;
+    width: 1.1rem;
+    height: 1.1rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .img-delete {
+    position: absolute;
+    top: 0.3rem;
+    right: 0.3rem;
+    width: 1.4rem;
+    height: 1.4rem;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.55);
+    color: #fff;
+    font-size: 0.65rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.15s;
+    cursor: pointer;
+    border: none;
+    backdrop-filter: blur(2px);
+  }
+  .img-item:hover .img-delete { opacity: 1; }
+
+  .drag-hint {
+    font-size: 0.72rem;
+    color: var(--color-muted-foreground);
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
+  /* Drag & drop opciones (colores / storage) */
+  .opcion-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    border-radius: 0.75rem;
+    background: var(--color-secondary);
+    border: 2px solid var(--color-border);
+    cursor: grab;
+    transition: border-color 0.15s, transform 0.1s, opacity 0.15s;
+    user-select: none;
+  }
+  .opcion-item:active { cursor: grabbing; }
+  .opcion-item.is-dragging { opacity: 0.35; }
+  .opcion-item.is-over {
+    border-color: var(--color-foreground);
+    transform: scale(1.015);
+  }
+  .opcion-item.is-cover {
+    border-color: var(--color-foreground);
+  }
+  .cover-badge {
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.1rem 0.45rem;
+    border-radius: 0.25rem;
+    background: var(--color-foreground);
+    color: var(--color-background);
+    line-height: 1.5;
+  }
+  .drag-handle {
+    font-size: 0.85rem;
+    opacity: 0.35;
+    cursor: grab;
+    line-height: 1;
   }
 </style>
 
@@ -376,13 +592,11 @@
         <p class="section-title">Información del producto</p>
 
         <div class="flex flex-col gap-5">
-          <!-- Nombre -->
           <div class="field">
             <label for="f-nombre">Nombre</label>
             <input id="f-nombre" type="text" placeholder="ej: iPear Pro" bind:value={nombre} class="inp" />
           </div>
 
-          <!-- Descripción -->
           <div class="field">
             <label for="f-desc">Descripción</label>
             <textarea id="f-desc" placeholder="Texto que verá el cliente en la página del producto"
@@ -390,7 +604,6 @@
               class="inp" style="resize: vertical;"></textarea>
           </div>
 
-          <!-- Categoría + Precio en grid 2 cols -->
           <div class="grid grid-cols-2 gap-4">
             <div class="field">
               <label for="f-cat">Categoría</label>
@@ -408,7 +621,6 @@
             </div>
           </div>
 
-          <!-- Visible -->
           <label class="flex items-center gap-3 cursor-pointer select-none" style="color: var(--color-foreground);">
             <span class="relative inline-flex">
               <input type="checkbox" bind:checked={activo} class="sr-only peer" />
@@ -428,7 +640,68 @@
         </div>
       </div>
 
-      <!-- ══ 2. OPCIONES DE COMPRA ══════════════════════════════════ -->
+      <!-- ══ 2. FOTOS DEL PRODUCTO (sin grupo de color) ════════════ -->
+      {#if !hasColorGroup}
+        <div class="card">
+          <p class="section-title">Fotos del producto</p>
+          <p class="section-hint">La primera foto es la portada. Arrastra para reordenar.</p>
+
+          {#if product.imagenesDefault.length > 0}
+            <p class="drag-hint">↕ Arrastra las fotos para cambiar el orden</p>
+            <div class="img-grid">
+              {#each product.imagenesDefault as img, i (img)}
+                <div
+                  class="img-item {draggingDefaultIdx === i ? 'is-dragging' : ''} {dragOverDefaultIdx === i && draggingDefaultIdx !== i ? 'is-over' : ''}"
+                  draggable="true"
+                  ondragstart={(e) => onDragStartDefault(e, i)}
+                  ondragover={(e) => onDragOverDefault(e, i)}
+                  ondrop={(e) => onDropDefault(e, i)}
+                  ondragend={onDragEndDefault}
+                  role="listitem"
+                >
+                  <img src={getImageUrl(img)} alt="Foto {i + 1}" />
+                  <span class="img-num">{i + 1}</span>
+                  {#if i === 0}
+                    <span class="img-portada">Portada</span>
+                  {/if}
+                  <button
+                    class="img-delete"
+                    onclick={() => handleDeleteDefault(img)}
+                    aria-label="Eliminar foto"
+                  >✕</button>
+                </div>
+              {/each}
+            </div>
+          {/if}
+
+          <div class="upload-zone">
+            <input type="file" multiple accept="image/*"
+              onchange={(e) => defaultFiles = (e.target as HTMLInputElement).files}
+              id="default-upload" />
+            <label for="default-upload" class="pointer-events-none flex flex-col items-center gap-1 py-2">
+              <span class="text-2xl">📷</span>
+              <p class="text-sm font-medium" style="color: var(--color-foreground);">
+                {#if defaultFiles?.length}
+                  {defaultFiles.length} foto{defaultFiles.length > 1 ? 's' : ''} lista{defaultFiles.length > 1 ? 's' : ''}
+                {:else}
+                  Haz clic o arrastra fotos aquí
+                {/if}
+              </p>
+              <p class="text-xs" style="color: var(--color-muted-foreground);">JPG, PNG, WEBP</p>
+            </label>
+          </div>
+
+          {#if defaultFiles?.length}
+            <div class="mt-3">
+              <Button onclick={handleUploadDefault} loading={uploadingDefault}>
+                Subir {defaultFiles.length} foto{defaultFiles.length > 1 ? 's' : ''}
+              </Button>
+            </div>
+          {/if}
+        </div>
+      {/if}
+
+      <!-- ══ 3. OPCIONES DE COMPRA ══════════════════════════════════ -->
       <div class="card">
         <p class="section-title">Opciones de compra</p>
         <p class="section-hint">Define los colores, almacenamiento u otras variantes que puede elegir el cliente.</p>
@@ -436,7 +709,6 @@
         <!-- Grupos existentes -->
         {#each product.gruposOpciones as grupo (grupo._id)}
           <div class="grupo-card mb-4">
-            <!-- Cabecera del grupo -->
             <div class="grupo-header">
               <div class="flex items-center gap-2">
                 <span class="text-base">
@@ -461,16 +733,36 @@
 
             <!-- Opciones del grupo -->
             <div class="p-3 flex flex-col gap-2">
-              {#each grupo.opciones as opcion (opcion._id)}
-                <div class="flex flex-col gap-2 p-3 rounded-xl" style="background: var(--color-secondary); border: 1px solid var(--color-border);">
-                  <!-- Fila de info + borrar -->
-                  <div class="flex items-center justify-between">
+              {#if grupo.tipo === 'color' && grupo.opciones.length > 1}
+                <p class="drag-hint">↕ Arrastra los colores para cambiar el orden · El primero es la portada de la tienda</p>
+              {/if}
+
+              {#each grupo.opciones as opcion, opcionIdx (opcion._id)}
+                {@const isColorCover = grupo.tipo === 'color' && opcionIdx === 0 && product.gruposOpciones.findIndex(g => g.tipo === 'color') === product.gruposOpciones.indexOf(grupo)}
+                <div
+                  class="opcion-item {grupo.tipo === 'color' ? (draggingOpcionesGrupoIdx[grupo._id] === opcionIdx ? 'is-dragging' : '') : ''} {grupo.tipo === 'color' && dragOverOpcionesGrupoIdx[grupo._id] === opcionIdx && draggingOpcionesGrupoIdx[grupo._id] !== opcionIdx ? 'is-over' : ''} {isColorCover ? 'is-cover' : ''}"
+                  draggable={grupo.tipo === 'color'}
+                  ondragstart={grupo.tipo === 'color' ? (e) => onDragStartOpcionesGrupo(e, grupo._id, opcionIdx) : undefined}
+                  ondragover={grupo.tipo === 'color' ? (e) => onDragOverOpcionesGrupo(e, grupo._id, opcionIdx) : undefined}
+                  ondrop={grupo.tipo === 'color' ? (e) => onDropOpcionesGrupo(e, grupo._id, grupo.opciones, opcionIdx) : undefined}
+                  ondragend={grupo.tipo === 'color' ? () => onDragEndOpcionesGrupo(grupo._id) : undefined}
+                  role="listitem"
+                  style={grupo.tipo !== 'color' ? 'cursor: default;' : ''}
+                >
+                  <!-- Cabecera de la opción -->
+                  <div class="flex items-center justify-between gap-2">
                     <div class="flex items-center gap-2 flex-1 min-w-0">
+                      {#if grupo.tipo === 'color'}
+                        <span class="drag-handle">⠿</span>
+                      {/if}
                       {#if grupo.tipo === 'color' && (opcion as any).codigoHex}
                         <span class="w-5 h-5 rounded-full border border-black/15 shrink-0"
                           style="background:{(opcion as any).codigoHex};"></span>
                       {/if}
                       <span class="text-sm font-medium truncate">{opcion.valor}</span>
+                      {#if isColorCover}
+                        <span class="cover-badge shrink-0">Portada</span>
+                      {/if}
                       {#if opcion.modificadorPrecio && opcion.modificadorPrecio !== 0}
                         <span class="text-xs shrink-0 px-1.5 py-0.5 rounded"
                           style="background: var(--color-card); color: var(--color-muted-foreground); border: 1px solid var(--color-border);">
@@ -479,47 +771,60 @@
                       {/if}
                     </div>
                     <button onclick={() => handleDeleteOpcion(grupo._id, opcion._id)}
-                      class="text-sm leading-none cursor-pointer opacity-40 hover:opacity-100 transition-opacity shrink-0 ml-2"
-                      style="color: var(--color-destructive);">
+                      class="text-sm leading-none cursor-pointer opacity-40 hover:opacity-100 transition-opacity shrink-0"
+                      style="color: var(--color-destructive);"
+                      aria-label="Eliminar opción">
                       ✕
                     </button>
                   </div>
 
-                  <!-- Imágenes del color -->
+                  <!-- Imágenes del color con drag-and-drop -->
                   {#if grupo.tipo === 'color'}
                     {#if (opcion as any).imagenes?.length > 0}
-                      <div class="flex flex-wrap gap-1.5">
-                        {#each (opcion as any).imagenes as img}
-                          <div class="relative group/img">
-                            <img src={getImageUrl(img)} alt={opcion.valor}
-                              class="w-14 h-14 rounded-lg object-cover" />
+                      <p class="drag-hint" style="margin-bottom: 0.3rem;">↕ Arrastra para reordenar fotos · La primera es la portada del color</p>
+                      <div class="img-grid" style="grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));">
+                        {#each (opcion as any).imagenes as img, i (img)}
+                          <div
+                            class="img-item {draggingOpcionIdx[opcion._id] === i ? 'is-dragging' : ''} {dragOverOpcionIdx[opcion._id] === i && draggingOpcionIdx[opcion._id] !== i ? 'is-over' : ''}"
+                            draggable="true"
+                            ondragstart={(e) => onDragStartOpcion(e, opcion._id, i)}
+                            ondragover={(e) => onDragOverOpcion(e, opcion._id, i)}
+                            ondrop={(e) => onDropOpcion(e, grupo._id, opcion._id, (opcion as any).imagenes, i)}
+                            ondragend={() => onDragEndOpcion(opcion._id)}
+                            role="listitem"
+                          >
+                            <img src={getImageUrl(img)} alt="{opcion.valor} foto {i + 1}" />
+                            <span class="img-num">{i + 1}</span>
+                            {#if i === 0}
+                              <span class="img-portada">Portada</span>
+                            {/if}
                             <button
+                              class="img-delete"
                               onclick={() => handleDeleteImagen(grupo._id, opcion._id, img)}
-                              class="absolute -top-1 -right-1 w-5 h-5 rounded-full text-xs
-                                     hidden group-hover/img:flex items-center justify-center cursor-pointer"
-                              style="background: var(--color-destructive); color: #fff;">✕</button>
+                              aria-label="Eliminar foto"
+                            >✕</button>
                           </div>
                         {/each}
                       </div>
                     {/if}
-                    <!-- Upload extra fotos -->
-                    <div class="upload-zone" style="padding: 0.75rem;">
-                      <input type="file" multiple accept="image/*"
-                        onchange={(e) => {
-                          extraFiles = (e.target as HTMLInputElement).files;
-                          extraOpcionTarget = { gId: grupo._id, oId: opcion._id };
-                        }} />
-                      <p class="text-xs pointer-events-none" style="color: var(--color-muted-foreground);">
-                        {#if extraOpcionTarget?.oId === opcion._id && extraFiles?.length}
-                          {extraFiles.length} foto{extraFiles.length > 1 ? 's' : ''} seleccionada{extraFiles.length > 1 ? 's' : ''}
+
+                    <!-- Upload fotos extra -->
+                    <div class="upload-zone" style="padding: 0.625rem;">
+                      <input
+                        type="file" multiple accept="image/*"
+                        id="extra-{opcion._id}"
+                        onchange={(e) => { extraFiles[opcion._id] = (e.target as HTMLInputElement).files; }} />
+                      <label for="extra-{opcion._id}" class="text-xs pointer-events-none block" style="color: var(--color-muted-foreground);">
+                        {#if extraFiles[opcion._id]?.length}
+                          {extraFiles[opcion._id]!.length} foto{extraFiles[opcion._id]!.length > 1 ? 's' : ''} seleccionada{extraFiles[opcion._id]!.length > 1 ? 's' : ''}
                         {:else}
                           + Añadir fotos a este color
                         {/if}
-                      </p>
+                      </label>
                     </div>
-                    {#if extraOpcionTarget?.oId === opcion._id && extraFiles?.length}
-                      <Button onclick={() => handleUploadExtra(grupo._id, opcion._id)} loading={uploadingExtra}>
-                        Subir fotos
+                    {#if extraFiles[opcion._id]?.length}
+                      <Button onclick={() => handleUploadExtra(grupo._id, opcion._id)} loading={uploadingExtra[opcion._id] ?? false}>
+                        Subir {extraFiles[opcion._id]!.length} foto{extraFiles[opcion._id]!.length > 1 ? 's' : ''}
                       </Button>
                     {/if}
                   {/if}
@@ -540,27 +845,27 @@
                   style="color: var(--color-muted-foreground);">Nuevo color</p>
                 <div class="flex flex-col gap-3">
                   <div class="field">
-                    <label>Nombre del color</label>
-                    <input type="text" placeholder="ej: Negro Sideral"
+                    <label for="color-nombre-{grupo._id}">Nombre del color</label>
+                    <input id="color-nombre-{grupo._id}" type="text" placeholder="ej: Negro Sideral"
                       bind:value={newColorValor} class="inp" />
                   </div>
                   <div class="field">
-                    <label>Color</label>
+                    <label for="color-hex-{grupo._id}">Color</label>
                     <div class="flex items-center gap-3">
                       <div class="relative" style="width: 3rem; height: 3rem;">
                         <div class="w-12 h-12 rounded-lg border overflow-hidden"
                           style="border-color: var(--color-border); background: {newColorHex};">
                         </div>
-                        <input type="color" bind:value={newColorHex}
+                        <input id="color-hex-{grupo._id}" type="color" bind:value={newColorHex}
                           class="absolute inset-0 opacity-0 w-full h-full cursor-pointer" />
                       </div>
                       <span class="text-sm font-mono" style="color: var(--color-muted-foreground);">{newColorHex}</span>
                     </div>
                   </div>
                   <div class="field">
-                    <label>Fotos (opcional)</label>
+                    <label for="color-fotos-{grupo._id}">Fotos (opcional)</label>
                     <div class="upload-zone">
-                      <input type="file" multiple accept="image/*"
+                      <input id="color-fotos-{grupo._id}" type="file" multiple accept="image/*"
                         onchange={(e) => newColorFiles = (e.target as HTMLInputElement).files} />
                       <p class="text-sm pointer-events-none" style="color: var(--color-muted-foreground);">
                         {#if newColorFiles?.length}
@@ -583,13 +888,13 @@
                 <div class="flex flex-col gap-3">
                   <div class="grid grid-cols-2 gap-3">
                     <div class="field">
-                      <label>Valor</label>
-                      <input type="text" placeholder="ej: 256 GB"
+                      <label for="storage-valor-{grupo._id}">Valor</label>
+                      <input id="storage-valor-{grupo._id}" type="text" placeholder="ej: 256 GB"
                         bind:value={newStorageValor} class="inp" />
                     </div>
                     <div class="field">
-                      <label>Precio extra (€)</label>
-                      <input type="number" placeholder="0" min="0"
+                      <label for="storage-precio-{grupo._id}">Precio extra (€)</label>
+                      <input id="storage-precio-{grupo._id}" type="number" placeholder="0" min="0"
                         bind:value={newStorageModificador} class="inp" />
                     </div>
                   </div>
@@ -608,7 +913,6 @@
         <div class="mt-2 pt-5 border-t" style="border-color: var(--color-border);">
           <p class="text-sm font-semibold mb-4" style="color: var(--color-foreground);">Añadir grupo de opciones</p>
 
-          <!-- Selector tipo: 3 tarjetas visuales -->
           <div class="flex gap-3 mb-4">
             <button class="tipo-btn {newGrupoTipo === 'color' ? 'selected' : ''}"
               onclick={() => newGrupoTipo = 'color'}>
@@ -628,8 +932,8 @@
           </div>
 
           <div class="field mb-4">
-            <label>Etiqueta del grupo</label>
-            <input type="text"
+            <label for="grupo-nombre">Etiqueta del grupo</label>
+            <input id="grupo-nombre" type="text"
               placeholder={newGrupoTipo === 'color' ? 'ej: Color' : newGrupoTipo === 'storage' ? 'ej: Almacenamiento' : 'ej: Conectividad'}
               bind:value={newGrupoNombre} class="inp" />
           </div>
@@ -638,53 +942,6 @@
           </Button>
         </div>
       </div>
-
-      <!-- ══ 3. FOTOS DEL PRODUCTO (sin grupo de color) ════════════ -->
-      {#if !hasColorGroup}
-        <div class="card">
-          <p class="section-title">Fotos del producto</p>
-          <p class="section-hint">Sube las imágenes principales. Si añades un grupo de Color, las fotos se gestionan por color.</p>
-
-          {#if product.imagenesDefault.length > 0}
-            <div class="flex flex-wrap gap-2 mb-4">
-              {#each product.imagenesDefault as img}
-                <div class="relative group/img">
-                  <img src={getImageUrl(img)} alt="Imagen"
-                    class="w-20 h-20 rounded-xl object-cover border"
-                    style="border-color: var(--color-border);" />
-                  <button
-                    onclick={() => handleDeleteDefault(img)}
-                    class="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full text-xs
-                           hidden group-hover/img:flex items-center justify-center cursor-pointer"
-                    style="background: var(--color-destructive); color: #fff;">✕</button>
-                </div>
-              {/each}
-            </div>
-          {/if}
-
-          <div class="upload-zone mb-4">
-            <input type="file" multiple accept="image/*"
-              onchange={(e) => defaultFiles = (e.target as HTMLInputElement).files} />
-            <div class="pointer-events-none flex flex-col items-center gap-1 py-2">
-              <span class="text-2xl">📷</span>
-              <p class="text-sm font-medium" style="color: var(--color-foreground);">
-                {#if defaultFiles?.length}
-                  {defaultFiles.length} foto{defaultFiles.length > 1 ? 's' : ''} lista{defaultFiles.length > 1 ? 's' : ''}
-                {:else}
-                  Haz clic para añadir fotos
-                {/if}
-              </p>
-              <p class="text-xs" style="color: var(--color-muted-foreground);">JPG, PNG, WEBP</p>
-            </div>
-          </div>
-
-          {#if defaultFiles?.length}
-            <Button onclick={handleUploadDefault} loading={uploadingDefault}>
-              Subir fotos
-            </Button>
-          {/if}
-        </div>
-      {/if}
 
     </div>
   {/if}

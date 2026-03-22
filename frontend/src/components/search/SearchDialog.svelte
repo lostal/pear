@@ -6,6 +6,7 @@
   import { uiState } from '../../lib/ui.svelte.js';
   import { fetchProducts } from '../../services/products.service.js';
   import type { Product } from '../../types/index.js';
+  import { getImagenesForProduct, getImageUrl } from '../../types/index.js';
 
   function dialogFly(
     node: Element,
@@ -75,7 +76,7 @@
     onclick={() => uiState.closeSearch()}
   >
     <div
-      class="w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden"
+      class="w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col"
       style="background: var(--color-card); border: 1px solid var(--color-border);"
       in:dialogFly={{ duration: 250, y: -24 }}
       out:dialogFly={{ duration: 180, y: -12 }}
@@ -131,19 +132,27 @@
         {:else}
           <div class="space-y-1">
             {#each filteredProducts as product (product._id)}
+              {@const img = getImagenesForProduct(product)[0]}
               <button
-                class="w-full text-left p-4 sm:p-5 rounded-xl transition-all cursor-pointer"
+                class="w-full text-left p-4 sm:p-5 rounded-xl transition-all cursor-pointer flex items-center gap-3"
                 style="background: transparent;"
                 onmouseenter={(e) => (e.currentTarget as HTMLElement).style.background = 'var(--color-accent)'}
                 onmouseleave={(e) => (e.currentTarget as HTMLElement).style.background = 'transparent'}
                 onclick={() => goToProduct(product._id)}
               >
-                <p class="text-sm sm:text-base font-bold" style="color: var(--color-foreground);">
-                  {product.nombre}
-                </p>
-                <p class="text-xs sm:text-sm mt-0.5" style="color: var(--color-muted-foreground);">
-                  {fmt.format(product.precioBase)}
-                </p>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm sm:text-base font-bold" style="color: var(--color-foreground);">
+                    {product.nombre}
+                  </p>
+                  <p class="text-xs sm:text-sm mt-0.5" style="color: var(--color-muted-foreground);">
+                    {fmt.format(product.precioBase)}
+                  </p>
+                </div>
+                <div class="flex-shrink-0 w-12 h-12 rounded-xl overflow-hidden" style="background: #d9d9d9;">
+                  {#if img}
+                    <img src={getImageUrl(img)} alt={product.nombre} class="w-full h-full object-contain" draggable="false" />
+                  {/if}
+                </div>
               </button>
             {/each}
           </div>

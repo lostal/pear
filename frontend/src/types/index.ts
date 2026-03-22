@@ -108,5 +108,5 @@ export function getPrecioMinimo(product: Product): number {
 
 /** URL completa de una imagen */
 export function getImageUrl(filename: string): string {
-  return `/api/uploads/${filename}`;
+  return `/uploads/${filename}`;
 }

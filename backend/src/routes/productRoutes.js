@@ -6,14 +6,21 @@ const multer = require('multer');
 const ProductController = require('../controllers/productController');
 const authJWT = require('../middleware/authMiddleware');
 
+// ── Directorio base de uploads (dentro de /app para que el usuario node pueda escribir) ──
+const UPLOADS_ROOT = path.join(__dirname, '..', '..', 'uploads');
+
 // ── Multer: almacenamiento con subdirectorios por producto/variante ────────────
 
 function makeStorage(destFn) {
   return multer.diskStorage({
     destination(req, file, cb) {
       const dir = destFn(req);
-      fs.mkdirSync(dir, { recursive: true });
-      cb(null, dir);
+      try {
+        fs.mkdirSync(dir, { recursive: true });
+        cb(null, dir);
+      } catch (err) {
+        cb(err);
+      }
     },
     filename(req, file, cb) {
       cb(null, `${Date.now()}${path.extname(file.originalname)}`);
@@ -24,20 +31,20 @@ function makeStorage(destFn) {
 // Para crear una opción con imágenes: usamos gId como directorio temporal (oId aún no existe)
 const uploadOpcionNewImages = multer({
   storage: makeStorage(req =>
-    path.join('/uploads', 'productos', req.params.id, req.params.gId)
+    path.join(UPLOADS_ROOT, 'productos', req.params.id, req.params.gId)
   )
 });
 
 // Para añadir imágenes a una opción existente: usamos oId como directorio
 const uploadOpcionImages = multer({
   storage: makeStorage(req =>
-    path.join('/uploads', 'productos', req.params.id, req.params.oId)
+    path.join(UPLOADS_ROOT, 'productos', req.params.id, req.params.oId)
   )
 });
 
 const uploadDefaultImages = multer({
   storage: makeStorage(req =>
-    path.join('/uploads', 'productos', req.params.id, 'default')
+    path.join(UPLOADS_ROOT, 'productos', req.params.id, 'default')
   )
 });
 
@@ -49,6 +56,7 @@ router.get('/:id', ProductController.getProduct.bind(ProductController));
 
 // CRUD básico (admin)
 router.post('/', authJWT, ProductController.createProduct.bind(ProductController));
+router.put('/reorder', authJWT, ProductController.reorderBatch.bind(ProductController));
 router.put('/:id', authJWT, ProductController.updateProduct.bind(ProductController));
 router.delete('/:id', authJWT, ProductController.deleteProduct.bind(ProductController));
 
@@ -87,6 +95,27 @@ router.delete(
   '/:id/grupos/:gId/opciones/:oId/imagenes',
   authJWT,
   ProductController.deleteImagenOpcion.bind(ProductController)
+);
+
+// Reordenar opciones dentro de un grupo
+router.put(
+  '/:id/grupos/:gId/opciones',
+  authJWT,
+  ProductController.reorderOpciones.bind(ProductController)
+);
+
+// Reordenar imágenes default
+router.put(
+  '/:id/imagenes-default',
+  authJWT,
+  ProductController.reorderImagenesDefault.bind(ProductController)
+);
+
+// Reordenar imágenes de opción
+router.put(
+  '/:id/grupos/:gId/opciones/:oId/imagenes',
+  authJWT,
+  ProductController.reorderImagenesOpcion.bind(ProductController)
 );
 
 // Imágenes default
