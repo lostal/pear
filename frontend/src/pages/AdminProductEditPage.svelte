@@ -1,5 +1,6 @@
 <script lang="ts">
   import { push } from '../lib/router.svelte.js';
+  import { withTransition } from '../lib/transitions.js';
   import { auth } from '../stores/auth.svelte.js';
   import { toast } from '../stores/toast.svelte.js';
   import {
@@ -384,7 +385,7 @@
   <!-- Header: breadcrumb + guardar -->
   <div class="flex items-center gap-3 mb-8">
     <button
-      onclick={() => push('/admin/products')}
+      onclick={() => withTransition(() => push('/admin/products'))}
       class="text-sm cursor-pointer transition-opacity hover:opacity-70 shrink-0 flex items-center gap-1 group"
       style="color: var(--color-muted-foreground);"
     >

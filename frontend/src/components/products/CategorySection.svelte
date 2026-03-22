@@ -2,6 +2,8 @@
   import type { ProductosPorCategoria } from '../../types/index.js';
   import ProductCard from './ProductCard.svelte';
   import { ArrowRight } from 'lucide-svelte';
+  import { push } from '../../lib/router.svelte.js';
+  import { withTransition } from '../../lib/transitions.js';
 
   interface Props {
     group: ProductosPorCategoria;
@@ -16,14 +18,14 @@
       {group.categoria.nombre}
     </h2>
     {#if group.productos.length > 3}
-      <a
-        href={`/#/products?categoria=${group.categoria.slug}`}
-        class="text-sm flex items-center gap-1 transition-opacity hover:opacity-70 group"
+      <button
+        onclick={() => withTransition(() => push(`/products?categoria=${group.categoria.slug}`))}
+        class="text-sm flex items-center gap-1 transition-opacity hover:opacity-70 group cursor-pointer"
         style="color: var(--color-muted-foreground);"
       >
         Ver todos
         <ArrowRight size={14} class="transition-transform group-hover:translate-x-0.5" />
-      </a>
+      </button>
     {/if}
   </div>
 

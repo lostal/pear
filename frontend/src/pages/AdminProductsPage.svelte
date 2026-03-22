@@ -1,6 +1,7 @@
 <script lang="ts">
   import { untrack } from 'svelte';
   import { push } from '../lib/router.svelte.js';
+  import { withTransition } from '../lib/transitions.js';
   import { auth } from '../stores/auth.svelte.js';
   import { toast } from '../stores/toast.svelte.js';
   import {
@@ -15,6 +16,7 @@
   } from '../services/products.service.js';
   import type { Product, Categoria } from '../types/index.js';
   import Spinner from '../components/ui/Spinner.svelte';
+  import ConfirmDialog from '../components/ui/ConfirmDialog.svelte';
   import Button from '../components/ui/Button.svelte';
   import PageLayout from '../components/layout/PageLayout.svelte';
   import { GripVertical, Pencil, Trash2, ChevronLeft } from 'lucide-svelte';
@@ -46,6 +48,10 @@
   let prodCategoria = $state('');
   let prodPrecio = $state('');
   let prodLoading = $state(false);
+
+  // ── Drag: categorías
+  let deleteTarget = $state<Product | null>(null);
+  let deleting = $state(false);
 
   // ── Drag: categorías
   let draggingCatIdx = $state<number | null>(null);
@@ -133,7 +139,7 @@
       prodCategoria = '';
       prodPrecio = '';
       toast.success('Producto creado');
-      push(`/admin/products/${p._id}`);
+      withTransition(() => push(`/admin/products/${p._id}`));
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Error');
     } finally {
@@ -141,15 +147,20 @@
     }
   }
 
-  async function handleDeleteProduct(id: string, nombre: string) {
-    if (!confirm(`¿Eliminar "${nombre}" de forma permanente?`)) return;
+  async function handleConfirmDelete() {
+    if (!deleteTarget) return;
+    const target = deleteTarget;
+    deleting = true;
     try {
-      await deleteProduct(id);
-      productList = productList.filter((p) => p._id !== id);
+      await deleteProduct(target._id);
+      productList = productList.filter((p) => p._id !== target._id);
       buildGroups();
       toast.success('Producto eliminado');
+      deleteTarget = null;
     } catch {
       toast.error('Error al eliminar');
+    } finally {
+      deleting = false;
     }
   }
 
@@ -235,7 +246,7 @@
   <div class="flex items-center justify-between mb-8 gap-4">
     <h1 class="text-3xl font-black">Panel de productos</h1>
     <button
-      onclick={() => push('/products')}
+      onclick={() => withTransition(() => push('/products'))}
       class="text-sm flex items-center gap-1 transition-opacity hover:opacity-70 cursor-pointer group"
       style="color: var(--color-muted-foreground);"
     >
@@ -441,7 +452,7 @@
                           Editar
                         </button>
                         <button
-                          onclick={() => handleDeleteProduct(prod._id, prod.nombre)}
+                          onclick={() => (deleteTarget = prod)}
                           class="flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-md cursor-pointer transition-opacity hover:opacity-70"
                           style="color: var(--color-destructive);"
                         >
@@ -459,6 +470,16 @@
     </div>
   {/if}
 </PageLayout>
+
+<ConfirmDialog
+  open={!!deleteTarget}
+  title="¿Eliminar producto?"
+  message="Se eliminará «{deleteTarget?.nombre}» de forma permanente."
+  confirmLabel="Eliminar"
+  loading={deleting}
+  onconfirm={handleConfirmDelete}
+  oncancel={() => (deleteTarget = null)}
+/>
 
 <style>
   /* Drag: categorías */

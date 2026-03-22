@@ -2,7 +2,8 @@
   import { push } from '../lib/router.svelte.js';
   import { auth } from '../stores/auth.svelte.js';
   import PageLayout from '../components/layout/PageLayout.svelte';
-  import { LogOut, User, ShieldCheck, Mail } from 'lucide-svelte';
+  import { LogOut, User, ShieldCheck } from 'lucide-svelte';
+  import { withTransition } from '../lib/transitions.js';
 
   $effect(() => {
     if (!auth.isAuthenticated) push('/');
@@ -10,7 +11,7 @@
 
   function handleLogout() {
     auth.logout();
-    push('/');
+    withTransition(() => push('/'));
   }
 </script>
 

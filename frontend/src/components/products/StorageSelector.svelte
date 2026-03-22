@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { GrupoOpciones, Opcion } from '../../types/index.js';
+  import { formatPrice } from '../../lib/utils.js';
 
   interface Props {
     grupo: GrupoOpciones;
@@ -10,9 +11,7 @@
 
   let { grupo, selected, precioBase, onselect }: Props = $props();
 
-  function formatPrice(p: number) {
-    return new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(p);
-  }
+
 </script>
 
 <div class="flex flex-wrap gap-2">

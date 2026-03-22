@@ -4,6 +4,7 @@
   import { push } from '../../lib/router.svelte.js';
   import { withTransition } from '../../lib/transitions.js';
   import { saveScroll } from '../../lib/scrollMemory.js';
+  import { formatPrice } from '../../lib/utils.js';
 
   interface Props {
     product: Product;
@@ -16,9 +17,7 @@
   const precio = $derived(getPrecioMinimo(product));
   const colorGrupo = $derived(product.gruposOpciones.find((g) => g.tipo === 'color'));
 
-  function formatPrice(p: number) {
-    return new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(p);
-  }
+
 </script>
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->

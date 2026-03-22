@@ -14,9 +14,6 @@
   onMount(() => {
     const y = restoreScroll('/products');
     if (y > 0) window.scrollTo({ top: y, behavior: 'instant' });
-  });
-
-  $effect(() => {
     loadProducts();
   });
 

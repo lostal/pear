@@ -1,12 +1,5 @@
-import type { User, JwtPayload } from '../types/index.js';
-
-function parseJwt(token: string): JwtPayload | null {
-  try {
-    return JSON.parse(atob(token.split('.')[1])) as JwtPayload;
-  } catch {
-    return null;
-  }
-}
+import type { User } from '../types/index.js';
+import { parseJwt } from '../lib/utils.js';
 
 function userFromToken(token: string): User | null {
   const payload = parseJwt(token);

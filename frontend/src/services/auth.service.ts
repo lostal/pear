@@ -1,15 +1,7 @@
 import { http } from './http.js';
 import { auth } from '../stores/auth.svelte.js';
-import type { LoginCredentials, JwtPayload } from '../types/index.js';
-
-function parseJwt(token: string): JwtPayload | null {
-  try {
-    const payload = token.split('.')[1];
-    return JSON.parse(atob(payload)) as JwtPayload;
-  } catch {
-    return null;
-  }
-}
+import { parseJwt } from '../lib/utils.js';
+import type { LoginCredentials } from '../types/index.js';
 
 export async function login(credentials: LoginCredentials): Promise<void> {
   const res = await http.post<{ token: string }>('/api/login', credentials, { skipAuth: true });

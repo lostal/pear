@@ -3,6 +3,7 @@
   import { auth } from '../../stores/auth.svelte.js';
   import { withTransition } from '../../lib/transitions.js';
   import SearchButton from '../search/SearchButton.svelte';
+  import ThemeToggle from '../ui/ThemeToggle.svelte';
 
   let container: HTMLElement | undefined = $state();
 
@@ -76,8 +77,9 @@
       {/each}
     </nav>
 
-    <!-- Derecha: búsqueda -->
-    <div class="flex items-center justify-self-end">
+    <!-- Derecha: búsqueda + tema -->
+    <div class="flex items-center gap-1 justify-self-end">
+      <ThemeToggle />
       <SearchButton />
     </div>
   </div>

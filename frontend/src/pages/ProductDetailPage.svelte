@@ -8,6 +8,7 @@
   import { http } from '../services/http.js';
   import type { Product, OpcionColor, Opcion } from '../types/index.js';
   import { getImagenesForProduct, getPrecioTotal } from '../types/index.js';
+  import { formatPrice } from '../lib/utils.js';
   import ProductImageGallery from '../components/products/ProductImageGallery.svelte';
   import ColorSwatch from '../components/products/ColorSwatch.svelte';
   import StorageSelector from '../components/products/StorageSelector.svelte';
@@ -79,9 +80,7 @@
     }
   }
 
-  function formatPrice(p: number) {
-    return new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(p);
-  }
+
 </script>
 
 <PageLayout>

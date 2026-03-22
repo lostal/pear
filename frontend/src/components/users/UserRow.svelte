@@ -16,9 +16,7 @@
   const isSelf = $derived(auth.user?._id === user._id);
 </script>
 
-<tr
-  class="border-b border-[var(--color-border)] hover:bg-[var(--color-accent)]/30 transition-colors"
->
+<tr class="border-b border-border hover:bg-accent/30 transition-colors">
   <td class="py-3 px-4">
     <div class="flex items-center gap-3">
       <div
