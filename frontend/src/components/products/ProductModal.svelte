@@ -30,7 +30,11 @@
       </div>
 
       {#if product.imagenesDefault?.length > 0}
-        <img src="/api/uploads/{product.imagenesDefault[0]}" alt={product.nombre} class="rounded-md max-h-48 object-contain" />
+        <img
+          src="/api/uploads/{product.imagenesDefault[0]}"
+          alt={product.nombre}
+          class="rounded-md max-h-48 object-contain"
+        />
       {/if}
     </div>
   {/if}

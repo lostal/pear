@@ -29,15 +29,15 @@ export interface Categoria {
 
 export interface OpcionColor {
   _id: string;
-  valor: string;        // "Negro Sideral"
-  codigoHex: string;    // "#1c1c1e"
-  imagenes: string[];   // filenames
+  valor: string; // "Negro Sideral"
+  codigoHex: string; // "#1c1c1e"
+  imagenes: string[]; // filenames
   modificadorPrecio: number;
 }
 
 export interface OpcionStorage {
   _id: string;
-  valor: string;        // "256GB"
+  valor: string; // "256GB"
   codigoHex?: string;
   imagenes: string[];
   modificadorPrecio: number; // +100, etc.
@@ -50,7 +50,7 @@ export type TipoGrupo = 'color' | 'storage' | 'button';
 export interface GrupoOpciones {
   _id: string;
   tipo: TipoGrupo;
-  nombre: string;       // "Color", "Almacenamiento"
+  nombre: string; // "Color", "Almacenamiento"
   opciones: Opcion[];
 }
 
@@ -77,12 +77,14 @@ export interface ProductosPorCategoria {
 /** Devuelve las imágenes a mostrar según el color seleccionado (o las default) */
 export function getImagenesForProduct(product: Product, colorValor?: string): string[] {
   if (colorValor) {
-    const colorGrupo = product.gruposOpciones.find(g => g.tipo === 'color');
-    const opcion = colorGrupo?.opciones.find(o => o.valor === colorValor) as OpcionColor | undefined;
+    const colorGrupo = product.gruposOpciones.find((g) => g.tipo === 'color');
+    const opcion = colorGrupo?.opciones.find((o) => o.valor === colorValor) as
+      | OpcionColor
+      | undefined;
     if (opcion?.imagenes?.length) return opcion.imagenes;
   }
   // Fallback: primera opción de color disponible
-  const colorGrupo = product.gruposOpciones.find(g => g.tipo === 'color');
+  const colorGrupo = product.gruposOpciones.find((g) => g.tipo === 'color');
   if (colorGrupo?.opciones.length) {
     const primera = colorGrupo.opciones[0] as OpcionColor;
     if (primera.imagenes?.length) return primera.imagenes;
@@ -94,8 +96,10 @@ export function getImagenesForProduct(product: Product, colorValor?: string): st
 export function getPrecioTotal(product: Product, storageValor?: string): number {
   let precio = product.precioBase;
   if (storageValor) {
-    const storageGrupo = product.gruposOpciones.find(g => g.tipo === 'storage' || g.tipo === 'button');
-    const opcion = storageGrupo?.opciones.find(o => o.valor === storageValor);
+    const storageGrupo = product.gruposOpciones.find(
+      (g) => g.tipo === 'storage' || g.tipo === 'button'
+    );
+    const opcion = storageGrupo?.opciones.find((o) => o.valor === storageValor);
     if (opcion) precio += opcion.modificadorPrecio;
   }
   return precio;

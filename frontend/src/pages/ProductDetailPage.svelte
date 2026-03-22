@@ -21,7 +21,7 @@
 
   let { params = {} }: Props = $props();
 
-  const cached = productsStore.list.find(p => p._id === params?.id) ?? null;
+  const cached = productsStore.list.find((p) => p._id === params?.id) ?? null;
   let product = $state<Product | null>(cached);
   let loading = $state(!cached);
   let addingToCart = $state(false);
@@ -29,17 +29,13 @@
   let selectedColor = $state<OpcionColor | null>(null);
   let selectedStorage = $state<Opcion | null>(null);
 
-  const colorGrupo = $derived(product?.gruposOpciones.find(g => g.tipo === 'color'));
+  const colorGrupo = $derived(product?.gruposOpciones.find((g) => g.tipo === 'color'));
   const storageGrupos = $derived(
-    product?.gruposOpciones.filter(g => g.tipo === 'storage' || g.tipo === 'button') ?? []
+    product?.gruposOpciones.filter((g) => g.tipo === 'storage' || g.tipo === 'button') ?? []
   );
 
-  const imagenes = $derived(
-    product ? getImagenesForProduct(product, selectedColor?.valor) : []
-  );
-  const precio = $derived(
-    product ? getPrecioTotal(product, selectedStorage?.valor) : 0
-  );
+  const imagenes = $derived(product ? getImagenesForProduct(product, selectedColor?.valor) : []);
+  const precio = $derived(product ? getPrecioTotal(product, selectedStorage?.valor) : 0);
 
   $effect(() => {
     if (params.id) loadProduct(params.id);
@@ -73,7 +69,7 @@
       await http.post('/api/cart/add', {
         productId: product._id,
         colorValor: selectedColor?.valor,
-        storageValor: selectedStorage?.valor
+        storageValor: selectedStorage?.valor,
       });
       toast.success('Añadido al carrito');
     } catch {
@@ -103,13 +99,17 @@
       <!-- Placeholder imagen con view-transition-name para que la tarjeta vuele aquí -->
       <div
         class="aspect-square rounded-2xl"
-        style="background: var(--color-secondary); view-transition-name: {params.id ? `product-image-${params.id}` : ''};"
+        style="background: var(--color-secondary); view-transition-name: {params.id
+          ? `product-image-${params.id}`
+          : ''};"
       ></div>
       <!-- Placeholder título -->
       <div class="flex flex-col gap-6">
         <div
           class="h-14 rounded-xl"
-          style="background: var(--color-secondary); view-transition-name: {params.id ? `product-title-${params.id}` : ''};"
+          style="background: var(--color-secondary); view-transition-name: {params.id
+            ? `product-title-${params.id}`
+            : ''};"
         ></div>
         <Spinner size="lg" />
       </div>
@@ -128,7 +128,10 @@
       <div class="flex flex-col gap-6">
         <!-- Nombre y categoría -->
         {#if product.categoria}
-          <p class="text-xs uppercase tracking-widest font-medium" style="color: var(--color-muted-foreground);">
+          <p
+            class="text-xs uppercase tracking-widest font-medium"
+            style="color: var(--color-muted-foreground);"
+          >
             {product.categoria.nombre}
           </p>
         {/if}
@@ -157,12 +160,16 @@
         {#if colorGrupo && colorGrupo.opciones.length > 0}
           <div>
             <p class="text-sm font-medium mb-3">
-              Color — <span style="color: var(--color-muted-foreground);">{selectedColor?.valor ?? ''}</span>
+              Color — <span style="color: var(--color-muted-foreground);"
+                >{selectedColor?.valor ?? ''}</span
+              >
             </p>
             <ColorSwatch
               opciones={colorGrupo.opciones as OpcionColor[]}
               selected={selectedColor?.valor}
-              onselect={(op) => { selectedColor = op; }}
+              onselect={(op) => {
+                selectedColor = op;
+              }}
             />
           </div>
         {/if}
@@ -175,7 +182,9 @@
               {grupo}
               selected={selectedStorage?.valor}
               precioBase={product.precioBase}
-              onselect={(op) => { selectedStorage = op; }}
+              onselect={(op) => {
+                selectedStorage = op;
+              }}
             />
           </div>
         {/each}

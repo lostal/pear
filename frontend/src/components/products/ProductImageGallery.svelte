@@ -15,7 +15,9 @@
   // Al cambiar color: mantener índice, solo clampear si hay menos fotos
   $effect(() => {
     const max = Math.max(0, imagenes.length - 1);
-    untrack(() => { if (selectedIndex > max) selectedIndex = max; });
+    untrack(() => {
+      if (selectedIndex > max) selectedIndex = max;
+    });
   });
 
   function navigate(dir: number) {
@@ -46,12 +48,14 @@
     const dx = e.clientX - startX;
     const dy = e.clientY - startY;
     if (!movedEnough && Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > 6) {
-      isDragging = false; dragX = 0; return;
+      isDragging = false;
+      dragX = 0;
+      return;
     }
     if (Math.abs(dx) > 6) movedEnough = true;
     // Rubber band en los extremos: resiste el arrastre imposible
     const atStart = selectedIndex === 0;
-    const atEnd   = selectedIndex === imagenes.length - 1;
+    const atEnd = selectedIndex === imagenes.length - 1;
     if ((atStart && dx > 0) || (atEnd && dx < 0)) {
       dragX = dx * 0.22;
     } else {
@@ -73,6 +77,60 @@
   const stripTransition = $derived(isDragging ? 'none' : 'transform 0.32s ease-in-out');
 </script>
 
+<div class="flex flex-col gap-3">
+  <div
+    class="viewport {isDragging ? 'is-dragging' : ''}"
+    bind:clientWidth={viewportW}
+    onpointerdown={onPointerDown}
+    onpointermove={onPointerMove}
+    onpointerup={onPointerUp}
+    onpointercancel={onPointerUp}
+    role="img"
+    aria-label={alt}
+  >
+    {#if imagenes.length > 0 && viewportW > 0}
+      <div class="strip" style="transform: translateX({stripX}px); transition: {stripTransition};">
+        {#each imagenes as img (img)}
+          <div class="slide" style="width: {viewportW}px;">
+            <img src={getImageUrl(img)} {alt} draggable="false" />
+          </div>
+        {/each}
+      </div>
+    {:else if imagenes.length === 0}
+      <span class="text-7xl font-black select-none" style="color: #bbb;">
+        {alt.charAt(0)}
+      </span>
+    {/if}
+
+    {#if imagenes.length > 1}
+      {#if selectedIndex > 0}
+        <button class="nav-btn nav-prev" onclick={() => navigate(-1)} aria-label="Foto anterior">
+          <ChevronLeft size={16} strokeWidth={2.5} />
+        </button>
+      {/if}
+      {#if selectedIndex < imagenes.length - 1}
+        <button class="nav-btn nav-next" onclick={() => navigate(1)} aria-label="Foto siguiente">
+          <ChevronRight size={16} strokeWidth={2.5} />
+        </button>
+      {/if}
+    {/if}
+  </div>
+
+  {#if imagenes.length > 1}
+    <div class="thumbs">
+      {#each imagenes as img, i (img)}
+        <button
+          class="thumb {i === selectedIndex ? 'active' : ''}"
+          onclick={() => (selectedIndex = i)}
+          aria-label="{alt} foto {i + 1}"
+        >
+          <img src={getImageUrl(img)} alt="" draggable="false" />
+        </button>
+      {/each}
+    </div>
+  {/if}
+</div>
+
 <style>
   .viewport {
     position: relative;
@@ -85,7 +143,9 @@
     -webkit-user-select: none;
     touch-action: pan-y;
   }
-  .viewport.is-dragging { cursor: grabbing; }
+  .viewport.is-dragging {
+    cursor: grabbing;
+  }
 
   .strip {
     display: flex;
@@ -126,13 +186,23 @@
     color: var(--color-foreground);
     cursor: pointer;
     opacity: 0;
-    transition: opacity 0.2s, scale 0.15s;
+    transition:
+      opacity 0.2s,
+      scale 0.15s;
     padding: 0;
   }
-  .nav-btn:hover { scale: 1.1; }
-  .viewport:hover .nav-btn { opacity: 1; }
-  .nav-prev { left: 0.625rem; }
-  .nav-next { right: 0.625rem; }
+  .nav-btn:hover {
+    scale: 1.1;
+  }
+  .viewport:hover .nav-btn {
+    opacity: 1;
+  }
+  .nav-prev {
+    left: 0.625rem;
+  }
+  .nav-next {
+    right: 0.625rem;
+  }
 
   /* Miniaturas */
   .thumbs {
@@ -142,7 +212,9 @@
     padding-bottom: 0.125rem;
     scrollbar-width: none;
   }
-  .thumbs::-webkit-scrollbar { display: none; }
+  .thumbs::-webkit-scrollbar {
+    display: none;
+  }
   .thumb {
     flex-shrink: 0;
     width: 3.25rem;
@@ -152,68 +224,24 @@
     border: 2px solid transparent;
     cursor: pointer;
     opacity: 0.45;
-    transition: border-color 0.15s, opacity 0.15s;
+    transition:
+      border-color 0.15s,
+      opacity 0.15s;
     background: #d9d9d9;
     padding: 0;
   }
-  .thumb.active { border-color: var(--color-foreground); opacity: 1; }
-  .thumb:not(.active):hover { opacity: 0.75; }
-  .thumb img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; display: block; }
+  .thumb.active {
+    border-color: var(--color-foreground);
+    opacity: 1;
+  }
+  .thumb:not(.active):hover {
+    opacity: 0.75;
+  }
+  .thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+    display: block;
+  }
 </style>
-
-<div class="flex flex-col gap-3">
-  <div
-    class="viewport {isDragging ? 'is-dragging' : ''}"
-    bind:clientWidth={viewportW}
-    onpointerdown={onPointerDown}
-    onpointermove={onPointerMove}
-    onpointerup={onPointerUp}
-    onpointercancel={onPointerUp}
-    role="img"
-    aria-label={alt}
-  >
-    {#if imagenes.length > 0 && viewportW > 0}
-      <div
-        class="strip"
-        style="transform: translateX({stripX}px); transition: {stripTransition};"
-      >
-        {#each imagenes as img (img)}
-          <div class="slide" style="width: {viewportW}px;">
-            <img src={getImageUrl(img)} {alt} draggable="false" />
-          </div>
-        {/each}
-      </div>
-    {:else if imagenes.length === 0}
-      <span class="text-7xl font-black select-none" style="color: #bbb;">
-        {alt.charAt(0)}
-      </span>
-    {/if}
-
-    {#if imagenes.length > 1}
-      {#if selectedIndex > 0}
-        <button class="nav-btn nav-prev" onclick={() => navigate(-1)} aria-label="Foto anterior">
-          <ChevronLeft size={16} strokeWidth={2.5} />
-        </button>
-      {/if}
-      {#if selectedIndex < imagenes.length - 1}
-        <button class="nav-btn nav-next" onclick={() => navigate(1)} aria-label="Foto siguiente">
-          <ChevronRight size={16} strokeWidth={2.5} />
-        </button>
-      {/if}
-    {/if}
-  </div>
-
-  {#if imagenes.length > 1}
-    <div class="thumbs">
-      {#each imagenes as img, i (img)}
-        <button
-          class="thumb {i === selectedIndex ? 'active' : ''}"
-          onclick={() => selectedIndex = i}
-          aria-label="{alt} foto {i + 1}"
-        >
-          <img src={getImageUrl(img)} alt="" draggable="false" />
-        </button>
-      {/each}
-    </div>
-  {/if}
-</div>

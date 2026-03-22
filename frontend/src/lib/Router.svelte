@@ -1,8 +1,9 @@
 <script lang="ts">
+  import type { Component } from 'svelte';
   import { router } from './router.svelte.js';
 
   interface Props {
-    routes: Record<string, any>;
+    routes: Record<string, Component<{ params?: Record<string, string> }>>;
   }
 
   let { routes }: Props = $props();
@@ -23,7 +24,9 @@
       const m = location.match(regex);
       if (m) {
         const params: Record<string, string> = {};
-        paramNames.forEach((name, i) => { params[name] = m[i + 1]; });
+        paramNames.forEach((name, i) => {
+          params[name] = m[i + 1];
+        });
         return { Component, params };
       }
     }

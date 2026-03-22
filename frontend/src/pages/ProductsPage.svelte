@@ -42,7 +42,9 @@
     <div class="flex justify-center py-24"><Spinner size="lg" /></div>
   {:else if products.byCategory.length === 0}
     <div class="text-center py-24">
-      <p class="text-lg" style="color: var(--color-muted-foreground);">No hay productos disponibles.</p>
+      <p class="text-lg" style="color: var(--color-muted-foreground);">
+        No hay productos disponibles.
+      </p>
     </div>
   {:else}
     {#each products.byCategory as group (group.categoria._id ?? group.categoria.slug)}

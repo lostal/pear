@@ -73,12 +73,14 @@
       return;
     }
 
-    document.startViewTransition(() => {
-      flushSync(() => push('/products/' + id));
-    }).finished.finally(() => {
-      uiState.isSearchOpen = false;
-      navigating = false;
-    });
+    document
+      .startViewTransition(() => {
+        flushSync(() => push('/products/' + id));
+      })
+      .finished.finally(() => {
+        uiState.isSearchOpen = false;
+        navigating = false;
+      });
   }
 
   onMount(() => {
@@ -88,11 +90,6 @@
 
   const fmt = new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' });
 </script>
-
-<style>
-  .result-btn { background: transparent; }
-  .result-btn:hover { background: var(--color-accent); }
-</style>
 
 {#if uiState.isSearchOpen && !navigating}
   <!-- svelte-ignore a11y_click_events_have_key_events -->
@@ -137,13 +134,19 @@
       <div class="max-h-[60vh] sm:max-h-[400px] overflow-y-auto p-2 sm:p-4">
         {#if query.length === 0}
           <div class="p-12 text-center">
-            <p class="text-xs font-bold uppercase tracking-[0.2em]" style="color: var(--color-muted-foreground);">
+            <p
+              class="text-xs font-bold uppercase tracking-[0.2em]"
+              style="color: var(--color-muted-foreground);"
+            >
               Escribe para buscar...
             </p>
           </div>
         {:else if filteredProducts.length === 0}
           <div class="p-12 text-center">
-            <p class="text-xs font-bold uppercase tracking-[0.2em]" style="color: var(--color-muted-foreground);">
+            <p
+              class="text-xs font-bold uppercase tracking-[0.2em]"
+              style="color: var(--color-muted-foreground);"
+            >
               Sin resultados para "{query}"
             </p>
           </div>
@@ -159,13 +162,24 @@
                   <p class="text-sm sm:text-base font-bold" style="color: var(--color-foreground);">
                     {product.nombre}
                   </p>
-                  <p class="text-xs sm:text-sm mt-0.5" style="color: var(--color-muted-foreground);">
+                  <p
+                    class="text-xs sm:text-sm mt-0.5"
+                    style="color: var(--color-muted-foreground);"
+                  >
                     {fmt.format(product.precioBase)}
                   </p>
                 </div>
-                <div class="flex-shrink-0 w-12 h-12 rounded-xl overflow-hidden" style="background: #d9d9d9;">
+                <div
+                  class="flex-shrink-0 w-12 h-12 rounded-xl overflow-hidden"
+                  style="background: #d9d9d9;"
+                >
                   {#if img}
-                    <img src={getImageUrl(img)} alt={product.nombre} class="w-full h-full object-contain" draggable="false" />
+                    <img
+                      src={getImageUrl(img)}
+                      alt={product.nombre}
+                      class="w-full h-full object-contain"
+                      draggable="false"
+                    />
                   {/if}
                 </div>
               </button>
@@ -176,3 +190,12 @@
     </div>
   </div>
 {/if}
+
+<style>
+  .result-btn {
+    background: transparent;
+  }
+  .result-btn:hover {
+    background: var(--color-accent);
+  }
+</style>

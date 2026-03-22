@@ -7,11 +7,18 @@ export async function fetchCategories(): Promise<Categoria[]> {
   return http.get<Categoria[]>('/api/categorias');
 }
 
-export async function createCategory(data: { nombre: string; slug: string; orden?: number }): Promise<Categoria> {
+export async function createCategory(data: {
+  nombre: string;
+  slug: string;
+  orden?: number;
+}): Promise<Categoria> {
   return http.post<Categoria>('/api/categorias', data);
 }
 
-export async function updateCategory(id: string, data: Partial<{ nombre: string; slug: string; orden: number }>): Promise<Categoria> {
+export async function updateCategory(
+  id: string,
+  data: Partial<{ nombre: string; slug: string; orden: number }>
+): Promise<Categoria> {
   return http.put<Categoria>(`/api/categorias/${id}`, data);
 }
 
@@ -40,14 +47,17 @@ export async function createProduct(data: {
   return http.post<Product>('/api/productos', data);
 }
 
-export async function updateProduct(id: string, data: Partial<{
-  nombre: string;
-  descripcion: string;
-  categoria: string;
-  precioBase: number;
-  activo: boolean;
-  orden: number;
-}>): Promise<Product> {
+export async function updateProduct(
+  id: string,
+  data: Partial<{
+    nombre: string;
+    descripcion: string;
+    categoria: string;
+    precioBase: number;
+    activo: boolean;
+    orden: number;
+  }>
+): Promise<Product> {
   return http.put<Product>(`/api/productos/${id}`, data);
 }
 
@@ -57,11 +67,18 @@ export async function deleteProduct(id: string): Promise<void> {
 
 // ── Grupos de opciones ────────────────────────────────────────────────────────
 
-export async function addGrupo(productId: string, data: { tipo: string; nombre: string }): Promise<Product> {
+export async function addGrupo(
+  productId: string,
+  data: { tipo: string; nombre: string }
+): Promise<Product> {
   return http.post<Product>(`/api/productos/${productId}/grupos`, data);
 }
 
-export async function updateGrupo(productId: string, gId: string, data: { nombre?: string; tipo?: string }): Promise<Product> {
+export async function updateGrupo(
+  productId: string,
+  gId: string,
+  data: { nombre?: string; tipo?: string }
+): Promise<Product> {
   return http.put<Product>(`/api/productos/${productId}/grupos/${gId}`, data);
 }
 
@@ -81,7 +98,7 @@ export async function addOpcionColor(
   form.append('valor', data.valor);
   form.append('codigoHex', data.codigoHex);
   if (imagenes) {
-    Array.from(imagenes).forEach(f => form.append('imagenes', f));
+    Array.from(imagenes).forEach((f) => form.append('imagenes', f));
   }
   return http.postForm<Product>(`/api/productos/${productId}/grupos/${gId}/opciones`, form);
 }
@@ -116,7 +133,7 @@ export async function uploadImagenesOpcion(
   files: FileList | File[]
 ): Promise<Product> {
   const form = new FormData();
-  Array.from(files).forEach(f => form.append('imagenes', f));
+  Array.from(files).forEach((f) => form.append('imagenes', f));
   return http.postForm<Product>(
     `/api/productos/${productId}/grupos/${gId}/opciones/${oId}/imagenes`,
     form
@@ -136,9 +153,12 @@ export async function deleteImagenOpcion(
 
 // ── Imágenes default ──────────────────────────────────────────────────────────
 
-export async function uploadImagenesDefault(productId: string, files: FileList | File[]): Promise<Product> {
+export async function uploadImagenesDefault(
+  productId: string,
+  files: FileList | File[]
+): Promise<Product> {
   const form = new FormData();
-  Array.from(files).forEach(f => form.append('imagenes', f));
+  Array.from(files).forEach((f) => form.append('imagenes', f));
   return http.postForm<Product>(`/api/productos/${productId}/imagenes-default`, form);
 }
 
@@ -150,11 +170,18 @@ export async function reorderProductsBatch(ids: string[]): Promise<void> {
   return http.put<void>('/api/productos/reorder', { ids });
 }
 
-export async function reorderOpciones(productId: string, gId: string, opcionIds: string[]): Promise<Product> {
+export async function reorderOpciones(
+  productId: string,
+  gId: string,
+  opcionIds: string[]
+): Promise<Product> {
   return http.put<Product>(`/api/productos/${productId}/grupos/${gId}/opciones`, { opcionIds });
 }
 
-export async function reorderImagenesDefault(productId: string, imagenes: string[]): Promise<Product> {
+export async function reorderImagenesDefault(
+  productId: string,
+  imagenes: string[]
+): Promise<Product> {
   return http.put<Product>(`/api/productos/${productId}/imagenes-default`, { imagenes });
 }
 
@@ -164,7 +191,9 @@ export async function reorderImagenesOpcion(
   oId: string,
   imagenes: string[]
 ): Promise<Product> {
-  return http.put<Product>(`/api/productos/${productId}/grupos/${gId}/opciones/${oId}/imagenes`, { imagenes });
+  return http.put<Product>(`/api/productos/${productId}/grupos/${gId}/opciones/${oId}/imagenes`, {
+    imagenes,
+  });
 }
 
 export async function deleteImagenDefault(productId: string, filename: string): Promise<void> {

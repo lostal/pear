@@ -2,7 +2,10 @@
   import Skeleton from '../ui/Skeleton.svelte';
 </script>
 
-<div class="rounded-lg border overflow-hidden" style="background: var(--color-card); border-color: var(--color-border);">
+<div
+  class="rounded-lg border overflow-hidden"
+  style="background: var(--color-card); border-color: var(--color-border);"
+>
   <!-- Aspect-square placeholder -->
   <div class="aspect-square">
     <Skeleton class="w-full h-full rounded-none" />

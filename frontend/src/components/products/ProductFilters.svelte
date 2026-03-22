@@ -11,8 +11,12 @@
     <svg
       class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none"
       style="color: var(--color-muted-foreground);"
-      viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-      stroke-linecap="round" stroke-linejoin="round"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
     >
       <circle cx="11" cy="11" r="8" />
       <path d="m21 21-4.35-4.35" />
@@ -25,7 +29,8 @@
       style="background: var(--color-input); border: 1px solid var(--color-border); color: var(--color-foreground); outline: none;"
       onfocus={(e) => {
         (e.target as HTMLElement).style.borderColor = 'var(--color-ring)';
-        (e.target as HTMLElement).style.boxShadow = '0 0 0 2px color-mix(in srgb, var(--color-ring) 20%, transparent)';
+        (e.target as HTMLElement).style.boxShadow =
+          '0 0 0 2px color-mix(in srgb, var(--color-ring) 20%, transparent)';
       }}
       onblur={(e) => {
         (e.target as HTMLElement).style.borderColor = 'var(--color-border)';

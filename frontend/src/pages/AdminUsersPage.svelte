@@ -69,10 +69,13 @@
       <p class="text-sm mt-1.5" style="color: var(--color-muted-foreground);">Gestión de cuentas</p>
     </div>
     {#if !loading}
-      <span class="mb-1 inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full shrink-0"
-        style="background: var(--color-secondary); color: var(--color-muted-foreground); border: 1px solid var(--color-border);">
+      <span
+        class="mb-1 inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full shrink-0"
+        style="background: var(--color-secondary); color: var(--color-muted-foreground); border: 1px solid var(--color-border);"
+      >
         <Users size={12} />
-        {users.length} {users.length === 1 ? 'usuario' : 'usuarios'}
+        {users.length}
+        {users.length === 1 ? 'usuario' : 'usuarios'}
       </span>
     {/if}
   </div>
@@ -80,28 +83,39 @@
   {#if loading}
     <div class="flex justify-center py-20"><Spinner size="lg" /></div>
   {:else}
-    <div class="rounded-lg border overflow-hidden" style="background: var(--color-card); border-color: var(--color-border);">
+    <div
+      class="rounded-lg border overflow-hidden"
+      style="background: var(--color-card); border-color: var(--color-border);"
+    >
       <table class="w-full text-sm">
         <thead>
           <tr style="border-bottom: 1px solid var(--color-border);">
-            <th class="text-left py-3 px-5 text-xs font-medium uppercase tracking-widest" style="color: var(--color-muted-foreground);">Usuario</th>
-            <th class="text-left py-3 px-5 text-xs font-medium uppercase tracking-widest" style="color: var(--color-muted-foreground);">Rol</th>
-            <th class="text-left py-3 px-5 text-xs font-medium uppercase tracking-widest" style="color: var(--color-muted-foreground);">Acciones</th>
+            <th
+              class="text-left py-3 px-5 text-xs font-medium uppercase tracking-widest"
+              style="color: var(--color-muted-foreground);">Usuario</th
+            >
+            <th
+              class="text-left py-3 px-5 text-xs font-medium uppercase tracking-widest"
+              style="color: var(--color-muted-foreground);">Rol</th
+            >
+            <th
+              class="text-left py-3 px-5 text-xs font-medium uppercase tracking-widest"
+              style="color: var(--color-muted-foreground);">Acciones</th
+            >
           </tr>
         </thead>
         <tbody>
           {#each users as user (user._id)}
-            <UserRow
-              {user}
-              onRoleChange={handleRoleChange}
-              onDelete={(u) => (deleteTarget = u)}
-            />
+            <UserRow {user} onRoleChange={handleRoleChange} onDelete={(u) => (deleteTarget = u)} />
           {/each}
         </tbody>
       </table>
 
       {#if users.length === 0}
-        <div class="flex flex-col items-center gap-3 py-16" style="color: var(--color-muted-foreground);">
+        <div
+          class="flex flex-col items-center gap-3 py-16"
+          style="color: var(--color-muted-foreground);"
+        >
           <Users size={32} class="opacity-30" />
           <p class="text-sm">No hay usuarios registrados.</p>
         </div>

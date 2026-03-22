@@ -116,12 +116,18 @@
 >
   <div class="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
     <div class="showcase-text" style="opacity:0;">
-      <p class="text-xs font-medium mb-3 tracking-widest uppercase" style="color: var(--color-muted-foreground);">iPear</p>
+      <p
+        class="text-xs font-medium mb-3 tracking-widest uppercase"
+        style="color: var(--color-muted-foreground);"
+      >
+        iPear
+      </p>
       <h2 class="text-3xl sm:text-4xl font-black mb-5" style="line-height: 1.1;">
         El teléfono que muerde diferente.
       </h2>
       <p class="leading-relaxed" style="color: var(--color-muted-foreground);">
-        Diseñado desde cero para que cada interacción se sienta como hincarle el diente a algo que de verdad vale la pena.
+        Diseñado desde cero para que cada interacción se sienta como hincarle el diente a algo que
+        de verdad vale la pena.
       </p>
     </div>
     <div
@@ -147,24 +153,29 @@
       <img src="/pearbook.png" alt="PearBook" class="w-full h-full object-contain" />
     </div>
     <div class="showcase-text order-1 lg:order-2" style="opacity:0;">
-      <p class="text-xs font-medium mb-3 tracking-widest uppercase" style="color: var(--color-muted-foreground);">PearBook</p>
+      <p
+        class="text-xs font-medium mb-3 tracking-widest uppercase"
+        style="color: var(--color-muted-foreground);"
+      >
+        PearBook
+      </p>
       <h2 class="text-3xl sm:text-4xl font-black mb-5" style="line-height: 1.1;">
         Ultra ligero. Ultra pera.
       </h2>
       <p class="leading-relaxed" style="color: var(--color-muted-foreground);">
-        Tan fino que lo perderás encima de la mesa. Tan rápido que encontrarás la excusa para comprarte otro.
+        Tan fino que lo perderás encima de la mesa. Tan rápido que encontrarás la excusa para
+        comprarte otro.
       </p>
     </div>
   </div>
 </section>
 
 <!-- S5: CTA dark -->
-<section
-  bind:this={ctaSection}
-  class="py-32 px-6 text-center"
-  style="background-color: #1d1d1f;"
->
-  <p class="cta-child text-xs font-medium mb-4 tracking-widest uppercase" style="opacity:0; color: rgba(255,255,255,0.4);">
+<section bind:this={ctaSection} class="py-32 px-6 text-center" style="background-color: #1d1d1f;">
+  <p
+    class="cta-child text-xs font-medium mb-4 tracking-widest uppercase"
+    style="opacity:0; color: rgba(255,255,255,0.4);"
+  >
     Pear Store
   </p>
   <h2
@@ -173,8 +184,11 @@
   >
     ¿Listo para tu próxima pera?
   </h2>
-  <p class="cta-child text-base mb-10" style="opacity:0; color: rgba(255,255,255,0.5); line-height: 1.6;">
-    Únete a los millones que ya han cambiado cómo comen fruta.<br>O al menos cómo la compran.
+  <p
+    class="cta-child text-base mb-10"
+    style="opacity:0; color: rgba(255,255,255,0.5); line-height: 1.6;"
+  >
+    Únete a los millones que ya han cambiado cómo comen fruta.<br />O al menos cómo la compran.
   </p>
   <button
     class="cta-child inline-flex items-center justify-center font-medium text-sm px-7 py-3 rounded-md transition-opacity hover:opacity-90 cursor-pointer"

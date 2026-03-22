@@ -6,14 +6,16 @@
   font-style: normal;
   font-display: swap;
   font-weight: 400;
-  src: url('@fontsource/instrument-serif/files/instrument-serif-latin-400-normal.woff2') format('woff2');
+  src: url('@fontsource/instrument-serif/files/instrument-serif-latin-400-normal.woff2')
+    format('woff2');
 }
 @font-face {
   font-family: 'Instrument Serif';
   font-style: italic;
   font-display: swap;
   font-weight: 400;
-  src: url('@fontsource/instrument-serif/files/instrument-serif-latin-400-italic.woff2') format('woff2');
+  src: url('@fontsource/instrument-serif/files/instrument-serif-latin-400-italic.woff2')
+    format('woff2');
 }
 
 /* Typography: IBM Plex Sans */
@@ -100,7 +102,12 @@
     margin: 0;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     line-height: 1.1;
     font-weight: 900;
     letter-spacing: -0.02em;
@@ -116,7 +123,9 @@
     color: var(--color-primary);
   }
 
-  input, textarea, select {
+  input,
+  textarea,
+  select {
     background-color: var(--color-input);
     color: var(--color-foreground);
     border-color: var(--color-border);
@@ -148,13 +157,21 @@
    con history.pushState del router SPA — usamos startViewTransition manualmente */
 
 @keyframes fade-out {
-  from { opacity: 1; }
-  to   { opacity: 0; }
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
 }
 
 @keyframes fade-in {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 /* Shared elements (product image + title morph) */

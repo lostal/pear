@@ -21,7 +21,11 @@
 
   onMount(() => {
     if (card) {
-      animate(card, { opacity: [0, 1], y: [24, 0] }, { duration: 0.45, easing: [0.25, 0.1, 0.25, 1] });
+      animate(
+        card,
+        { opacity: [0, 1], y: [24, 0] },
+        { duration: 0.45, easing: [0.25, 0.1, 0.25, 1] }
+      );
     }
   });
 
@@ -85,9 +89,7 @@
         </p>
       {/if}
 
-      <Button type="submit" {loading} disabled={loading} class="w-full mt-1">
-        Iniciar sesión
-      </Button>
+      <Button type="submit" {loading} disabled={loading} class="w-full mt-1">Iniciar sesión</Button>
     </form>
   </div>
 

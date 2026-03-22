@@ -44,10 +44,7 @@
     </p>
   </div>
 {:else}
-  <div
-    bind:this={gridEl}
-    class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
-  >
+  <div bind:this={gridEl} class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
     {#each products as product (product._id)}
       <ProductCard {product} {onEdit} {onDelete} {onView} />
     {/each}

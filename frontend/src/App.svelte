@@ -18,7 +18,7 @@
   const protectedRoutes = ['/profile', '/admin/users', '/admin/products'];
 
   $effect(() => {
-    if (!auth.isAuthenticated && protectedRoutes.some(r => router.location.startsWith(r))) {
+    if (!auth.isAuthenticated && protectedRoutes.some((r) => router.location.startsWith(r))) {
       push('/');
     }
   });

@@ -15,6 +15,10 @@
   };
 </script>
 
-<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium {variants[variant]} {klass}">
+<span
+  class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium {variants[
+    variant
+  ]} {klass}"
+>
   {@render children?.()}
 </span>

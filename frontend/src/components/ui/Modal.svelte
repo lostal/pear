@@ -38,7 +38,10 @@
       style="background: var(--color-card); border-color: var(--color-border); box-shadow: 0 24px 60px rgba(0,0,0,0.15);"
     >
       {#if title}
-        <div class="flex items-center justify-between px-6 py-5 border-b" style="border-color: var(--color-border);">
+        <div
+          class="flex items-center justify-between px-6 py-5 border-b"
+          style="border-color: var(--color-border);"
+        >
           <h2 class="text-lg font-black">{title}</h2>
           <button
             onclick={onclose}

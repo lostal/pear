@@ -50,11 +50,21 @@ function createAuth() {
   }
 
   return {
-    get token() { return token; },
-    get user() { return user; },
-    get isAuthenticated() { return isAuthenticated; },
-    get isAdmin() { return isAdmin; },
-    get displayName() { return displayName; },
+    get token() {
+      return token;
+    },
+    get user() {
+      return user;
+    },
+    get isAuthenticated() {
+      return isAuthenticated;
+    },
+    get isAdmin() {
+      return isAdmin;
+    },
+    get displayName() {
+      return displayName;
+    },
     setToken,
     setUser,
     logout,

@@ -38,8 +38,7 @@
   };
 
   const styleMap: Record<string, string> = {
-    primary:
-      'background-color: var(--color-primary); color: var(--color-primary-foreground);',
+    primary: 'background-color: var(--color-primary); color: var(--color-primary-foreground);',
     secondary:
       'background-color: var(--color-secondary); color: var(--color-secondary-foreground); border-color: var(--color-border);',
     destructive:
@@ -50,13 +49,7 @@
   const classes = $derived(`${base} ${variantMap[variant]} ${sizeMap[size]} ${klass}`);
 </script>
 
-<button
-  {type}
-  class={classes}
-  style={styleMap[variant]}
-  disabled={disabled || loading}
-  {onclick}
->
+<button {type} class={classes} style={styleMap[variant]} disabled={disabled || loading} {onclick}>
   {#if loading}
     <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
       <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />

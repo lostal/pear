@@ -58,9 +58,7 @@
   />
 
   <div class="flex justify-end gap-3 pt-2">
-    <Button variant="secondary" type="button" onclick={onCancel} disabled={saving}>
-      Cancelar
-    </Button>
+    <Button variant="secondary" type="button" onclick={onCancel} disabled={saving}>Cancelar</Button>
     <Button type="submit" loading={saving} disabled={saving}>
       {product ? 'Guardar cambios' : 'Crear producto'}
     </Button>

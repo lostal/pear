@@ -16,7 +16,9 @@
   const isSelf = $derived(auth.user?._id === user._id);
 </script>
 
-<tr class="border-b border-[var(--color-border)] hover:bg-[var(--color-accent)]/30 transition-colors">
+<tr
+  class="border-b border-[var(--color-border)] hover:bg-[var(--color-accent)]/30 transition-colors"
+>
   <td class="py-3 px-4">
     <div class="flex items-center gap-3">
       <div
@@ -54,8 +56,10 @@
           Borrar
         </Button>
       {:else}
-        <span class="text-xs px-2 py-1 rounded-md font-medium"
-          style="background: var(--color-secondary); color: var(--color-muted-foreground); border: 1px solid var(--color-border);">
+        <span
+          class="text-xs px-2 py-1 rounded-md font-medium"
+          style="background: var(--color-secondary); color: var(--color-muted-foreground); border: 1px solid var(--color-border);"
+        >
           Tú
         </span>
       {/if}

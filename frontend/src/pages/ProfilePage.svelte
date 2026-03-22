@@ -17,12 +17,16 @@
 <PageLayout narrow>
   {#if auth.user}
     <div class="flex flex-col gap-6">
-
       <!-- Card principal -->
-      <div class="rounded-2xl border overflow-hidden" style="border-color: var(--color-border); background: var(--color-card);">
-
+      <div
+        class="rounded-2xl border overflow-hidden"
+        style="border-color: var(--color-border); background: var(--color-card);"
+      >
         <!-- Header con avatar -->
-        <div class="px-8 pt-8 pb-6 flex flex-col items-center text-center border-b" style="border-color: var(--color-border); background: var(--color-secondary);">
+        <div
+          class="px-8 pt-8 pb-6 flex flex-col items-center text-center border-b"
+          style="border-color: var(--color-border); background: var(--color-secondary);"
+        >
           <div
             class="h-20 w-20 rounded-full flex items-center justify-center text-3xl font-black mb-4 border-2"
             style="background: var(--color-background); color: var(--color-foreground); border-color: var(--color-border);"
@@ -46,21 +50,32 @@
 
         <!-- Info de la cuenta -->
         <div class="px-8 py-5">
-          <p class="text-xs font-semibold uppercase tracking-widest mb-4" style="color: var(--color-muted-foreground);">
+          <p
+            class="text-xs font-semibold uppercase tracking-widest mb-4"
+            style="color: var(--color-muted-foreground);"
+          >
             Información de la cuenta
           </p>
           <div class="flex flex-col gap-4">
             <div class="flex items-center gap-3">
-              <div class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style="background: var(--color-secondary);">
+              <div
+                class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
+                style="background: var(--color-secondary);"
+              >
                 <User size={14} style="color: var(--color-muted-foreground);" />
               </div>
               <div>
-                <p class="text-xs" style="color: var(--color-muted-foreground);">Nombre de usuario</p>
+                <p class="text-xs" style="color: var(--color-muted-foreground);">
+                  Nombre de usuario
+                </p>
                 <p class="text-sm font-semibold">{auth.user.username}</p>
               </div>
             </div>
             <div class="flex items-center gap-3">
-              <div class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style="background: var(--color-secondary);">
+              <div
+                class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
+                style="background: var(--color-secondary);"
+              >
                 <ShieldCheck size={14} style="color: var(--color-muted-foreground);" />
               </div>
               <div>
@@ -73,9 +88,15 @@
       </div>
 
       <!-- Acciones -->
-      <div class="rounded-2xl border overflow-hidden" style="border-color: var(--color-border); background: var(--color-card);">
+      <div
+        class="rounded-2xl border overflow-hidden"
+        style="border-color: var(--color-border); background: var(--color-card);"
+      >
         <div class="px-8 py-5">
-          <p class="text-xs font-semibold uppercase tracking-widest mb-4" style="color: var(--color-muted-foreground);">
+          <p
+            class="text-xs font-semibold uppercase tracking-widest mb-4"
+            style="color: var(--color-muted-foreground);"
+          >
             Sesión
           </p>
           <button
@@ -88,7 +109,6 @@
           </button>
         </div>
       </div>
-
     </div>
   {/if}
 </PageLayout>

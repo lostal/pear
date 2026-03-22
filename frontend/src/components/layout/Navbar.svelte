@@ -13,15 +13,18 @@
   const navLinks = $derived([
     { path: '/products', label: 'Tienda' },
     ...(auth.isAuthenticated ? [{ path: '/profile', label: 'Perfil' }] : []),
-    ...(auth.isAdmin ? [
-      { path: '/admin/products', label: 'Productos' },
-      { path: '/admin/users', label: 'Usuarios' },
-    ] : []),
+    ...(auth.isAdmin
+      ? [
+          { path: '/admin/products', label: 'Productos' },
+          { path: '/admin/users', label: 'Usuarios' },
+        ]
+      : []),
   ]);
 
   function isActive(path: string): boolean {
     const loc = router.location;
-    if (path === '/products' && loc.startsWith('/products') && !loc.startsWith('/admin')) return true;
+    if (path === '/products' && loc.startsWith('/products') && !loc.startsWith('/admin'))
+      return true;
     if (path === '/admin/products' && loc.startsWith('/admin/products')) return true;
     return loc === path;
   }
@@ -46,7 +49,10 @@
          -webkit-backdrop-filter: saturate(180%) blur(20px);
          border-color: var(--color-border);"
 >
-  <div class="max-w-5xl mx-auto container-padding grid items-center py-4 sm:py-5 transition-all duration-300" style="grid-template-columns: 1fr auto 1fr;">
+  <div
+    class="max-w-5xl mx-auto container-padding grid items-center py-4 sm:py-5 transition-all duration-300"
+    style="grid-template-columns: 1fr auto 1fr;"
+  >
     <!-- Logo -->
     <button
       onclick={() => navigate('/')}
@@ -62,9 +68,7 @@
         <button
           onclick={() => navigate(link.path)}
           class="px-3 py-1.5 text-sm rounded-md transition-colors cursor-pointer
-            {active
-              ? 'font-black'
-              : 'hover:bg-accent'}"
+            {active ? 'font-black' : 'hover:bg-accent'}"
           style="color: {active ? 'var(--color-foreground)' : 'var(--color-muted-foreground)'};"
         >
           {link.label}

@@ -13,7 +13,7 @@
   const initial = $derived(product.nombre.charAt(0).toUpperCase());
   const imagenes = $derived(getImagenesForProduct(product));
   const precio = $derived(getPrecioMinimo(product));
-  const colorGrupo = $derived(product.gruposOpciones.find(g => g.tipo === 'color'));
+  const colorGrupo = $derived(product.gruposOpciones.find((g) => g.tipo === 'color'));
 
   function formatPrice(p: number) {
     return new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(p);
@@ -32,11 +32,7 @@
     style="background: var(--color-secondary); view-transition-name: product-image-{product._id};"
   >
     {#if imagenes.length > 0}
-      <img
-        src={getImageUrl(imagenes[0])}
-        alt={product.nombre}
-        class="w-full h-full object-cover"
-      />
+      <img src={getImageUrl(imagenes[0])} alt={product.nombre} class="w-full h-full object-cover" />
     {:else}
       <span class="text-5xl font-black select-none" style="color: var(--color-border);">
         {initial}
@@ -59,7 +55,7 @@
         {#each colorGrupo.opciones.slice(0, 8) as opcion}
           <span
             class="w-3 h-3 rounded-full border border-black/10"
-            style="background: {(opcion as any).codigoHex ?? '#ccc'};"
+            style="background: {opcion.codigoHex ?? '#ccc'};"
             title={opcion.valor}
           ></span>
         {/each}

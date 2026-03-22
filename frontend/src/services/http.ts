@@ -27,7 +27,9 @@ async function request<T>(url: string, options: RequestOptions = {}): Promise<T>
 
   if (res.status === 401 || res.status === 403) {
     auth.logout();
-    toast.error(res.status === 401 ? 'Sesión expirada. Inicia sesión de nuevo.' : 'Acceso denegado.');
+    toast.error(
+      res.status === 401 ? 'Sesión expirada. Inicia sesión de nuevo.' : 'Acceso denegado.'
+    );
     throw new Error(res.status === 401 ? 'Unauthorized' : 'Forbidden');
   }
 
@@ -41,9 +43,11 @@ async function request<T>(url: string, options: RequestOptions = {}): Promise<T>
   if (!res.ok) {
     let message = `Error ${res.status}`;
     try {
-      const body = await res.json() as { message?: string; error?: string };
+      const body = (await res.json()) as { message?: string; error?: string };
       message = body.message ?? body.error ?? message;
-    } catch { /* empty */ }
+    } catch {
+      /* empty */
+    }
     throw new Error(message);
   }
 
@@ -51,8 +55,7 @@ async function request<T>(url: string, options: RequestOptions = {}): Promise<T>
 }
 
 export const http = {
-  get: <T>(url: string, opts?: RequestOptions) =>
-    request<T>(url, { method: 'GET', ...opts }),
+  get: <T>(url: string, opts?: RequestOptions) => request<T>(url, { method: 'GET', ...opts }),
 
   post: <T>(url: string, body: unknown, opts?: RequestOptions) =>
     request<T>(url, { method: 'POST', body: JSON.stringify(body), ...opts }),
@@ -63,8 +66,7 @@ export const http = {
   patch: <T>(url: string, body: unknown, opts?: RequestOptions) =>
     request<T>(url, { method: 'PATCH', body: JSON.stringify(body), ...opts }),
 
-  delete: <T>(url: string, opts?: RequestOptions) =>
-    request<T>(url, { method: 'DELETE', ...opts }),
+  delete: <T>(url: string, opts?: RequestOptions) => request<T>(url, { method: 'DELETE', ...opts }),
 
   // Para subidas de archivos (FormData) — no forzar Content-Type
   postForm: <T>(url: string, body: FormData, opts?: RequestOptions) => {
