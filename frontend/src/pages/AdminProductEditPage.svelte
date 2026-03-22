@@ -16,6 +16,7 @@
   import Spinner from '../components/ui/Spinner.svelte';
   import Button from '../components/ui/Button.svelte';
   import PageLayout from '../components/layout/PageLayout.svelte';
+  import { ChevronLeft, Palette, HardDrive, SlidersHorizontal, ImageUp, GripVertical, X, Plus } from 'lucide-svelte';
 
   interface Props { params?: { id?: string }; }
   let { params = {} }: Props = $props();
@@ -350,24 +351,27 @@
   .card {
     border: 1px solid var(--color-border);
     border-radius: 1rem;
-    padding: 1.5rem;
+    overflow: hidden;
   }
-  .section-title {
-    font-size: 1rem;
-    font-weight: 700;
-    letter-spacing: -0.01em;
-    margin-bottom: 1.25rem;
-    color: var(--color-foreground);
+  .card-header {
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-secondary);
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+  }
+  .card-body {
+    padding: 1.25rem;
   }
   .section-hint {
     font-size: 0.8rem;
     color: var(--color-muted-foreground);
-    margin-top: -0.75rem;
     margin-bottom: 1.25rem;
   }
   .tipo-btn {
     flex: 1;
-    padding: 0.875rem 0.5rem;
+    padding: 0.75rem 0.5rem;
     border-radius: 0.75rem;
     border: 1.5px solid var(--color-border);
     background: var(--color-background);
@@ -375,7 +379,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.375rem;
+    gap: 0.5rem;
     transition: border-color 0.15s, background 0.15s;
     font-size: 0.8rem;
     font-weight: 500;
@@ -386,7 +390,6 @@
     background: var(--color-secondary);
     color: var(--color-foreground);
   }
-  .tipo-btn .icon { font-size: 1.25rem; }
 
   /* Upload zone */
   .upload-zone {
@@ -420,7 +423,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0.875rem 1rem;
+    padding: 0.75rem 1rem;
     background: var(--color-secondary);
     border-bottom: 1px solid var(--color-border);
   }
@@ -430,7 +433,7 @@
     border-top: 1px solid var(--color-border);
   }
 
-  /* Imagen grid con drag-and-drop */
+  /* Imagen grid */
   .img-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
@@ -498,7 +501,6 @@
     border-radius: 50%;
     background: rgba(0,0,0,0.55);
     color: #fff;
-    font-size: 0.65rem;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -519,7 +521,7 @@
     gap: 0.3rem;
   }
 
-  /* Drag & drop opciones (colores / storage) */
+  /* Opciones drag */
   .opcion-item {
     display: flex;
     flex-direction: column;
@@ -538,9 +540,7 @@
     border-color: var(--color-foreground);
     transform: scale(1.015);
   }
-  .opcion-item.is-cover {
-    border-color: var(--color-foreground);
-  }
+  .opcion-item.is-cover { border-color: var(--color-foreground); }
   .cover-badge {
     font-size: 0.6rem;
     font-weight: 700;
@@ -552,26 +552,21 @@
     color: var(--color-background);
     line-height: 1.5;
   }
-  .drag-handle {
-    font-size: 0.85rem;
-    opacity: 0.35;
-    cursor: grab;
-    line-height: 1;
-  }
 </style>
 
 <PageLayout>
-  <!-- Breadcrumb + título -->
+  <!-- Header: breadcrumb + guardar -->
   <div class="flex items-center gap-3 mb-8">
     <button
       onclick={() => push('/admin/products')}
-      class="text-sm cursor-pointer transition-opacity hover:opacity-60 shrink-0"
+      class="text-sm cursor-pointer transition-opacity hover:opacity-70 shrink-0 flex items-center gap-1 group"
       style="color: var(--color-muted-foreground);"
     >
-      ← Productos
+      <ChevronLeft size={16} class="transition-transform group-hover:-translate-x-0.5" />
+      Productos
     </button>
     <span style="color: var(--color-border);">/</span>
-    <h1 class="text-xl font-bold truncate" style="color: var(--color-foreground);">
+    <h1 class="text-xl font-bold truncate flex-1" style="color: var(--color-foreground);">
       {product?.nombre ?? 'Cargando…'}
     </h1>
     {#if product && !product.activo}
@@ -580,18 +575,25 @@
         Inactivo
       </span>
     {/if}
+    {#if product}
+      <Button onclick={handleSaveMeta} loading={saving} size="sm">
+        Guardar
+      </Button>
+    {/if}
   </div>
 
   {#if loading}
     <div class="flex justify-center py-24"><Spinner size="lg" /></div>
   {:else if product}
-    <div class="flex flex-col gap-8" style="max-width: 680px;">
+    <div class="flex flex-col gap-6" style="max-width: 680px;">
 
-      <!-- ══ 1. INFORMACIÓN DEL PRODUCTO ══════════════════════════ -->
+      <!-- ══ 1. INFORMACIÓN ══════════════════════════════════════ -->
       <div class="card">
-        <p class="section-title">Información del producto</p>
-
-        <div class="flex flex-col gap-5">
+        <div class="card-header">
+          <SlidersHorizontal size={15} style="color: var(--color-muted-foreground);" />
+          <span class="text-sm font-semibold">Información del producto</span>
+        </div>
+        <div class="card-body flex flex-col gap-5">
           <div class="field">
             <label for="f-nombre">Nombre</label>
             <input id="f-nombre" type="text" placeholder="ej: iPear Pro" bind:value={nombre} class="inp" />
@@ -633,313 +635,319 @@
             </span>
             <span class="text-sm font-medium">Visible en la tienda</span>
           </label>
-
-          <div class="pt-1">
-            <Button onclick={handleSaveMeta} loading={saving}>Guardar cambios</Button>
-          </div>
         </div>
       </div>
 
-      <!-- ══ 2. FOTOS DEL PRODUCTO (sin grupo de color) ════════════ -->
+      <!-- ══ 2. FOTOS (sin grupo de color) ══════════════════════ -->
       {#if !hasColorGroup}
         <div class="card">
-          <p class="section-title">Fotos del producto</p>
-          <p class="section-hint">La primera foto es la portada. Arrastra para reordenar.</p>
-
-          {#if product.imagenesDefault.length > 0}
-            <p class="drag-hint">↕ Arrastra las fotos para cambiar el orden</p>
-            <div class="img-grid">
-              {#each product.imagenesDefault as img, i (img)}
-                <div
-                  class="img-item {draggingDefaultIdx === i ? 'is-dragging' : ''} {dragOverDefaultIdx === i && draggingDefaultIdx !== i ? 'is-over' : ''}"
-                  draggable="true"
-                  ondragstart={(e) => onDragStartDefault(e, i)}
-                  ondragover={(e) => onDragOverDefault(e, i)}
-                  ondrop={(e) => onDropDefault(e, i)}
-                  ondragend={onDragEndDefault}
-                  role="listitem"
-                >
-                  <img src={getImageUrl(img)} alt="Foto {i + 1}" />
-                  <span class="img-num">{i + 1}</span>
-                  {#if i === 0}
-                    <span class="img-portada">Portada</span>
-                  {/if}
-                  <button
-                    class="img-delete"
-                    onclick={() => handleDeleteDefault(img)}
-                    aria-label="Eliminar foto"
-                  >✕</button>
-                </div>
-              {/each}
-            </div>
-          {/if}
-
-          <div class="upload-zone">
-            <input type="file" multiple accept="image/*"
-              onchange={(e) => defaultFiles = (e.target as HTMLInputElement).files}
-              id="default-upload" />
-            <label for="default-upload" class="pointer-events-none flex flex-col items-center gap-1 py-2">
-              <span class="text-2xl">📷</span>
-              <p class="text-sm font-medium" style="color: var(--color-foreground);">
-                {#if defaultFiles?.length}
-                  {defaultFiles.length} foto{defaultFiles.length > 1 ? 's' : ''} lista{defaultFiles.length > 1 ? 's' : ''}
-                {:else}
-                  Haz clic o arrastra fotos aquí
-                {/if}
-              </p>
-              <p class="text-xs" style="color: var(--color-muted-foreground);">JPG, PNG, WEBP</p>
-            </label>
+          <div class="card-header">
+            <ImageUp size={15} style="color: var(--color-muted-foreground);" />
+            <span class="text-sm font-semibold">Fotos del producto</span>
           </div>
+          <div class="card-body">
+            <p class="section-hint">La primera foto es la portada. Arrastra para reordenar.</p>
 
-          {#if defaultFiles?.length}
-            <div class="mt-3">
-              <Button onclick={handleUploadDefault} loading={uploadingDefault}>
-                Subir {defaultFiles.length} foto{defaultFiles.length > 1 ? 's' : ''}
-              </Button>
+            {#if product.imagenesDefault.length > 0}
+              <p class="drag-hint">
+                <GripVertical size={12} />
+                Arrastra las fotos para cambiar el orden
+              </p>
+              <div class="img-grid">
+                {#each product.imagenesDefault as img, i (img)}
+                  <div
+                    class="img-item {draggingDefaultIdx === i ? 'is-dragging' : ''} {dragOverDefaultIdx === i && draggingDefaultIdx !== i ? 'is-over' : ''}"
+                    draggable="true"
+                    ondragstart={(e) => onDragStartDefault(e, i)}
+                    ondragover={(e) => onDragOverDefault(e, i)}
+                    ondrop={(e) => onDropDefault(e, i)}
+                    ondragend={onDragEndDefault}
+                    role="listitem"
+                  >
+                    <img src={getImageUrl(img)} alt="Foto {i + 1}" />
+                    <span class="img-num">{i + 1}</span>
+                    {#if i === 0}<span class="img-portada">Portada</span>{/if}
+                    <button class="img-delete" onclick={() => handleDeleteDefault(img)} aria-label="Eliminar foto">
+                      <X size={10} />
+                    </button>
+                  </div>
+                {/each}
+              </div>
+            {/if}
+
+            <div class="upload-zone">
+              <input type="file" multiple accept="image/*"
+                onchange={(e) => defaultFiles = (e.target as HTMLInputElement).files}
+                id="default-upload" />
+              <label for="default-upload" class="pointer-events-none flex flex-col items-center gap-1.5 py-2">
+                <ImageUp size={22} style="color: var(--color-muted-foreground); opacity: 0.5;" />
+                <p class="text-sm font-medium" style="color: var(--color-foreground);">
+                  {#if defaultFiles?.length}
+                    {defaultFiles.length} foto{defaultFiles.length > 1 ? 's' : ''} lista{defaultFiles.length > 1 ? 's' : ''}
+                  {:else}
+                    Haz clic o arrastra fotos aquí
+                  {/if}
+                </p>
+                <p class="text-xs" style="color: var(--color-muted-foreground);">JPG · PNG · WEBP</p>
+              </label>
             </div>
-          {/if}
+
+            {#if defaultFiles?.length}
+              <div class="mt-3">
+                <Button onclick={handleUploadDefault} loading={uploadingDefault}>
+                  Subir {defaultFiles.length} foto{defaultFiles.length > 1 ? 's' : ''}
+                </Button>
+              </div>
+            {/if}
+          </div>
         </div>
       {/if}
 
-      <!-- ══ 3. OPCIONES DE COMPRA ══════════════════════════════════ -->
+      <!-- ══ 3. OPCIONES DE COMPRA ══════════════════════════════ -->
       <div class="card">
-        <p class="section-title">Opciones de compra</p>
-        <p class="section-hint">Define los colores, almacenamiento u otras variantes que puede elegir el cliente.</p>
+        <div class="card-header">
+          <Palette size={15} style="color: var(--color-muted-foreground);" />
+          <span class="text-sm font-semibold">Opciones de compra</span>
+        </div>
+        <div class="card-body">
+          <p class="section-hint">Define los colores, almacenamiento u otras variantes del producto.</p>
 
-        <!-- Grupos existentes -->
-        {#each product.gruposOpciones as grupo (grupo._id)}
-          <div class="grupo-card mb-4">
-            <div class="grupo-header">
-              <div class="flex items-center gap-2">
-                <span class="text-base">
-                  {grupo.tipo === 'color' ? '🎨' : grupo.tipo === 'storage' ? '💾' : '⚙️'}
-                </span>
-                <div>
-                  <p class="text-sm font-semibold" style="color: var(--color-foreground);">{grupo.nombre}</p>
-                  <p class="text-xs capitalize" style="color: var(--color-muted-foreground);">
-                    {grupo.tipo === 'color' ? 'Variante de color' : grupo.tipo === 'storage' ? 'Almacenamiento' : 'Opción genérica'}
-                    · {grupo.opciones.length} {grupo.opciones.length === 1 ? 'opción' : 'opciones'}
-                  </p>
+          <!-- Grupos existentes -->
+          {#each product.gruposOpciones as grupo (grupo._id)}
+            <div class="grupo-card mb-4">
+              <div class="grupo-header">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-7 h-7 rounded-md flex items-center justify-center shrink-0"
+                    style="background: var(--color-background); border: 1px solid var(--color-border);">
+                    {#if grupo.tipo === 'color'}
+                      <Palette size={13} style="color: var(--color-muted-foreground);" />
+                    {:else if grupo.tipo === 'storage'}
+                      <HardDrive size={13} style="color: var(--color-muted-foreground);" />
+                    {:else}
+                      <SlidersHorizontal size={13} style="color: var(--color-muted-foreground);" />
+                    {/if}
+                  </div>
+                  <div>
+                    <p class="text-sm font-semibold" style="color: var(--color-foreground);">{grupo.nombre}</p>
+                    <p class="text-xs" style="color: var(--color-muted-foreground);">
+                      {grupo.tipo === 'color' ? 'Variante de color' : grupo.tipo === 'storage' ? 'Almacenamiento' : 'Opción genérica'}
+                      · {grupo.opciones.length} {grupo.opciones.length === 1 ? 'opción' : 'opciones'}
+                    </p>
+                  </div>
                 </div>
+                <button
+                  onclick={() => handleDeleteGrupo(grupo._id)}
+                  class="flex items-center gap-1.5 text-xs cursor-pointer px-2.5 py-1.5 rounded-md transition-opacity hover:opacity-70"
+                  style="color: var(--color-destructive);"
+                >
+                  <X size={12} />
+                  Eliminar
+                </button>
               </div>
-              <button
-                onclick={() => handleDeleteGrupo(grupo._id)}
-                class="text-xs cursor-pointer px-2 py-1 rounded-md transition-colors hover:opacity-80"
-                style="color: var(--color-destructive); border: 1px solid currentColor;"
-              >
-                Eliminar grupo
+
+              <!-- Opciones del grupo -->
+              <div class="p-3 flex flex-col gap-2">
+                {#if grupo.tipo === 'color' && grupo.opciones.length > 1}
+                  <p class="drag-hint">
+                    <GripVertical size={12} />
+                    Arrastra para reordenar · El primero es la portada de la tienda
+                  </p>
+                {/if}
+
+                {#each grupo.opciones as opcion, opcionIdx (opcion._id)}
+                  {@const isColorCover = grupo.tipo === 'color' && opcionIdx === 0 && product.gruposOpciones.findIndex(g => g.tipo === 'color') === product.gruposOpciones.indexOf(grupo)}
+                  <div
+                    class="opcion-item {grupo.tipo === 'color' ? (draggingOpcionesGrupoIdx[grupo._id] === opcionIdx ? 'is-dragging' : '') : ''} {grupo.tipo === 'color' && dragOverOpcionesGrupoIdx[grupo._id] === opcionIdx && draggingOpcionesGrupoIdx[grupo._id] !== opcionIdx ? 'is-over' : ''} {isColorCover ? 'is-cover' : ''}"
+                    draggable={grupo.tipo === 'color'}
+                    ondragstart={grupo.tipo === 'color' ? (e) => onDragStartOpcionesGrupo(e, grupo._id, opcionIdx) : undefined}
+                    ondragover={grupo.tipo === 'color' ? (e) => onDragOverOpcionesGrupo(e, grupo._id, opcionIdx) : undefined}
+                    ondrop={grupo.tipo === 'color' ? (e) => onDropOpcionesGrupo(e, grupo._id, grupo.opciones, opcionIdx) : undefined}
+                    ondragend={grupo.tipo === 'color' ? () => onDragEndOpcionesGrupo(grupo._id) : undefined}
+                    role="listitem"
+                    style={grupo.tipo !== 'color' ? 'cursor: default;' : ''}
+                  >
+                    <div class="flex items-center justify-between gap-2">
+                      <div class="flex items-center gap-2 flex-1 min-w-0">
+                        {#if grupo.tipo === 'color'}
+                          <GripVertical size={14} class="opacity-35 shrink-0" />
+                        {/if}
+                        {#if grupo.tipo === 'color' && (opcion as any).codigoHex}
+                          <span class="w-4.5 h-4.5 rounded-full border border-black/15 shrink-0"
+                            style="background:{(opcion as any).codigoHex}; width:1.125rem; height:1.125rem;"></span>
+                        {/if}
+                        <span class="text-sm font-medium truncate">{opcion.valor}</span>
+                        {#if isColorCover}
+                          <span class="cover-badge shrink-0">Portada</span>
+                        {/if}
+                        {#if opcion.modificadorPrecio && opcion.modificadorPrecio !== 0}
+                          <span class="text-xs shrink-0 px-1.5 py-0.5 rounded"
+                            style="background: var(--color-card); color: var(--color-muted-foreground); border: 1px solid var(--color-border);">
+                            +{opcion.modificadorPrecio}€
+                          </span>
+                        {/if}
+                      </div>
+                      <button onclick={() => handleDeleteOpcion(grupo._id, opcion._id)}
+                        class="cursor-pointer opacity-30 hover:opacity-80 transition-opacity shrink-0"
+                        style="color: var(--color-destructive);"
+                        aria-label="Eliminar opción">
+                        <X size={15} />
+                      </button>
+                    </div>
+
+                    {#if grupo.tipo === 'color'}
+                      {#if (opcion as any).imagenes?.length > 0}
+                        <p class="drag-hint" style="margin-bottom: 0.3rem;">
+                          <GripVertical size={12} />
+                          Arrastra para reordenar · La primera es la portada del color
+                        </p>
+                        <div class="img-grid" style="grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));">
+                          {#each (opcion as any).imagenes as img, i (img)}
+                            <div
+                              class="img-item {draggingOpcionIdx[opcion._id] === i ? 'is-dragging' : ''} {dragOverOpcionIdx[opcion._id] === i && draggingOpcionIdx[opcion._id] !== i ? 'is-over' : ''}"
+                              draggable="true"
+                              ondragstart={(e) => onDragStartOpcion(e, opcion._id, i)}
+                              ondragover={(e) => onDragOverOpcion(e, opcion._id, i)}
+                              ondrop={(e) => onDropOpcion(e, grupo._id, opcion._id, (opcion as any).imagenes, i)}
+                              ondragend={() => onDragEndOpcion(opcion._id)}
+                              role="listitem"
+                            >
+                              <img src={getImageUrl(img)} alt="{opcion.valor} foto {i + 1}" />
+                              <span class="img-num">{i + 1}</span>
+                              {#if i === 0}<span class="img-portada">Portada</span>{/if}
+                              <button class="img-delete" onclick={() => handleDeleteImagen(grupo._id, opcion._id, img)} aria-label="Eliminar foto">
+                                <X size={10} />
+                              </button>
+                            </div>
+                          {/each}
+                        </div>
+                      {/if}
+
+                      <div class="upload-zone" style="padding: 0.625rem;">
+                        <input type="file" multiple accept="image/*"
+                          id="extra-{opcion._id}"
+                          onchange={(e) => { extraFiles[opcion._id] = (e.target as HTMLInputElement).files; }} />
+                        <label for="extra-{opcion._id}" class="text-xs pointer-events-none flex items-center justify-center gap-1.5" style="color: var(--color-muted-foreground);">
+                          <ImageUp size={13} />
+                          {#if extraFiles[opcion._id]?.length}
+                            {extraFiles[opcion._id]!.length} foto{extraFiles[opcion._id]!.length > 1 ? 's' : ''} seleccionada{extraFiles[opcion._id]!.length > 1 ? 's' : ''}
+                          {:else}
+                            Añadir fotos a este color
+                          {/if}
+                        </label>
+                      </div>
+                      {#if extraFiles[opcion._id]?.length}
+                        <Button onclick={() => handleUploadExtra(grupo._id, opcion._id)} loading={uploadingExtra[opcion._id] ?? false} size="sm">
+                          Subir {extraFiles[opcion._id]!.length} foto{extraFiles[opcion._id]!.length > 1 ? 's' : ''}
+                        </Button>
+                      {/if}
+                    {/if}
+                  </div>
+                {/each}
+
+                {#if grupo.opciones.length === 0}
+                  <p class="text-xs text-center py-3" style="color: var(--color-muted-foreground);">
+                    Sin opciones aún. Añade una abajo.
+                  </p>
+                {/if}
+              </div>
+
+              <!-- Formulario añadir opción -->
+              <div class="add-option-area">
+                {#if grupo.tipo === 'color'}
+                  <p class="text-xs font-semibold uppercase tracking-wide mb-3" style="color: var(--color-muted-foreground);">Nuevo color</p>
+                  <div class="flex flex-col gap-3">
+                    <div class="field">
+                      <label for="color-nombre-{grupo._id}">Nombre del color</label>
+                      <input id="color-nombre-{grupo._id}" type="text" placeholder="ej: Negro Sideral"
+                        bind:value={newColorValor} class="inp" />
+                    </div>
+                    <div class="field">
+                      <label for="color-hex-{grupo._id}">Color</label>
+                      <div class="flex items-center gap-3">
+                        <div class="relative" style="width: 3rem; height: 3rem;">
+                          <div class="w-12 h-12 rounded-lg border overflow-hidden"
+                            style="border-color: var(--color-border); background: {newColorHex};">
+                          </div>
+                          <input id="color-hex-{grupo._id}" type="color" bind:value={newColorHex}
+                            class="absolute inset-0 opacity-0 w-full h-full cursor-pointer" />
+                        </div>
+                        <span class="text-sm font-mono" style="color: var(--color-muted-foreground);">{newColorHex}</span>
+                      </div>
+                    </div>
+                    <div class="field">
+                      <label for="color-fotos-{grupo._id}">Fotos (opcional)</label>
+                      <div class="upload-zone">
+                        <input id="color-fotos-{grupo._id}" type="file" multiple accept="image/*"
+                          onchange={(e) => newColorFiles = (e.target as HTMLInputElement).files} />
+                        <p class="text-sm pointer-events-none" style="color: var(--color-muted-foreground);">
+                          {#if newColorFiles?.length}
+                            {newColorFiles.length} foto{newColorFiles.length > 1 ? 's' : ''} seleccionada{newColorFiles.length > 1 ? 's' : ''}
+                          {:else}
+                            Haz clic para seleccionar fotos
+                          {/if}
+                        </p>
+                      </div>
+                    </div>
+                    <Button onclick={() => handleAddColor(grupo._id)} loading={addingColor[grupo._id] ?? false} disabled={!newColorValor}>
+                      <Plus size={14} />
+                      Añadir color
+                    </Button>
+                  </div>
+                {:else}
+                  <p class="text-xs font-semibold uppercase tracking-wide mb-3" style="color: var(--color-muted-foreground);">Nueva opción</p>
+                  <div class="flex flex-col gap-3">
+                    <div class="grid grid-cols-2 gap-3">
+                      <div class="field">
+                        <label for="storage-valor-{grupo._id}">Valor</label>
+                        <input id="storage-valor-{grupo._id}" type="text" placeholder="ej: 256 GB"
+                          bind:value={newStorageValor} class="inp" />
+                      </div>
+                      <div class="field">
+                        <label for="storage-precio-{grupo._id}">Precio extra (€)</label>
+                        <input id="storage-precio-{grupo._id}" type="number" placeholder="0" min="0"
+                          bind:value={newStorageModificador} class="inp" />
+                      </div>
+                    </div>
+                    <Button onclick={() => handleAddStorage(grupo._id)} loading={addingStorage[grupo._id] ?? false} disabled={!newStorageValor}>
+                      <Plus size={14} />
+                      Añadir opción
+                    </Button>
+                  </div>
+                {/if}
+              </div>
+            </div>
+          {/each}
+
+          <!-- Añadir nuevo grupo -->
+          <div class="mt-2 pt-5 border-t" style="border-color: var(--color-border);">
+            <p class="text-sm font-semibold mb-4" style="color: var(--color-foreground);">Añadir grupo de opciones</p>
+
+            <div class="flex gap-3 mb-4">
+              <button class="tipo-btn {newGrupoTipo === 'color' ? 'selected' : ''}" onclick={() => newGrupoTipo = 'color'}>
+                <Palette size={18} />
+                Color
+              </button>
+              <button class="tipo-btn {newGrupoTipo === 'storage' ? 'selected' : ''}" onclick={() => newGrupoTipo = 'storage'}>
+                <HardDrive size={18} />
+                Almacenamiento
+              </button>
+              <button class="tipo-btn {newGrupoTipo === 'button' ? 'selected' : ''}" onclick={() => newGrupoTipo = 'button'}>
+                <SlidersHorizontal size={18} />
+                Genérico
               </button>
             </div>
 
-            <!-- Opciones del grupo -->
-            <div class="p-3 flex flex-col gap-2">
-              {#if grupo.tipo === 'color' && grupo.opciones.length > 1}
-                <p class="drag-hint">↕ Arrastra los colores para cambiar el orden · El primero es la portada de la tienda</p>
-              {/if}
-
-              {#each grupo.opciones as opcion, opcionIdx (opcion._id)}
-                {@const isColorCover = grupo.tipo === 'color' && opcionIdx === 0 && product.gruposOpciones.findIndex(g => g.tipo === 'color') === product.gruposOpciones.indexOf(grupo)}
-                <div
-                  class="opcion-item {grupo.tipo === 'color' ? (draggingOpcionesGrupoIdx[grupo._id] === opcionIdx ? 'is-dragging' : '') : ''} {grupo.tipo === 'color' && dragOverOpcionesGrupoIdx[grupo._id] === opcionIdx && draggingOpcionesGrupoIdx[grupo._id] !== opcionIdx ? 'is-over' : ''} {isColorCover ? 'is-cover' : ''}"
-                  draggable={grupo.tipo === 'color'}
-                  ondragstart={grupo.tipo === 'color' ? (e) => onDragStartOpcionesGrupo(e, grupo._id, opcionIdx) : undefined}
-                  ondragover={grupo.tipo === 'color' ? (e) => onDragOverOpcionesGrupo(e, grupo._id, opcionIdx) : undefined}
-                  ondrop={grupo.tipo === 'color' ? (e) => onDropOpcionesGrupo(e, grupo._id, grupo.opciones, opcionIdx) : undefined}
-                  ondragend={grupo.tipo === 'color' ? () => onDragEndOpcionesGrupo(grupo._id) : undefined}
-                  role="listitem"
-                  style={grupo.tipo !== 'color' ? 'cursor: default;' : ''}
-                >
-                  <!-- Cabecera de la opción -->
-                  <div class="flex items-center justify-between gap-2">
-                    <div class="flex items-center gap-2 flex-1 min-w-0">
-                      {#if grupo.tipo === 'color'}
-                        <span class="drag-handle">⠿</span>
-                      {/if}
-                      {#if grupo.tipo === 'color' && (opcion as any).codigoHex}
-                        <span class="w-5 h-5 rounded-full border border-black/15 shrink-0"
-                          style="background:{(opcion as any).codigoHex};"></span>
-                      {/if}
-                      <span class="text-sm font-medium truncate">{opcion.valor}</span>
-                      {#if isColorCover}
-                        <span class="cover-badge shrink-0">Portada</span>
-                      {/if}
-                      {#if opcion.modificadorPrecio && opcion.modificadorPrecio !== 0}
-                        <span class="text-xs shrink-0 px-1.5 py-0.5 rounded"
-                          style="background: var(--color-card); color: var(--color-muted-foreground); border: 1px solid var(--color-border);">
-                          +{opcion.modificadorPrecio}€
-                        </span>
-                      {/if}
-                    </div>
-                    <button onclick={() => handleDeleteOpcion(grupo._id, opcion._id)}
-                      class="text-sm leading-none cursor-pointer opacity-40 hover:opacity-100 transition-opacity shrink-0"
-                      style="color: var(--color-destructive);"
-                      aria-label="Eliminar opción">
-                      ✕
-                    </button>
-                  </div>
-
-                  <!-- Imágenes del color con drag-and-drop -->
-                  {#if grupo.tipo === 'color'}
-                    {#if (opcion as any).imagenes?.length > 0}
-                      <p class="drag-hint" style="margin-bottom: 0.3rem;">↕ Arrastra para reordenar fotos · La primera es la portada del color</p>
-                      <div class="img-grid" style="grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));">
-                        {#each (opcion as any).imagenes as img, i (img)}
-                          <div
-                            class="img-item {draggingOpcionIdx[opcion._id] === i ? 'is-dragging' : ''} {dragOverOpcionIdx[opcion._id] === i && draggingOpcionIdx[opcion._id] !== i ? 'is-over' : ''}"
-                            draggable="true"
-                            ondragstart={(e) => onDragStartOpcion(e, opcion._id, i)}
-                            ondragover={(e) => onDragOverOpcion(e, opcion._id, i)}
-                            ondrop={(e) => onDropOpcion(e, grupo._id, opcion._id, (opcion as any).imagenes, i)}
-                            ondragend={() => onDragEndOpcion(opcion._id)}
-                            role="listitem"
-                          >
-                            <img src={getImageUrl(img)} alt="{opcion.valor} foto {i + 1}" />
-                            <span class="img-num">{i + 1}</span>
-                            {#if i === 0}
-                              <span class="img-portada">Portada</span>
-                            {/if}
-                            <button
-                              class="img-delete"
-                              onclick={() => handleDeleteImagen(grupo._id, opcion._id, img)}
-                              aria-label="Eliminar foto"
-                            >✕</button>
-                          </div>
-                        {/each}
-                      </div>
-                    {/if}
-
-                    <!-- Upload fotos extra -->
-                    <div class="upload-zone" style="padding: 0.625rem;">
-                      <input
-                        type="file" multiple accept="image/*"
-                        id="extra-{opcion._id}"
-                        onchange={(e) => { extraFiles[opcion._id] = (e.target as HTMLInputElement).files; }} />
-                      <label for="extra-{opcion._id}" class="text-xs pointer-events-none block" style="color: var(--color-muted-foreground);">
-                        {#if extraFiles[opcion._id]?.length}
-                          {extraFiles[opcion._id]!.length} foto{extraFiles[opcion._id]!.length > 1 ? 's' : ''} seleccionada{extraFiles[opcion._id]!.length > 1 ? 's' : ''}
-                        {:else}
-                          + Añadir fotos a este color
-                        {/if}
-                      </label>
-                    </div>
-                    {#if extraFiles[opcion._id]?.length}
-                      <Button onclick={() => handleUploadExtra(grupo._id, opcion._id)} loading={uploadingExtra[opcion._id] ?? false}>
-                        Subir {extraFiles[opcion._id]!.length} foto{extraFiles[opcion._id]!.length > 1 ? 's' : ''}
-                      </Button>
-                    {/if}
-                  {/if}
-                </div>
-              {/each}
-
-              {#if grupo.opciones.length === 0}
-                <p class="text-xs text-center py-3" style="color: var(--color-muted-foreground);">
-                  Sin opciones aún. Añade una abajo.
-                </p>
-              {/if}
+            <div class="field mb-4">
+              <label for="grupo-nombre">Etiqueta del grupo</label>
+              <input id="grupo-nombre" type="text"
+                placeholder={newGrupoTipo === 'color' ? 'ej: Color' : newGrupoTipo === 'storage' ? 'ej: Almacenamiento' : 'ej: Conectividad'}
+                bind:value={newGrupoNombre} class="inp" />
             </div>
-
-            <!-- Formulario añadir opción -->
-            <div class="add-option-area">
-              {#if grupo.tipo === 'color'}
-                <p class="text-xs font-semibold uppercase tracking-wide mb-3"
-                  style="color: var(--color-muted-foreground);">Nuevo color</p>
-                <div class="flex flex-col gap-3">
-                  <div class="field">
-                    <label for="color-nombre-{grupo._id}">Nombre del color</label>
-                    <input id="color-nombre-{grupo._id}" type="text" placeholder="ej: Negro Sideral"
-                      bind:value={newColorValor} class="inp" />
-                  </div>
-                  <div class="field">
-                    <label for="color-hex-{grupo._id}">Color</label>
-                    <div class="flex items-center gap-3">
-                      <div class="relative" style="width: 3rem; height: 3rem;">
-                        <div class="w-12 h-12 rounded-lg border overflow-hidden"
-                          style="border-color: var(--color-border); background: {newColorHex};">
-                        </div>
-                        <input id="color-hex-{grupo._id}" type="color" bind:value={newColorHex}
-                          class="absolute inset-0 opacity-0 w-full h-full cursor-pointer" />
-                      </div>
-                      <span class="text-sm font-mono" style="color: var(--color-muted-foreground);">{newColorHex}</span>
-                    </div>
-                  </div>
-                  <div class="field">
-                    <label for="color-fotos-{grupo._id}">Fotos (opcional)</label>
-                    <div class="upload-zone">
-                      <input id="color-fotos-{grupo._id}" type="file" multiple accept="image/*"
-                        onchange={(e) => newColorFiles = (e.target as HTMLInputElement).files} />
-                      <p class="text-sm pointer-events-none" style="color: var(--color-muted-foreground);">
-                        {#if newColorFiles?.length}
-                          {newColorFiles.length} foto{newColorFiles.length > 1 ? 's' : ''} seleccionada{newColorFiles.length > 1 ? 's' : ''}
-                        {:else}
-                          Haz clic para seleccionar fotos
-                        {/if}
-                      </p>
-                    </div>
-                  </div>
-                  <Button onclick={() => handleAddColor(grupo._id)}
-                    loading={addingColor[grupo._id] ?? false}
-                    disabled={!newColorValor}>
-                    Añadir color
-                  </Button>
-                </div>
-              {:else}
-                <p class="text-xs font-semibold uppercase tracking-wide mb-3"
-                  style="color: var(--color-muted-foreground);">Nueva opción</p>
-                <div class="flex flex-col gap-3">
-                  <div class="grid grid-cols-2 gap-3">
-                    <div class="field">
-                      <label for="storage-valor-{grupo._id}">Valor</label>
-                      <input id="storage-valor-{grupo._id}" type="text" placeholder="ej: 256 GB"
-                        bind:value={newStorageValor} class="inp" />
-                    </div>
-                    <div class="field">
-                      <label for="storage-precio-{grupo._id}">Precio extra (€)</label>
-                      <input id="storage-precio-{grupo._id}" type="number" placeholder="0" min="0"
-                        bind:value={newStorageModificador} class="inp" />
-                    </div>
-                  </div>
-                  <Button onclick={() => handleAddStorage(grupo._id)}
-                    loading={addingStorage[grupo._id] ?? false}
-                    disabled={!newStorageValor}>
-                    Añadir opción
-                  </Button>
-                </div>
-              {/if}
-            </div>
+            <Button onclick={handleAddGrupo} loading={addingGrupo} disabled={!newGrupoNombre}>
+              <Plus size={14} />
+              Crear grupo
+            </Button>
           </div>
-        {/each}
-
-        <!-- Añadir nuevo grupo -->
-        <div class="mt-2 pt-5 border-t" style="border-color: var(--color-border);">
-          <p class="text-sm font-semibold mb-4" style="color: var(--color-foreground);">Añadir grupo de opciones</p>
-
-          <div class="flex gap-3 mb-4">
-            <button class="tipo-btn {newGrupoTipo === 'color' ? 'selected' : ''}"
-              onclick={() => newGrupoTipo = 'color'}>
-              <span class="icon">🎨</span>
-              Color
-            </button>
-            <button class="tipo-btn {newGrupoTipo === 'storage' ? 'selected' : ''}"
-              onclick={() => newGrupoTipo = 'storage'}>
-              <span class="icon">💾</span>
-              Almacenamiento
-            </button>
-            <button class="tipo-btn {newGrupoTipo === 'button' ? 'selected' : ''}"
-              onclick={() => newGrupoTipo = 'button'}>
-              <span class="icon">⚙️</span>
-              Genérico
-            </button>
-          </div>
-
-          <div class="field mb-4">
-            <label for="grupo-nombre">Etiqueta del grupo</label>
-            <input id="grupo-nombre" type="text"
-              placeholder={newGrupoTipo === 'color' ? 'ej: Color' : newGrupoTipo === 'storage' ? 'ej: Almacenamiento' : 'ej: Conectividad'}
-              bind:value={newGrupoNombre} class="inp" />
-          </div>
-          <Button onclick={handleAddGrupo} loading={addingGrupo} disabled={!newGrupoNombre}>
-            Crear grupo
-          </Button>
         </div>
       </div>
 

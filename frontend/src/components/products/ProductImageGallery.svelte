@@ -1,6 +1,7 @@
 <script lang="ts">
   import { untrack } from 'svelte';
   import { getImageUrl } from '../../types/index.js';
+  import { ChevronLeft, ChevronRight } from 'lucide-svelte';
 
   interface Props {
     imagenes: string[];
@@ -191,16 +192,12 @@
     {#if imagenes.length > 1}
       {#if selectedIndex > 0}
         <button class="nav-btn nav-prev" onclick={() => navigate(-1)} aria-label="Foto anterior">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14">
-            <polyline points="15 18 9 12 15 6"/>
-          </svg>
+          <ChevronLeft size={16} strokeWidth={2.5} />
         </button>
       {/if}
       {#if selectedIndex < imagenes.length - 1}
         <button class="nav-btn nav-next" onclick={() => navigate(1)} aria-label="Foto siguiente">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14">
-            <polyline points="9 18 15 12 9 6"/>
-          </svg>
+          <ChevronRight size={16} strokeWidth={2.5} />
         </button>
       {/if}
     {/if}

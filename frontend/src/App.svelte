@@ -3,7 +3,7 @@
   import { push, router } from './lib/router.svelte.js';
   import { auth } from './stores/auth.svelte.js';
   import Navbar from './components/layout/Navbar.svelte';
-  import ToastStack from './components/ToastStack.svelte';
+  import { Toaster } from 'svelte-sonner';
   import SearchDialog from './components/search/SearchDialog.svelte';
   import LandingPage from './pages/LandingPage.svelte';
   import LoginPage from './pages/LoginPage.svelte';
@@ -42,5 +42,5 @@
   <Router {routes} />
 </main>
 
-<ToastStack />
+<Toaster richColors position="bottom-right" />
 <SearchDialog />

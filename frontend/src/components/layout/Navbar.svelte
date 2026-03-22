@@ -13,12 +13,16 @@
   const navLinks = $derived([
     { path: '/products', label: 'Tienda' },
     ...(auth.isAuthenticated ? [{ path: '/profile', label: 'Perfil' }] : []),
-    ...(auth.isAdmin ? [{ path: '/admin/users', label: 'Usuarios' }] : []),
+    ...(auth.isAdmin ? [
+      { path: '/admin/products', label: 'Productos' },
+      { path: '/admin/users', label: 'Usuarios' },
+    ] : []),
   ]);
 
   function isActive(path: string): boolean {
     const loc = router.location;
-    if (path === '/products' && loc.startsWith('/products')) return true;
+    if (path === '/products' && loc.startsWith('/products') && !loc.startsWith('/admin')) return true;
+    if (path === '/admin/products' && loc.startsWith('/admin/products')) return true;
     return loc === path;
   }
 

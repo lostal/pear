@@ -8,6 +8,7 @@
   import { fetchProducts } from '../../services/products.service.js';
   import type { Product } from '../../types/index.js';
   import { getImagenesForProduct, getImageUrl } from '../../types/index.js';
+  import { Search } from 'lucide-svelte';
 
   function dialogFly(
     node: Element,
@@ -88,6 +89,11 @@
   const fmt = new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' });
 </script>
 
+<style>
+  .result-btn { background: transparent; }
+  .result-btn:hover { background: var(--color-accent); }
+</style>
+
 {#if uiState.isSearchOpen && !navigating}
   <!-- svelte-ignore a11y_click_events_have_key_events -->
   <!-- svelte-ignore a11y_no_static_element_interactions -->
@@ -109,17 +115,7 @@
         class="flex items-center gap-3 p-4 sm:p-6 border-b"
         style="border-color: var(--color-border); background: color-mix(in srgb, var(--color-background) 50%, transparent);"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="w-5 h-5"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          style="color: var(--color-muted-foreground);"
-        >
-          <circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" />
-        </svg>
+        <Search size={18} style="color: var(--color-muted-foreground); flex-shrink: 0;" />
         <input
           bind:this={searchInput}
           bind:value={query}
@@ -156,10 +152,7 @@
             {#each filteredProducts as product (product._id)}
               {@const img = getImagenesForProduct(product)[0]}
               <button
-                class="w-full text-left p-4 sm:p-5 rounded-xl transition-all cursor-pointer flex items-center gap-3"
-                style="background: transparent;"
-                onmouseenter={(e) => (e.currentTarget as HTMLElement).style.background = 'var(--color-accent)'}
-                onmouseleave={(e) => (e.currentTarget as HTMLElement).style.background = 'transparent'}
+                class="result-btn w-full text-left p-4 sm:p-5 rounded-xl transition-colors cursor-pointer flex items-center gap-3"
                 onclick={() => goToProduct(product._id)}
               >
                 <div class="flex-1 min-w-0">

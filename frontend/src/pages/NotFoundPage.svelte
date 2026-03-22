@@ -1,6 +1,7 @@
 <script lang="ts">
   import { push } from '../lib/router.svelte.js';
   import { withTransition } from '../lib/transitions.js';
+  import { ChevronLeft } from 'lucide-svelte';
 </script>
 
 <div class="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
@@ -16,8 +17,10 @@
   </p>
   <button
     onclick={() => withTransition(() => push('/products'))}
-    class="text-sm font-medium underline underline-offset-4 transition-opacity hover:opacity-70 cursor-pointer"
+    class="text-sm flex items-center gap-1 transition-opacity hover:opacity-70 cursor-pointer group"
+    style="color: var(--color-muted-foreground);"
   >
-    Volver al inicio
+    <ChevronLeft size={16} class="transition-transform group-hover:-translate-x-0.5" />
+    Volver a la tienda
   </button>
 </div>

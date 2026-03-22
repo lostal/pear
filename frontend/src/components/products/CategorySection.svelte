@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { ProductosPorCategoria } from '../../types/index.js';
   import ProductCard from './ProductCard.svelte';
+  import { ArrowRight } from 'lucide-svelte';
 
   interface Props {
     group: ProductosPorCategoria;
@@ -17,10 +18,11 @@
     {#if group.productos.length > 3}
       <a
         href={`/#/products?categoria=${group.categoria.slug}`}
-        class="text-sm transition-opacity hover:opacity-70"
-        style="color: var(--color-primary);"
+        class="text-sm flex items-center gap-1 transition-opacity hover:opacity-70 group"
+        style="color: var(--color-muted-foreground);"
       >
         Ver todos
+        <ArrowRight size={14} class="transition-transform group-hover:translate-x-0.5" />
       </a>
     {/if}
   </div>

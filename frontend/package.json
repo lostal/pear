@@ -19,6 +19,8 @@
   "dependencies": {
     "@fontsource/ibm-plex-sans": "^5.2.8",
     "@fontsource/instrument-serif": "^5.2.8",
-    "motion": "^12.38.0"
+    "lucide-svelte": "^0.577.0",
+    "motion": "^12.38.0",
+    "svelte-sonner": "^1.1.0"
   }
 }

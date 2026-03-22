@@ -13,6 +13,7 @@
   import Spinner from '../components/ui/Spinner.svelte';
   import Button from '../components/ui/Button.svelte';
   import PageLayout from '../components/layout/PageLayout.svelte';
+  import { GripVertical, Pencil, Trash2, ChevronLeft } from 'lucide-svelte';
 
   $effect(() => {
     if (!auth.isAuthenticated || !auth.isAdmin) push('/');
@@ -238,12 +239,10 @@
   .drag-handle {
     color: var(--color-muted-foreground);
     opacity: 0.35;
-    font-size: 1rem;
     flex-shrink: 0;
-    line-height: 1;
   }
-  .cat-header:hover .drag-handle,
-  .prod-row:hover .drag-handle {
+  .cat-header:hover :global(.drag-handle),
+  .prod-row:hover :global(.drag-handle) {
     opacity: 0.7;
   }
 </style>
@@ -253,10 +252,11 @@
     <h1 class="text-3xl font-black">Panel de productos</h1>
     <button
       onclick={() => push('/products')}
-      class="text-sm transition-opacity hover:opacity-70 cursor-pointer"
+      class="text-sm flex items-center gap-1 transition-opacity hover:opacity-70 cursor-pointer group"
       style="color: var(--color-muted-foreground);"
     >
-      ← Volver a la tienda
+      <ChevronLeft size={16} class="transition-transform group-hover:-translate-x-0.5" />
+      Tienda
     </button>
   </div>
 
@@ -317,9 +317,12 @@
               </div>
               <button
                 onclick={() => handleDeleteCategory(cat._id)}
-                class="text-xs cursor-pointer hover:opacity-70 transition-opacity"
+                class="flex items-center gap-1 text-xs cursor-pointer hover:opacity-70 transition-opacity"
                 style="color: var(--color-destructive);"
-              >Eliminar</button>
+              >
+                <Trash2 size={12} />
+                Eliminar
+              </button>
             </div>
           {/each}
         </div>
@@ -383,7 +386,7 @@
             >
               <!-- Cabecera de categoría -->
               <div class="cat-header">
-                <span class="drag-handle">⠿</span>
+                <GripVertical size={14} class="drag-handle" />
                 <span class="text-sm font-semibold" style="color: var(--color-foreground);">{group.cat.nombre}</span>
                 <span class="text-xs" style="color: var(--color-muted-foreground);">
                   {group.products.length} producto{group.products.length !== 1 ? 's' : ''}
@@ -407,7 +410,7 @@
                       ondragend={() => onDragEndProd(group.cat._id)}
                       role="listitem"
                     >
-                      <span class="drag-handle">⠿</span>
+                      <GripVertical size={14} class="drag-handle" />
                       <div class="flex-1 min-w-0">
                         <p class="text-sm font-medium truncate" style="color: var(--color-foreground);">{prod.nombre}</p>
                         <p class="text-xs" style="color: var(--color-muted-foreground);">
@@ -415,17 +418,22 @@
                           {#if !prod.activo}<span class="opacity-50"> · Inactivo</span>{/if}
                         </p>
                       </div>
-                      <div class="flex gap-4 text-xs shrink-0">
+                      <div class="flex gap-1 shrink-0">
                         <button
                           onclick={() => push(`/admin/products/${prod._id}`)}
-                          class="cursor-pointer hover:opacity-70 transition-opacity"
-                          style="color: var(--color-foreground);"
-                        >Editar</button>
+                          class="flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-md cursor-pointer transition-colors hover:opacity-80"
+                          style="color: var(--color-foreground); background: var(--color-secondary); border: 1px solid var(--color-border);"
+                        >
+                          <Pencil size={12} />
+                          Editar
+                        </button>
                         <button
                           onclick={() => handleDeleteProduct(prod._id, prod.nombre)}
-                          class="cursor-pointer hover:opacity-70 transition-opacity"
+                          class="flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-md cursor-pointer transition-opacity hover:opacity-70"
                           style="color: var(--color-destructive);"
-                        >Eliminar</button>
+                        >
+                          <Trash2 size={12} />
+                        </button>
                       </div>
                     </div>
                   {/each}

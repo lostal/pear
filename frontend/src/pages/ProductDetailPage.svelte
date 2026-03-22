@@ -13,6 +13,7 @@
   import StorageSelector from '../components/products/StorageSelector.svelte';
   import Spinner from '../components/ui/Spinner.svelte';
   import PageLayout from '../components/layout/PageLayout.svelte';
+  import { ChevronLeft } from 'lucide-svelte';
 
   interface Props {
     params?: { id?: string };
@@ -90,10 +91,11 @@
 <PageLayout>
   <button
     onclick={() => withTransition(() => push('/products'))}
-    class="text-sm mb-10 flex items-center gap-1.5 transition-opacity hover:opacity-70 cursor-pointer"
+    class="text-sm mb-10 flex items-center gap-1 transition-opacity hover:opacity-70 cursor-pointer group"
     style="color: var(--color-muted-foreground);"
   >
-    ← Tienda
+    <ChevronLeft size={16} class="transition-transform group-hover:-translate-x-0.5" />
+    Tienda
   </button>
 
   {#if loading}

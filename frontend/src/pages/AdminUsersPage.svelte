@@ -8,6 +8,7 @@
   import ConfirmDialog from '../components/ui/ConfirmDialog.svelte';
   import Spinner from '../components/ui/Spinner.svelte';
   import PageLayout from '../components/layout/PageLayout.svelte';
+  import { Users } from 'lucide-svelte';
 
   $effect(() => {
     if (!auth.isAuthenticated) push('/');
@@ -62,9 +63,18 @@
 </script>
 
 <PageLayout>
-  <div class="mb-10">
-    <h1 class="text-4xl sm:text-5xl font-black">Usuarios</h1>
-    <p class="text-sm mt-1.5" style="color: var(--color-muted-foreground);">Gestión de cuentas</p>
+  <div class="mb-10 flex items-end justify-between gap-4">
+    <div>
+      <h1 class="text-4xl sm:text-5xl font-black">Usuarios</h1>
+      <p class="text-sm mt-1.5" style="color: var(--color-muted-foreground);">Gestión de cuentas</p>
+    </div>
+    {#if !loading}
+      <span class="mb-1 inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full shrink-0"
+        style="background: var(--color-secondary); color: var(--color-muted-foreground); border: 1px solid var(--color-border);">
+        <Users size={12} />
+        {users.length} {users.length === 1 ? 'usuario' : 'usuarios'}
+      </span>
+    {/if}
   </div>
 
   {#if loading}
@@ -91,7 +101,10 @@
       </table>
 
       {#if users.length === 0}
-        <div class="text-center py-10" style="color: var(--color-muted-foreground);">No hay usuarios.</div>
+        <div class="flex flex-col items-center gap-3 py-16" style="color: var(--color-muted-foreground);">
+          <Users size={32} class="opacity-30" />
+          <p class="text-sm">No hay usuarios registrados.</p>
+        </div>
       {/if}
     </div>
   {/if}
