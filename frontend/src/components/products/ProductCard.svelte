@@ -1,7 +1,8 @@
 <script lang="ts">
   import type { Product } from '../../types/index.js';
   import { getImagenesForProduct, getPrecioMinimo, getImageUrl } from '../../types/index.js';
-  import { push } from 'svelte-spa-router';
+  import { push } from '../../lib/router.svelte.js';
+  import { withTransition } from '../../lib/transitions.js';
 
   interface Props {
     product: Product;
@@ -23,12 +24,12 @@
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <article
   class="group cursor-pointer"
-  onclick={() => push(`/products/${product._id}`)}
+  onclick={() => withTransition(() => push(`/products/${product._id}`))}
 >
   <!-- Imagen -->
   <div
     class="aspect-square rounded-2xl overflow-hidden flex items-center justify-center mb-3 transition-transform duration-300 group-hover:scale-[1.02]"
-    style="background: var(--color-secondary);"
+    style="background: var(--color-secondary); view-transition-name: product-image-{product._id};"
   >
     {#if imagenes.length > 0}
       <img
@@ -45,7 +46,10 @@
 
   <!-- Info -->
   <div class="px-1">
-    <h3 class="text-sm font-medium leading-snug mb-1" style="color: var(--color-foreground);">
+    <h3
+      class="text-sm font-medium leading-snug mb-1"
+      style="color: var(--color-foreground); view-transition-name: product-title-{product._id};"
+    >
       {product.nombre}
     </h3>
 

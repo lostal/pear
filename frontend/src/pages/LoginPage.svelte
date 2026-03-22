@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { push } from 'svelte-spa-router';
+  import { push } from '../lib/router.svelte.js';
+  import { withTransition } from '../lib/transitions.js';
   import { onMount } from 'svelte';
   import { animate } from 'motion';
   import { auth } from '../stores/auth.svelte.js';
@@ -31,7 +32,7 @@
     try {
       await login({ username, password });
       toast.success(`Bienvenido, ${auth.displayName}.`);
-      push('/products');
+      withTransition(() => push('/products'));
     } catch (err) {
       error = err instanceof Error ? err.message : 'Error al iniciar sesión.';
     } finally {

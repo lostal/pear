@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { push, router } from 'svelte-spa-router';
+  import { push, router } from '../../lib/router.svelte.js';
   import { auth } from '../../stores/auth.svelte.js';
   import { withTransition } from '../../lib/transitions.js';
   import SearchButton from '../search/SearchButton.svelte';

@@ -1,6 +1,6 @@
 <script lang="ts">
-  import Router, { push, router } from 'svelte-spa-router';
-  import { wrap } from 'svelte-spa-router/wrap';
+  import Router from './lib/Router.svelte';
+  import { push, router } from './lib/router.svelte.js';
   import { auth } from './stores/auth.svelte.js';
   import Navbar from './components/layout/Navbar.svelte';
   import ToastStack from './components/ToastStack.svelte';
@@ -28,10 +28,10 @@
     '/login': LoginPage,
     '/products': ProductsPage,
     '/products/:id': ProductDetailPage,
-    '/profile': wrap({ component: ProfilePage }),
-    '/admin/users': wrap({ component: AdminUsersPage }),
-    '/admin/products': wrap({ component: AdminProductsPage }),
-    '/admin/products/:id': wrap({ component: AdminProductEditPage }),
+    '/profile': ProfilePage,
+    '/admin/users': AdminUsersPage,
+    '/admin/products': AdminProductsPage,
+    '/admin/products/:id': AdminProductEditPage,
     '*': NotFoundPage,
   };
 </script>

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { untrack } from 'svelte';
-  import { push } from 'svelte-spa-router';
+  import { push } from '../lib/router.svelte.js';
   import { auth } from '../stores/auth.svelte.js';
   import { toast } from '../stores/toast.svelte.js';
   import {

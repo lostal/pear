@@ -1,8 +1,10 @@
 <script lang="ts">
-  import { push } from 'svelte-spa-router';
+  import { push } from '../lib/router.svelte.js';
+  import { withTransition } from '../lib/transitions.js';
   import { auth } from '../stores/auth.svelte.js';
   import { toast } from '../stores/toast.svelte.js';
   import { fetchProduct } from '../services/products.service.js';
+  import { products as productsStore } from '../stores/products.svelte.js';
   import { http } from '../services/http.js';
   import type { Product, OpcionColor, Opcion } from '../types/index.js';
   import { getImagenesForProduct, getPrecioTotal } from '../types/index.js';
@@ -18,8 +20,9 @@
 
   let { params = {} }: Props = $props();
 
-  let product = $state<Product | null>(null);
-  let loading = $state(true);
+  const cached = productsStore.list.find(p => p._id === params?.id) ?? null;
+  let product = $state<Product | null>(cached);
+  let loading = $state(!cached);
   let addingToCart = $state(false);
 
   let selectedColor = $state<OpcionColor | null>(null);
@@ -49,7 +52,7 @@
   });
 
   async function loadProduct(id: string) {
-    loading = true;
+    if (!product) loading = true;
     try {
       product = await fetchProduct(id);
     } catch (err) {
@@ -86,7 +89,7 @@
 
 <PageLayout>
   <button
-    onclick={() => push('/products')}
+    onclick={() => withTransition(() => push('/products'))}
     class="text-sm mb-10 flex items-center gap-1.5 transition-opacity hover:opacity-70 cursor-pointer"
     style="color: var(--color-muted-foreground);"
   >
@@ -94,11 +97,28 @@
   </button>
 
   {#if loading}
-    <div class="flex justify-center py-24"><Spinner size="lg" /></div>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start">
+      <!-- Placeholder imagen con view-transition-name para que la tarjeta vuele aquí -->
+      <div
+        class="aspect-square rounded-2xl"
+        style="background: var(--color-secondary); view-transition-name: {params.id ? `product-image-${params.id}` : ''};"
+      ></div>
+      <!-- Placeholder título -->
+      <div class="flex flex-col gap-6">
+        <div
+          class="h-14 rounded-xl"
+          style="background: var(--color-secondary); view-transition-name: {params.id ? `product-title-${params.id}` : ''};"
+        ></div>
+        <Spinner size="lg" />
+      </div>
+    </div>
   {:else if product}
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start">
       <!-- Galería -->
-      <div class="lg:sticky lg:top-24">
+      <div
+        class="lg:sticky lg:top-24"
+        style="view-transition-name: {params.id ? `product-image-${params.id}` : ''};"
+      >
         <ProductImageGallery {imagenes} alt={product.nombre} />
       </div>
 
@@ -110,7 +130,10 @@
             {product.categoria.nombre}
           </p>
         {/if}
-        <h1 class="text-4xl sm:text-5xl font-black leading-tight">
+        <h1
+          class="text-4xl sm:text-5xl font-black leading-tight"
+          style="view-transition-name: {params.id ? `product-title-${params.id}` : ''};"
+        >
           {product.nombre}
         </h1>
 

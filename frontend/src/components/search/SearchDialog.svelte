@@ -1,8 +1,9 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import { flushSync } from 'svelte';
   import { fade } from 'svelte/transition';
   import { cubicOut } from 'svelte/easing';
-  import { push } from 'svelte-spa-router';
+  import { push } from '../../lib/router.svelte.js';
   import { uiState } from '../../lib/ui.svelte.js';
   import { fetchProducts } from '../../services/products.service.js';
   import type { Product } from '../../types/index.js';
@@ -26,6 +27,9 @@
   let products = $state<Product[]>([]);
   let query = $state('');
   let loaded = $state(false);
+  // When true the {#if} goes false instantly (no Svelte out-transition) so
+  // startViewTransition captures a clean new state without the dialog in it.
+  let navigating = $state(false);
 
   let filteredProducts = $derived(
     query.length > 0
@@ -37,6 +41,7 @@
 
   $effect(() => {
     if (uiState.isSearchOpen) {
+      navigating = false;
       setTimeout(() => searchInput?.focus(), 10);
       if (!loaded) {
         fetchProducts()
@@ -54,8 +59,25 @@
   }
 
   function goToProduct(id: string) {
-    uiState.closeSearch();
-    push('/products/' + id);
+    // navigating=true is queued but NOT yet flushed to DOM.
+    // startViewTransition captures OLD state while dialog is still visible.
+    // flushSync inside the callback flushes navigating=true → {#if} goes false
+    // instantly, dialog removed with no Svelte out-transition → clean new state.
+    navigating = true;
+
+    if (!('startViewTransition' in document)) {
+      uiState.isSearchOpen = false;
+      navigating = false;
+      push('/products/' + id);
+      return;
+    }
+
+    document.startViewTransition(() => {
+      flushSync(() => push('/products/' + id));
+    }).finished.finally(() => {
+      uiState.isSearchOpen = false;
+      navigating = false;
+    });
   }
 
   onMount(() => {
@@ -66,7 +88,7 @@
   const fmt = new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' });
 </script>
 
-{#if uiState.isSearchOpen}
+{#if uiState.isSearchOpen && !navigating}
   <!-- svelte-ignore a11y_click_events_have_key_events -->
   <!-- svelte-ignore a11y_no_static_element_interactions -->
   <div

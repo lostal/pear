@@ -17,9 +17,6 @@ importers:
       motion:
         specifier: ^12.38.0
         version: 12.38.0
-      svelte-spa-router:
-        specifier: ^5.0.0
-        version: 5.0.0
     devDependencies:
       '@sveltejs/vite-plugin-svelte':
         specifier: ^7.0.0
@@ -491,10 +488,6 @@ packages:
     resolution: {integrity: sha512-OW/rX8O/jXnm82Ey1k44pObPtdblfiuWnrd8X7GJ7emImCOstunGbXUpp7HdBrFQX6rJzn3sPT397Wp5aCwCHg==}
     engines: {node: ^10 || ^12 || >=14}
 
-  regexparam@2.0.2:
-    resolution: {integrity: sha512-A1PeDEYMrkLrfyOwv2jwihXbo9qxdGD3atBYQA9JJgreAx8/7rC6IUkWOw2NQlOxLp2wL0ifQbh1HuidDfYA6w==}
-    engines: {node: '>=8'}
-
   rolldown@1.0.0-rc.10:
     resolution: {integrity: sha512-q7j6vvarRFmKpgJUT8HCAUljkgzEp4LAhPlJUvQhA5LA1SUL36s5QCysMutErzL3EbNOZOkoziSx9iZC4FddKA==}
     engines: {node: ^20.19.0 || >=22.12.0}
@@ -503,9 +496,6 @@ packages:
   source-map-js@1.2.1:
     resolution: {integrity: sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==}
     engines: {node: '>=0.10.0'}
-
-  svelte-spa-router@5.0.0:
-    resolution: {integrity: sha512-4F2irDGf2CkPxAz/tr/GwnAErZuG9l8J3ClHo2QfKPh0Ul4j9K9R3q91RaoekXZzJW90NHMY+dKLM9eF6vdcyA==}
 
   svelte@5.54.0:
     resolution: {integrity: sha512-TTDxwYnHkova6Wsyj1PGt9TByuWqvMoeY1bQiuAf2DM/JeDSMw7FjRKzk8K/5mJ99vGOKhbCqTDpyAKwjp4igg==}
@@ -902,8 +892,6 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
-  regexparam@2.0.2: {}
-
   rolldown@1.0.0-rc.10:
     dependencies:
       '@oxc-project/types': 0.120.0
@@ -926,10 +914,6 @@ snapshots:
       '@rolldown/binding-win32-x64-msvc': 1.0.0-rc.10
 
   source-map-js@1.2.1: {}
-
-  svelte-spa-router@5.0.0:
-    dependencies:
-      regexparam: 2.0.2
 
   svelte@5.54.0:
     dependencies:

@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { push } from 'svelte-spa-router';
+  import { push } from '../lib/router.svelte.js';
+  import { withTransition } from '../lib/transitions.js';
 </script>
 
 <div class="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
@@ -14,7 +15,7 @@
     Esta ruta no existe en el jardín Pear.
   </p>
   <button
-    onclick={() => push('/products')}
+    onclick={() => withTransition(() => push('/products'))}
     class="text-sm font-medium underline underline-offset-4 transition-opacity hover:opacity-70 cursor-pointer"
   >
     Volver al inicio

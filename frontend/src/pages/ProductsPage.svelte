@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { push } from 'svelte-spa-router';
+  import { push } from '../lib/router.svelte.js';
   import { auth } from '../stores/auth.svelte.js';
   import { products } from '../stores/products.svelte.js';
   import { toast } from '../stores/toast.svelte.js';
@@ -14,7 +14,7 @@
   });
 
   async function loadProducts() {
-    products.setLoading(true);
+    if (products.list.length === 0) products.setLoading(true);
     try {
       const list = await fetchProducts();
       products.setList(list);
