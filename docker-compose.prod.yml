@@ -1,0 +1,36 @@
+version: "3.8"
+
+services:
+  mongo:
+    image: mongo:6.0.26
+    container_name: mongo
+    restart: always
+    volumes:
+      - mongo_data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: productos
+
+  backend:
+    build: ./backend
+    container_name: backend
+    restart: always
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./backend/.env
+    environment:
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - mongo
+      - redis
+    volumes:
+      - backend_modules_cache:/app/node_modules
+    working_dir: /app
+    command: sh -c "node seed.js && npm start"
+
+  redis:
+    image: redis:alpine
+
+volumes:
+  mongo_data:
+  backend_modules_cache:
