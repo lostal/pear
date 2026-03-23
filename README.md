@@ -1,6 +1,6 @@
 # Pear
 
-![Hero](/frontend/public/collage.png)
+![Hero](/frontend/src/assets/collage.png)
 
 SPA de gestión de productos e-commerce construida con **Svelte 5** en el frontend y **Express + MongoDB** en el backend. Incluye autenticación JWT, panel de administración con CRUD completo y gestión de usuarios por roles.
 
