@@ -1,15 +1,17 @@
 # Pear
 
+![Hero](/frontend/public/collage.png)
+
 SPA de gestión de productos e-commerce construida con **Svelte 5** en el frontend y **Express + MongoDB** en el backend. Incluye autenticación JWT, panel de administración con CRUD completo y gestión de usuarios por roles.
 
 ## Stack
 
-| Capa | Tecnologías |
-|---|---|
-| Frontend | Svelte 5, Vite, TypeScript, Tailwind CSS 4 |
-| Backend | Node.js, Express 4, MongoDB 6, Mongoose, Redis |
-| Auth | JWT (Bearer token) |
-| Infraestructura | Docker, Docker Compose |
+| Capa            | Tecnologías                                    |
+| --------------- | ---------------------------------------------- |
+| Frontend        | Svelte 5, Vite, TypeScript, Tailwind CSS 4     |
+| Backend         | Node.js, Express 4, MongoDB 6, Mongoose, Redis |
+| Auth            | JWT (Bearer token)                             |
+| Infraestructura | Docker, Docker Compose                         |
 
 ---
 
@@ -29,11 +31,11 @@ pnpm install
 pnpm dev
 ```
 
-| Servicio | URL |
-|---|---|
-| Frontend | http://localhost:5173 |
-| Backend / API | http://localhost:3000 |
-| Swagger UI | http://localhost:3000/api-docs |
+| Servicio      | URL                            |
+| ------------- | ------------------------------ |
+| Frontend      | http://localhost:5173          |
+| Backend / API | http://localhost:3000          |
+| Swagger UI    | http://localhost:3000/api-docs |
 
 ### Desarrollo local (sin Docker)
 
@@ -78,19 +80,19 @@ pnpm seed
 
 ## Runas de Svelte 5 utilizadas
 
-| Runa | Archivo(s) | Uso |
-|---|---|---|
-| `$state()` | `stores/auth.svelte.ts` | Token JWT y datos del usuario autenticado |
-| `$state()` | `stores/products.svelte.ts` | Lista de productos y estado de carga |
-| `$state()` | `stores/categories.svelte.ts` | Categorías disponibles |
-| `$state()` | `stores/toast.svelte.ts` | Cola de notificaciones toast |
-| `$state()` | `lib/ui.svelte.ts` | Estado de la UI (búsqueda abierta/cerrada) |
-| `$derived()` | `stores/auth.svelte.ts` | `isAuthenticated`, `isAdmin`, `displayName` |
-| `$derived()` | `stores/products.svelte.ts` | `byCategory` — productos agrupados y ordenados por categoría |
-| `$effect()` | `App.svelte` | Protección de rutas: redirige al login si no hay sesión; actualiza el título de la pestaña |
-| `$effect()` | `pages/LoginPage.svelte` | Redirige al catálogo si ya hay sesión activa |
-| `$effect()` | `pages/AdminUsersPage.svelte` | Carga usuarios cuando el rol admin está confirmado |
-| `$props()` | `components/products/*`, `components/ui/*` | Props y callbacks en `ProductCard`, `ProductForm`, `UserRow`, `Modal`, `Button`, `Input`, etc. |
+| Runa         | Archivo(s)                                 | Uso                                                                                            |
+| ------------ | ------------------------------------------ | ---------------------------------------------------------------------------------------------- |
+| `$state()`   | `stores/auth.svelte.ts`                    | Token JWT y datos del usuario autenticado                                                      |
+| `$state()`   | `stores/products.svelte.ts`                | Lista de productos y estado de carga                                                           |
+| `$state()`   | `stores/categories.svelte.ts`              | Categorías disponibles                                                                         |
+| `$state()`   | `stores/toast.svelte.ts`                   | Cola de notificaciones toast                                                                   |
+| `$state()`   | `lib/ui.svelte.ts`                         | Estado de la UI (búsqueda abierta/cerrada)                                                     |
+| `$derived()` | `stores/auth.svelte.ts`                    | `isAuthenticated`, `isAdmin`, `displayName`                                                    |
+| `$derived()` | `stores/products.svelte.ts`                | `byCategory` — productos agrupados y ordenados por categoría                                   |
+| `$effect()`  | `App.svelte`                               | Protección de rutas: redirige al login si no hay sesión; actualiza el título de la pestaña     |
+| `$effect()`  | `pages/LoginPage.svelte`                   | Redirige al catálogo si ya hay sesión activa                                                   |
+| `$effect()`  | `pages/AdminUsersPage.svelte`              | Carga usuarios cuando el rol admin está confirmado                                             |
+| `$props()`   | `components/products/*`, `components/ui/*` | Props y callbacks en `ProductCard`, `ProductForm`, `UserRow`, `Modal`, `Button`, `Input`, etc. |
 
 Los callbacks (`onSave`, `onDelete`, `onEdit`) sustituyen a los eventos personalizados clásicos para la comunicación hijo → padre.
 
@@ -98,17 +100,17 @@ Los callbacks (`onSave`, `onDelete`, `onEdit`) sustituyen a los eventos personal
 
 ## API consumida
 
-| Método | Endpoint | Rol | Descripción |
-|---|---|---|---|
-| `POST` | `/api/auth/login` | Público | Login, devuelve JWT |
-| `GET` | `/api/products` | Autenticado | Listar productos |
-| `POST` | `/api/products` | Admin | Crear producto |
-| `PUT` | `/api/products/:id` | Admin | Editar producto |
-| `DELETE` | `/api/products/:id` | Admin | Eliminar producto |
-| `GET` | `/api/categories` | Autenticado | Listar categorías |
-| `GET` | `/api/users` | Admin | Listar usuarios |
-| `PUT` | `/api/users/:id` | Admin | Editar usuario / cambiar rol |
-| `DELETE` | `/api/users/:id` | Admin | Eliminar usuario |
+| Método   | Endpoint            | Rol         | Descripción                  |
+| -------- | ------------------- | ----------- | ---------------------------- |
+| `POST`   | `/api/auth/login`   | Público     | Login, devuelve JWT          |
+| `GET`    | `/api/products`     | Autenticado | Listar productos             |
+| `POST`   | `/api/products`     | Admin       | Crear producto               |
+| `PUT`    | `/api/products/:id` | Admin       | Editar producto              |
+| `DELETE` | `/api/products/:id` | Admin       | Eliminar producto            |
+| `GET`    | `/api/categories`   | Autenticado | Listar categorías            |
+| `GET`    | `/api/users`        | Admin       | Listar usuarios              |
+| `PUT`    | `/api/users/:id`    | Admin       | Editar usuario / cambiar rol |
+| `DELETE` | `/api/users/:id`    | Admin       | Eliminar usuario             |
 
 La documentación completa de la API está disponible en Swagger: `http://localhost:3000/api-docs`
 
