@@ -19,8 +19,8 @@
 </script>
 
 <picture>
-  {#each Object.entries(src.sources) as [type, srcset]}
-    <source {srcset} {type} />
+  {#each Object.entries(src.sources) as [format, srcset]}
+    <source {srcset} type="image/{format}" />
   {/each}
   <img src={src.img.src} {alt} {loading} {fetchpriority} class={cls} {style} />
 </picture>
