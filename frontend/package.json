@@ -26,7 +26,8 @@
     "svelte-eslint-parser": "^1.6.0",
     "tailwindcss": "^4.2.2",
     "typescript": "~5.9.3",
-    "vite": "^8.0.1"
+    "vite": "^8.0.1",
+    "vite-imagetools": "^10.0.0"
   },
   "dependencies": {
     "@fontsource/ibm-plex-sans": "^5.2.8",

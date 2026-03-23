@@ -4,6 +4,10 @@
   import { withTransition } from '../lib/transitions.js';
   import { animate, inView } from 'motion';
   import { auth } from '../stores/auth.svelte.js';
+  import Picture from '../components/Picture.svelte';
+  import collage from '../assets/collage.png?format=avif;webp;png&as=picture';
+  import ipear from '../assets/ipear.png?format=avif;webp;png&as=picture';
+  import pearbook from '../assets/pearbook.png?format=avif;webp;png&as=picture';
 
   let heroHeight = $state('100svh');
   let heroContent: HTMLElement | undefined = $state();
@@ -57,17 +61,14 @@
   style="height: {heroHeight}; background-color: var(--color-background);"
 >
   <!-- Collage de fondo -->
-  <picture>
-    <source srcset="/collage.avif" type="image/avif" />
-    <img
-      src="/collage.png"
-      alt=""
-      aria-hidden="true"
-      fetchpriority="high"
-      class="absolute inset-0 w-full h-full object-cover object-center select-none pointer-events-none"
-      style="opacity: 0.4;"
-    />
-  </picture>
+  <Picture
+    src={collage}
+    alt=""
+    fetchpriority="high"
+    loading="eager"
+    class="absolute inset-0 w-full h-full object-cover object-center select-none pointer-events-none"
+    style="opacity: 0.4;"
+  />
   <!-- Overlay gradiente para legibilidad del texto y transición perfecta al fondo -->
   <div
     class="absolute inset-0 pointer-events-none"
@@ -128,10 +129,7 @@
       class="showcase-img aspect-square rounded-2xl overflow-hidden"
       style="opacity:0; background: var(--color-secondary);"
     >
-      <picture>
-        <source srcset="/ipear.avif" type="image/avif" />
-        <img src="/ipear.png" alt="iPear" loading="lazy" class="w-full h-full object-contain" />
-      </picture>
+      <Picture src={ipear} alt="iPear" class="w-full h-full object-contain" />
     </div>
   </div>
 </section>
@@ -147,15 +145,7 @@
       class="showcase-img aspect-square rounded-2xl overflow-hidden order-2 lg:order-1"
       style="opacity:0; background: var(--color-secondary);"
     >
-      <picture>
-        <source srcset="/pearbook.avif" type="image/avif" />
-        <img
-          src="/pearbook.png"
-          alt="PearBook"
-          loading="lazy"
-          class="w-full h-full object-contain"
-        />
-      </picture>
+      <Picture src={pearbook} alt="PearBook" class="w-full h-full object-contain" />
     </div>
     <div class="showcase-text order-1 lg:order-2" style="opacity:0;">
       <p
