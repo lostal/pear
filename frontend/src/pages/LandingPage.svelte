@@ -91,23 +91,13 @@
     </p>
 
     <div class="hero-child" style="opacity:0;">
-      {#if auth.isAuthenticated}
-        <button
-          class="inline-flex items-center justify-center font-medium text-sm px-6 py-2.5 rounded-md transition-opacity hover:opacity-90 cursor-pointer"
-          style="background: var(--color-primary); color: var(--color-primary-foreground);"
-          onclick={() => withTransition(() => push('/products'))}
-        >
-          Descubrir
-        </button>
-      {:else}
-        <button
-          class="inline-flex items-center justify-center font-medium text-sm px-6 py-2.5 rounded-md transition-opacity hover:opacity-90 cursor-pointer"
-          style="background: var(--color-primary); color: var(--color-primary-foreground);"
-          onclick={() => withTransition(() => push('/login'))}
-        >
-          Iniciar sesión
-        </button>
-      {/if}
+      <button
+        class="inline-flex items-center justify-center font-medium text-sm px-6 py-2.5 rounded-md transition-opacity hover:opacity-90 cursor-pointer"
+        style="background: var(--color-primary); color: var(--color-primary-foreground);"
+        onclick={() => withTransition(() => push('/products'))}
+      >
+        Ver tienda
+      </button>
     </div>
   </div>
 </section>
@@ -208,9 +198,9 @@
   <button
     class="cta-child inline-flex items-center justify-center font-medium text-sm px-7 py-3 rounded-md transition-opacity hover:opacity-90 cursor-pointer"
     style="opacity:0; background: #f5f5f5; color: #1d1d1f;"
-    onclick={() => withTransition(() => push('/login'))}
+    onclick={() => withTransition(() => push(auth.isAuthenticated ? '/products' : '/login'))}
   >
-    Empezar ahora
+    {auth.isAuthenticated ? 'Ver tienda' : 'Empezar ahora'}
   </button>
   <p class="cta-child text-xs mt-12" style="opacity:0; color: rgba(255,255,255,0.2);">
     Pear · Parodia Conceptual · PW2 2025–26

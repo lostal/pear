@@ -104,7 +104,7 @@
         aria-label={menuOpen ? 'Cerrar menú' : 'Abrir menú'}
         style="background: var(--color-secondary); color: var(--color-muted-foreground); border: 1px solid transparent;"
       >
-        <div class="relative w-4 h-4">
+        <div class="relative w-4 h-4 hamburger-icon">
           <div class="absolute inset-0 flex items-center justify-center transition-all duration-200 {menuOpen ? 'opacity-0 rotate-90' : 'opacity-70 rotate-0'}">
             <Menu size={16} strokeWidth={2.75} />
           </div>
@@ -140,35 +140,33 @@
           </button>
         {/each}
 
-        <div class="pt-3">
-          {#if auth.isAuthenticated}
-            <button
-              onclick={handleLogout}
-              class="nav-menu-item w-full text-left px-3 rounded-md transition-colors cursor-pointer hover:bg-accent"
-              style="animation-delay: {navLinks.length * 55}ms;
-                     color: var(--color-muted-foreground);
-                     font-size: 17px;
-                     font-weight: 600;
-                     letter-spacing: -0.021em;
-                     line-height: 2.6;"
-            >
-              Cerrar sesión
-            </button>
-          {:else}
-            <button
-              onclick={() => navigate('/login')}
-              class="nav-menu-item w-full text-left px-3 rounded-md transition-colors cursor-pointer hover:bg-accent"
-              style="animation-delay: {navLinks.length * 55}ms;
-                     color: var(--color-muted-foreground);
-                     font-size: 17px;
-                     font-weight: 600;
-                     letter-spacing: -0.021em;
-                     line-height: 2.6;"
-            >
-              Iniciar sesión
-            </button>
-          {/if}
-        </div>
+        {#if auth.isAuthenticated}
+          <button
+            onclick={handleLogout}
+            class="nav-menu-item w-full text-left px-3 rounded-md transition-colors cursor-pointer hover:bg-accent"
+            style="animation-delay: {navLinks.length * 55}ms;
+                   color: #dc2626;
+                   font-size: 17px;
+                   font-weight: 600;
+                   letter-spacing: -0.021em;
+                   line-height: 2.6;"
+          >
+            Cerrar sesión
+          </button>
+        {:else}
+          <button
+            onclick={() => navigate('/login')}
+            class="nav-menu-item w-full text-left px-3 rounded-md transition-colors cursor-pointer hover:bg-accent"
+            style="animation-delay: {navLinks.length * 55}ms;
+                   color: var(--color-muted-foreground);
+                   font-size: 17px;
+                   font-weight: 600;
+                   letter-spacing: -0.021em;
+                   line-height: 2.6;"
+          >
+            Iniciar sesión
+          </button>
+        {/if}
       </nav>
     </div>
   {/if}
@@ -203,6 +201,13 @@
     :global(#site-header.scrolled #site-header-bar) {
       padding-top: 0.75rem;
       padding-bottom: 0.75rem;
+    }
+  }
+
+  /* En móvil, iguala el grosor del icono hamburguesa al icono de búsqueda */
+  @media (max-width: 639px) {
+    .hamburger-icon :global(svg) {
+      stroke-width: 2;
     }
   }
 </style>
