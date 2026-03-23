@@ -71,7 +71,7 @@ PORT=3000
 
 ```bash
 cd backend
-node seed.js
+pnpm seed
 ```
 
 ---
@@ -83,13 +83,13 @@ node seed.js
 | `$state()` | `stores/auth.svelte.ts` | Token JWT y datos del usuario autenticado |
 | `$state()` | `stores/products.svelte.ts` | Lista de productos y estado de carga |
 | `$state()` | `stores/categories.svelte.ts` | Categorías disponibles |
-| `$state()` | `stores/theme.svelte.ts` | Preferencia de tema (claro/oscuro) |
 | `$state()` | `stores/toast.svelte.ts` | Cola de notificaciones toast |
+| `$state()` | `lib/ui.svelte.ts` | Estado de la UI (búsqueda abierta/cerrada) |
 | `$derived()` | `stores/auth.svelte.ts` | `isAuthenticated`, `isAdmin`, `displayName` |
 | `$derived()` | `stores/products.svelte.ts` | `byCategory` — productos agrupados y ordenados por categoría |
-| `$effect()` | `App.svelte` | Protección de rutas: redirige al login si no hay sesión |
+| `$effect()` | `App.svelte` | Protección de rutas: redirige al login si no hay sesión; actualiza el título de la pestaña |
 | `$effect()` | `pages/LoginPage.svelte` | Redirige al catálogo si ya hay sesión activa |
-| `$effect()` | `pages/ProductsPage.svelte` | Carga productos al montar el componente |
+| `$effect()` | `pages/AdminUsersPage.svelte` | Carga usuarios cuando el rol admin está confirmado |
 | `$props()` | `components/products/*`, `components/ui/*` | Props y callbacks en `ProductCard`, `ProductForm`, `UserRow`, `Modal`, `Button`, `Input`, etc. |
 
 Los callbacks (`onSave`, `onDelete`, `onEdit`) sustituyen a los eventos personalizados clásicos para la comunicación hijo → padre.

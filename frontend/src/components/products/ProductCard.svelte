@@ -59,8 +59,18 @@
       </div>
     {/if}
 
-    <p class="text-xs" style="color: var(--color-muted-foreground);">
-      Desde {formatPrice(precio)}
-    </p>
+    <div class="flex items-center gap-2 flex-wrap">
+      <p class="text-xs" style="color: var(--color-muted-foreground);">
+        Desde {formatPrice(precio)}
+      </p>
+      {#if !product.activo}
+        <span
+          class="text-xs px-1.5 py-0.5 rounded font-medium"
+          style="background: color-mix(in srgb, var(--color-destructive) 10%, transparent); color: var(--color-destructive);"
+        >
+          No disponible
+        </span>
+      {/if}
+    </div>
   </div>
 </article>
