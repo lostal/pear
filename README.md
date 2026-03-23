@@ -78,6 +78,14 @@ pnpm seed
 
 ---
 
+## Diseño
+
+Las maquetas de productos, logo e identidad visual del proyecto están elaboradas en Figma. El kit de diseño incluye los componentes, estilos y assets utilizados a lo largo de toda la interfaz.
+
+[![Figma Design Kit](https://img.shields.io/badge/Figma-Pear%20Design%20Kit-F24E1E?logo=figma&logoColor=white)](https://www.figma.com/design/LYq8hznI5C1nRtyJ7C7pzt/Pear-Design-Kit)
+
+---
+
 ## Runas de Svelte 5 utilizadas
 
 | Runa         | Archivo(s)                                 | Uso                                                                                            |
