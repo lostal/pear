@@ -1,4 +1,8 @@
-node_modules/
+__pycache__/
+*.py[cod]
+*.db
 .env
-uploads/
-*.log
+.venv/
+uploads/productos/*
+!uploads/productos/.gitkeep
+.pytest_cache/

@@ -53,7 +53,8 @@
       CurrentComponent = cached;
       currentParams = matched.params;
     } else {
-      matched.loader()
+      matched
+        .loader()
         .then((module) => {
           routeCache.set(matched.loader, module.default);
           CurrentComponent = module.default;

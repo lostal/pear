@@ -2,53 +2,35 @@
 
 ![Hero](/frontend/src/assets/collage.png)
 
-SPA de gestión de productos e-commerce construida con **Svelte 5** en el frontend y **Express + MongoDB** en el backend. Incluye autenticación JWT, panel de administración con CRUD completo y gestión de usuarios por roles.
+SPA de gestión de productos e-commerce construida con **Svelte 5** (frontend) y **FastAPI + SQLite** (backend Python). Incluye autenticación JWT, panel de administración con CRUD completo y gestión de usuarios por roles.
+
+> Memoria de Uso de IA disponible en [docs/practica2-ia-prompts.md](docs/practica2-ia-prompts.md).
 
 ## Stack
 
-| Capa            | Tecnologías                                    |
-| --------------- | ---------------------------------------------- |
-| Frontend        | Svelte 5, Vite, TypeScript, Tailwind CSS 4     |
-| Backend         | Node.js, Express 4, MongoDB 6, Mongoose, Redis |
-| Auth            | JWT (Bearer token)                             |
-| Infraestructura | Docker, Docker Compose                         |
+| Capa            | Tecnologías                                |
+| --------------- | ------------------------------------------ |
+| Frontend        | Svelte 5, Vite, TypeScript, Tailwind CSS 4 |
+| Backend         | Python, FastAPI, SQLModel, SQLite          |
+| Auth            | JWT (Bearer token)                         |
+| Infraestructura | Docker, Docker Compose (opcional)          |
 
 ---
 
 ## Inicio rápido
 
-### Con Docker (recomendado)
-
-```bash
-docker compose up
-```
-
-Levanta MongoDB, Redis y el backend automáticamente. Luego inicia el frontend por separado:
-
-```bash
-cd frontend
-pnpm install
-pnpm dev
-```
-
-| Servicio      | URL                            |
-| ------------- | ------------------------------ |
-| Frontend      | http://localhost:5173          |
-| Backend / API | http://localhost:3000          |
-| Swagger UI    | http://localhost:3000/api-docs |
-
-### Desarrollo local (sin Docker)
-
-**Backend:**
+### Backend Python
 
 ```bash
 cd backend
-pnpm install
-cp .env.example .env   # ajusta las variables
-pnpm dev
+uv sync                 # Instalar dependencias
+cp .env.example .env    # Configurar variables
+uv run python seed.py   # Crear datos de prueba (admin/admin123)
+uv run uvicorn app.main:app --port 3001 --reload   # Iniciar servidor
 ```
+Swagger: http://localhost:3001/docs
 
-**Frontend:**
+### Frontend
 
 ```bash
 cd frontend
@@ -56,35 +38,88 @@ pnpm install
 pnpm dev
 ```
 
-> El frontend hace proxy de `/api` y `/uploads` al backend en `localhost:3000` (configurado en `vite.config.ts`).
+### Migrar datos desde el backend legacy
 
-### Variables de entorno
+```bash
+docker compose up -d mongo   # Iniciar MongoDB
+cd backend && uv run python migrate.py  # Migrar datos a SQLite
+docker stop mongo            # Parar MongoDB
+```
 
-Copia `backend/.env.example` a `backend/.env` y ajusta:
+### Servicios activos
+
+| Servicio    | URL                           |
+| ----------- | ----------------------------- |
+| Frontend    | http://localhost:5173         |
+| Backend API | http://localhost:3001         |
+| Swagger UI  | http://localhost:3001/docs    |
+| Uploads     | http://localhost:3001/uploads |
+
+### Variables de entorno (`backend/.env`)
 
 ```
-MONGO_URI=mongodb://localhost:27017/pear
-JWT_SECRET=tu_secreto
-REDIS_URL=redis://localhost:6379
-PORT=3000
+DATABASE_URL=sqlite:///./pear.db
+JWT_SECRET=pear-jwt-secret-key-2026
+JWT_EXPIRE_MINUTES=60
 ```
 
 ### Datos de prueba
 
 ```bash
 cd backend
-pnpm seed
+uv run python seed.py   # crea admin/admin123 y user/user123
 ```
 
 ---
 
 ## Diseño
 
-Las maquetas de productos, logo e identidad visual del proyecto están elaboradas en Figma. El kit de diseño incluye los componentes, estilos y assets utilizados a lo largo de toda la interfaz.
+Las maquetas de productos, logo e identidad visual del proyecto están elaboradas en Figma.
 
 [![Figma Design Kit](https://img.shields.io/badge/Figma-Pear%20Design%20Kit-F24E1E?logo=figma&logoColor=white)](https://www.figma.com/design/LYq8hznI5C1nRtyJ7C7pzt/Pear-Design-Kit)
 
 ---
+
+## Migración de datos (Node.js/MongoDB → Python/SQLite)
+
+Para migrar los datos del backend legacy:
+
+```bash
+# 1. Levantar MongoDB con Docker
+docker compose up -d mongo
+
+# 2. Ejecutar migración
+cd backend
+uv run python migrate.py
+```
+
+Esto copia categorías, productos (con imágenes, grupos y opciones), usuarios y carritos al nuevo backend.
+
+---
+
+## Arquitectura del backend Python
+
+```
+backend/
+├── app/
+│   ├── main.py              # FastAPI app, CORS, static files
+│   ├── dependencies.py      # get_db, get_current_user, require_admin
+│   ├── core/
+│   │   ├── config.py        # Settings (DATABASE_URL, JWT_SECRET)
+│   │   ├── database.py      # SQLite engine + session
+│   │   └── security.py      # JWT, password hashing (Argon2 + bcrypt)
+│   ├── models/              # SQLModel tables (8 tablas)
+│   ├── schemas/             # Pydantic request/response (API shapes)
+│   ├── routers/             # HTTP handlers (6 routers)
+│   ├── services/            # Lógica de negocio
+│   └── repositories/        # Acceso a datos (patrón repositorio)
+├── uploads/                 # Imágenes de productos
+├── seed.py                  # Datos de prueba
+├── migrate.py               # Migración MongoDB → SQLite
+└── .env                     # Variables de entorno
+```
+
+## **Separación de responsabilidades:** Router → Service → Repository. Cada capa solo depende de la inmediatamente inferior. Los routers no contienen lógica de negocio ni acceso directo a base de datos.
 
 ## Runas de Svelte 5 utilizadas
 
@@ -106,21 +141,29 @@ Los callbacks (`onSave`, `onDelete`, `onEdit`) sustituyen a los eventos personal
 
 ---
 
-## API consumida
+## API
 
-| Método   | Endpoint            | Rol         | Descripción                  |
-| -------- | ------------------- | ----------- | ---------------------------- |
-| `POST`   | `/api/auth/login`   | Público     | Login, devuelve JWT          |
-| `GET`    | `/api/products`     | Autenticado | Listar productos             |
-| `POST`   | `/api/products`     | Admin       | Crear producto               |
-| `PUT`    | `/api/products/:id` | Admin       | Editar producto              |
-| `DELETE` | `/api/products/:id` | Admin       | Eliminar producto            |
-| `GET`    | `/api/categories`   | Autenticado | Listar categorías            |
-| `GET`    | `/api/users`        | Admin       | Listar usuarios              |
-| `PUT`    | `/api/users/:id`    | Admin       | Editar usuario / cambiar rol |
-| `DELETE` | `/api/users/:id`    | Admin       | Eliminar usuario             |
+| Método   | Endpoint               | Auth | Rol   | Descripción                  |
+| -------- | ---------------------- | ---- | ----- | ---------------------------- |
+| `POST`   | `/api/login`           | No   | -     | Login, devuelve JWT          |
+| `POST`   | `/api/register`        | No   | -     | Registrar usuario            |
+| `GET`    | `/api/productos`       | No   | -     | Listar productos activos     |
+| `GET`    | `/api/productos/:id`   | No   | -     | Detalle de producto          |
+| `POST`   | `/api/productos`       | JWT  | admin | Crear producto               |
+| `PUT`    | `/api/productos/:id`   | JWT  | admin | Editar producto              |
+| `DELETE` | `/api/productos/:id`   | JWT  | admin | Eliminar producto            |
+| `GET`    | `/api/categorias`      | No   | -     | Listar categorías            |
+| `POST`   | `/api/categorias`      | JWT  | admin | Crear categoría              |
+| `PUT`    | `/api/categorias/:id`  | JWT  | admin | Editar categoría             |
+| `DELETE` | `/api/categorias/:id`  | JWT  | admin | Eliminar categoría           |
+| `GET`    | `/api/cart`            | JWT  | user  | Ver carrito                  |
+| `POST`   | `/api/cart/add`        | JWT  | user  | Añadir al carrito            |
+| `DELETE` | `/api/cart/:productId` | JWT  | user  | Eliminar del carrito         |
+| `GET`    | `/api/users`           | JWT  | admin | Listar usuarios              |
+| `PUT`    | `/api/users/:id`       | JWT  | admin | Editar usuario / cambiar rol |
+| `DELETE` | `/api/users/:id`       | JWT  | admin | Eliminar usuario             |
 
-La documentación completa de la API está disponible en Swagger: `http://localhost:3000/api-docs`
+Endpoints adicionales para gestión de grupos de opciones e imágenes en productos disponibles vía Swagger: `http://localhost:3001/docs`
 
 ---
 

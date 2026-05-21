@@ -105,10 +105,18 @@
         style="background: var(--color-secondary); color: var(--color-muted-foreground); border: 1px solid transparent;"
       >
         <div class="relative w-4 h-4 hamburger-icon">
-          <div class="absolute inset-0 flex items-center justify-center transition-all duration-200 {menuOpen ? 'opacity-0 rotate-90' : 'opacity-70 rotate-0'}">
+          <div
+            class="absolute inset-0 flex items-center justify-center transition-all duration-200 {menuOpen
+              ? 'opacity-0 rotate-90'
+              : 'opacity-70 rotate-0'}"
+          >
             <Menu size={16} strokeWidth={2.75} />
           </div>
-          <div class="absolute inset-0 flex items-center justify-center transition-all duration-200 {menuOpen ? 'opacity-70 rotate-0' : 'opacity-0 -rotate-90'}">
+          <div
+            class="absolute inset-0 flex items-center justify-center transition-all duration-200 {menuOpen
+              ? 'opacity-70 rotate-0'
+              : 'opacity-0 -rotate-90'}"
+          >
             <X size={16} strokeWidth={2.75} />
           </div>
         </div>
