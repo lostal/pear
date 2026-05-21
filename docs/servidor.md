@@ -6,6 +6,17 @@
 
 ---
 
+## Stack actual
+
+| Capa     | Tecnología                    |
+| -------- | ----------------------------- |
+| Backend  | Python 3.13, FastAPI, SQLite  |
+| Frontend | Svelte 5 (SPA estática)       |
+| Proxy    | Nginx + Certbot               |
+| DB       | SQLite (archivo en volumen)   |
+
+---
+
 ## Conectarse al servidor
 
 ```bash
@@ -22,7 +33,7 @@ Después de hacer `git push` desde local, en el servidor:
 /var/www/pear/deploy.sh
 ```
 
-Esto hace: `git pull` + build del frontend + restart del backend.
+Esto hace: `git pull` + build del frontend + rebuild y restart del backend Docker.
 
 ---
 
@@ -50,48 +61,40 @@ docker compose -f /var/www/pear/docker-compose.prod.yml ps
 # Reiniciar backend
 docker compose -f /var/www/pear/docker-compose.prod.yml restart backend
 
-# Reiniciar todo
-docker compose -f /var/www/pear/docker-compose.prod.yml restart
-
 # Parar todo
 docker compose -f /var/www/pear/docker-compose.prod.yml down
 
-# Levantar todo (desde cero o tras down)
+# Levantar todo
 cd /var/www/pear && docker compose -f docker-compose.prod.yml up -d --build
 ```
 
 ---
 
-## Base de datos
+## Base de datos (SQLite)
 
-### Exportar backup de MongoDB del servidor
-```bash
-docker exec mongo mongodump --db productos --out /tmp/dump
-docker cp mongo:/tmp/dump ./dump_servidor
-```
+El archivo `pear.db` se persiste en el volumen `data/db/` del host.
 
-### Importar datos locales al servidor
-En local:
+### Backup manual
 ```bash
-docker exec mongo mongodump --db productos --out /tmp/dump
-docker cp mongo:/tmp/dump ./dump
-scp -r ./dump root@46.101.107.148:/tmp/dump
-```
-En el servidor:
-```bash
-docker cp /tmp/dump mongo:/tmp/dump
-docker exec mongo mongorestore --db productos /tmp/dump/productos --drop
+cp /var/www/pear/data/db/pear.db /var/www/pear/data/db/pear_$(date +%Y%m%d).db
 ```
 
-### Importar imágenes al servidor
-En local:
+### Restaurar backup
 ```bash
-scp -r ./backend/uploads root@46.101.107.148:/var/www/pear/backend/uploads
+cp /var/www/pear/data/db/pear_20260521.db /var/www/pear/data/db/pear.db
+docker compose -f /var/www/pear/docker-compose.prod.yml restart backend
 ```
-En el servidor:
+
+---
+
+## Subir archivos locales al servidor
+
 ```bash
-docker cp /var/www/pear/backend/uploads/. backend:/app/uploads/
-docker exec -u root backend chown -R node:node /app/uploads
+# Imágenes de productos
+scp -r ./backend/uploads/productos root@46.101.107.148:/var/www/pear/data/uploads/
+
+# Base de datos
+scp ./backend/pear.db root@46.101.107.148:/var/www/pear/data/db/
 ```
 
 ---
